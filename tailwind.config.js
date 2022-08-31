@@ -1,3 +1,4 @@
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -32,6 +33,11 @@ module.exports = {
         center: true,
         padding: '2rem',
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
+        'profile-bg': "url('/images/profile_bg.png')",
+        'activity-strip': "url('/images/strip.svg')"
+      }
     },
   },
   plugins: [],

@@ -29,6 +29,7 @@ const PopoverContent = () => (
 );
 
 const ProductView = () => {
+    
     const carouselRef = useRef<CarouselRef>(null);
     const [selectedImage, setSelectedImage] = useState('/images/product-1.png');
 

@@ -16,10 +16,10 @@ function NavBar() {
     return (
         <nav className='w-full flex items-center py-5'>
             <ul className='flex items-center ml-auto gap-x-10'>
-                <NavLinkItem label='How It Works' href='how-it-works' />
+                <NavLinkItem label='How It Works' href='/how-it-works' />
                 <NavLinkItem label='FAQs' />
                 <NavLinkItem label='List Gear' />
-                <NavLinkItem label='Cart' />
+                <NavLinkItem label='Cart' href='/cart' />
                 <NavLinkItem label='Login' liClass='ml-32' />
                 <NavLinkItem
                     label='Sign Up'

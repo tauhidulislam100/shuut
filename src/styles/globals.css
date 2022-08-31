@@ -281,7 +281,8 @@
     border-bottom: 1px solid #D0CFD8;
 }
 
-.price-tabs .ant-tabs-tab-btn {
+.price-tabs .ant-tabs-tab-btn,
+.profile-tabs .ant-tabs-tab-btn {
     color: rgba(10, 36, 41, 0.5);
     font-family: 'Sofia Pro';
     font-style: normal;
@@ -290,16 +291,29 @@
     line-height: 24px;
 }
 
-.price-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+.price-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn,
+.profile-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
     color: #090F47;
 }
 
-.price-tabs .ant-tabs-ink-bar {
+.price-tabs .ant-tabs-ink-bar,
+.profile-tabs .ant-tabs-ink-bar {
     background-color: #090F47;
 }
 
-.price-tabs.ant-tabs-top>.ant-tabs-nav::before {
+.price-tabs.ant-tabs-top>.ant-tabs-nav::before,
+.profile-tabs.ant-tabs-top>.ant-tabs-nav::before {
     border-color: #EFEFEF;
+}
+
+.profile-tabs .ant-tabs-nav-list {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.profile-tabs .ant-tabs-tab:nth-child(5) {
+   margin-left: 0;
+   margin-right: 50px;
 }
 
 .home-carousel .slick-list {
@@ -338,4 +352,6 @@
 .title-with-line {
     position: relative;
     background: url(/images/title-line.svg);
+    background-repeat: no-repeat;
+    background-position: bottom;
 }
