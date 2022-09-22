@@ -116,4 +116,127 @@ export const hiwDuringRental = [
         extra days if the item is available 
         and you want to keep it for longer.`
     },
-]
+];
+
+export const tripodInLagos = [
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod1.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod2.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod3.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod4.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod4.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod1.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod2.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod3.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod4.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod4.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod1.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod2.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod3.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod4.png'
+    },
+    {
+        title: 'Picknfix',
+        description: 'Video Camera REWK17',
+        price: 300000,
+        location: 'Sholmolu, Lagos',
+        rating: 4.5,
+        img_url: '/images/tripods/tripod4.png'
+    },
+];

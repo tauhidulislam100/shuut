@@ -1,5 +1,5 @@
-import { Modal } from 'antd';
 import React, { useEffect, useState } from 'react';
+import { Modal } from '../components';
 
 const Test = () => {
 
@@ -9,14 +9,19 @@ const Test = () => {
     },[])
 
 return (
-    <div className="h-screen min-h-screen bg-white">
+    <div className="h-screen min-h-screen bg-blue-500">
+        <p className="">Who is the author?</p>
         {
-            showModal && 
-            <Modal centered visible={true}>
-                <div className="">
-                    dlkjfkdjkd
-                </div>
-            </Modal>
+             <Modal visible={true}>
+                <p className="">Testing modal</p>
+                <p className="">Testing modal</p>
+                <p className="">Testing modal</p>
+                <p className="">Testing modal</p>
+                <p className="">Testing modal</p>
+                <p className="">Testing modal</p>
+                <p className="">Testing modal</p>
+                <p className="">Testing modal</p>
+             </Modal>
         }
     </div>
 ) 

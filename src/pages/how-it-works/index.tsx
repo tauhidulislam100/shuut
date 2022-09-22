@@ -1,7 +1,7 @@
 import React from 'react'
 import { Footer, NavBar } from '../../components';
 import Image from 'next/image';
-import { hiwBeforeRental, hiwDuringRental } from '../../data';
+import { hiwBeforeRental, hiwDuringRental, listItemCat } from '../../data';
 import { NextPage } from 'next';
 
 const HowItWorks:NextPage = () => {
@@ -50,7 +50,7 @@ const HowItWorks:NextPage = () => {
                     </div>
                     <div className="flex justify-center mt-[60px]">
                         <button className="transition-all duration-200 bg-white hover:bg-secondary  h-[48px] w-[193px] text-secondary hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
-                            List An Item
+                            Browse Item
                         </button>
                     </div>
                 </div>
@@ -81,16 +81,16 @@ const HowItWorks:NextPage = () => {
                     </div>
                     <div className="flex justify-center mt-12">
                         <button className=" bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
-                            Browse Item
+                            Find Item
                         </button>
                     </div>
                 </div>
             </section>
-            <div className="">
+            <div className="pb-20">
                 <div className="container flex justify-between items-center mt-[121px] mb-5">
                     <div className="">
-                        <div className="max-w-[498px]">
-                            <h1 className="font-semibold text-[32px]">Want To Make Some Money</h1>
+                        <div className="max-w-[498px] font-lota">
+                            <h1 className="font-semibold text-[32px] text-[#1B1C20]">Want To Make Some Money</h1>
                             <p className="mt-5 text-lg text-body">
                                 Message and rent at the tap of a button. 
                                 The Fat Llama app is the easiest way to find what you need, 
@@ -99,7 +99,7 @@ const HowItWorks:NextPage = () => {
                             </p>
                             <div className="flex justify-start mt-12">
                                 <button className=" bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
-                                    Browse Item
+                                    Learn More
                                 </button>
                             </div>
                         </div>
@@ -112,6 +112,27 @@ const HowItWorks:NextPage = () => {
                                 width={399}
                                 height={350}
                                 className="bg-bottom object-cover" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div className="bg-[#F8F8F8]">
+                <div className="container py-[70px]">
+                    <div className="">
+                        <h1 className="text-[32px] font-semibold text-primary">Categories</h1>
+                        <div className="grid grid-cols-4 gap-5 mt-[30px]">
+                            {
+                                listItemCat.map((cat, idx) => (
+                                    <div key={`cat_${idx}`} className="bg-white rounded-md">
+                                        <div className="px-4 pt-3">
+                                            <div className="relative w-full rounded-[5px] overflow-hidden h-[220px]">
+                                                <Image src={cat.cat_img} alt="Cat Img" className="object-cover hover:scale-105 w-full h-[219px] transition-all duration-300" layout="fill" />
+                                            </div>
+                                            <h3 className="my-3.5 text-primary-100 text-sm font-medium">{cat.title}</h3>
+                                        </div>
+                                    </div>
+                                ))
+                            }
                         </div>
                     </div>
                 </div>

@@ -1,7 +1,9 @@
 import { Progress, Rate } from 'antd';
+import { Input } from 'antd';
 import Image from 'next/image';
 import React from 'react';
 
+const { TextArea } = Input;
 const ReviewDetails = () => {
     return (
         <div className="flex items-center justify-end">
@@ -67,6 +69,25 @@ return (
                         pour son intelligence et sa passion.
                     </p>
                 </div>
+            </div>
+        </div>
+        <div className="mt-10">
+            <div className="border shadow-lg p-14 rounded-md">
+                <div className="font-lota">
+                    <h1 className="text-lg font-semibold text-primary">John Doe</h1>
+                    <p className="text-[#77838F] mt-4">Euro Production</p>
+                    <Rate defaultValue={0} />
+                    <h2 className="text-primary mt-3 mb-2">Comment</h2>
+                    <TextArea 
+                        rows={8} 
+                        placeholder="Enter"
+                        className='px-6 py-5 text-sm font-jost' />
+                </div>
+            </div>
+            <div className="mt-10 flex justify-end">
+                <button className='font-sofia-pro px-7 bg-secondary hover:bg-primary hover:shadow-md rounded-md text-white h-12 inline-flex items-center text-lg font-semibold'>
+                    Post Comment
+                </button>
             </div>
         </div>
     </div>

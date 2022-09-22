@@ -1,11 +1,15 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import React from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { Footer, NavBar, SingleProduct } from '../../../components';
-import { hiwBeforeRental, listItemCat } from '../../../data';
+import { hiwBeforeRental, listItemCat, tripodInLagos } from '../../../data';
 
 const Category = () => {
 
+    const getCurrentPosition = () => {
+        navigator.geolocation.getCurrentPosition((pos) => console.log(pos));
+    };
     
     return (
     <>
@@ -40,43 +44,65 @@ const Category = () => {
                     <img src='/images/tripod.png' className='object-cover max-w-full' />
                 </div>
             </section>
-            <section className='py-16'>
-                <h3 className='text-[32px] text-secondary font-semibold tracking-tighter mb-8'>SHUUT Offers</h3>
-                <div className="pl-8 grid grid-cols-3 gap-4">
-                    <div className="border border-[#DFDFDF] rounded-[10px] p-7">
-                    <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Access To More</h3>
-                    <p className='text-base font-normal text-primary-100'>
-                        Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
-                    </p>
-                    </div>
-                    <div className="border border-[#DFDFDF] rounded-[10px] p-7">
-                    <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Save Money</h3>
-                    <p className='text-base font-normal text-primary-100'>
-                        Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
-                    </p>
-                    </div>
-                    <div className="border border-[#DFDFDF] rounded-[10px] p-7">
-                    <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Get Insured</h3>
-                    <p className='text-base font-normal text-primary-100'>
-                        Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
-                    </p>
-                    </div>
-                </div>
-            </section>
         </div>
         <section className="bg-[#F8F8F8]">
             <div className="container py-16">
                 <h1 className="text-[32px] text-secondary font-semibold font-lota">Tripods In Lagos</h1>
                 <div className="mt-8 pl-2 grid md:grid-cols-5 gap-5">
                     {
-                        Array(15).fill('').map((_,idx) => <SingleProduct key={`lagos_${idx}`} />)
+                        tripodInLagos.map((product,idx) => <SingleProduct key={`lagos_${idx}`} data={product} />)
                     }
                 </div>
                 <div className="flex justify-center mt-12">
-                    <button className=" bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
-                        List An Item
-                    </button>
+                    <Link href={'/products/search'}>
+                        <button className=" bg-secondary hover:bg-primary px-10 h-[48px] min-w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
+                            Browse Tripods Tn Lagos
+                        </button>
+                    </Link>
                 </div>
+            </div>
+        </section>
+        
+        <section className="bg-[#FFFFFF]">
+            <div className="container py-[70px]">
+                    <div className='py-16'>
+                        <h3 className='text-[32px] text-secondary font-semibold tracking-tighter mb-8'>SHUUT Offers</h3>
+                        <div className="pl-8 grid grid-cols-3 gap-4">
+                            <div className="border border-[#DFDFDF] rounded-[10px] p-7">
+                            <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Access To More</h3>
+                            <p className='text-base font-normal text-primary-100'>
+                                Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
+                            </p>
+                            </div>
+                            <div className="border border-[#DFDFDF] rounded-[10px] p-7">
+                            <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Save Money</h3>
+                            <p className='text-base font-normal text-primary-100'>
+                                Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
+                            </p>
+                            </div>
+                            <div className="border border-[#DFDFDF] rounded-[10px] p-7">
+                            <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Get Insured</h3>
+                            <p className='text-base font-normal text-primary-100'>
+                                Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
+                            </p>
+                            </div>
+                        </div>
+                    </div>
+                    {/* <h1 className="text-[32px] font-semibold text-primary">Categories</h1>
+                    <div className="grid grid-cols-4 gap-5 mt-[30px]">
+                        {
+                            listItemCat.map((cat, idx) => (
+                                <div key={`cat_${idx}`} className="bg-white rounded-md">
+                                    <div className="px-4 pt-3">
+                                        <div className="relative w-full rounded-[5px] overflow-hidden h-[220px]">
+                                            <Image src={cat.cat_img} alt="Cat Img" className="object-cover hover:scale-105 w-full h-[219px] transition-all duration-300" layout="fill" />
+                                        </div>
+                                        <h3 className="my-3.5 text-primary-100 text-sm font-medium">{cat.title}</h3>
+                                    </div>
+                                </div>
+                            ))
+                        }
+                    </div> */}
             </div>
         </section>
         <section className="bg-gradient-radial from-secondary to-primary">
@@ -105,23 +131,8 @@ const Category = () => {
                 </div>
             </div>
         </section>
-        <section className="bg-[#F8F8F8]">
+        <section className="bg-[#FFFFFF]">
             <div className="container py-[70px]">
-                    <h1 className="text-[32px] font-semibold text-primary">Categories</h1>
-                    <div className="grid grid-cols-4 gap-5 mt-[30px]">
-                        {
-                            listItemCat.map((cat, idx) => (
-                                <div key={`cat_${idx}`} className="bg-white rounded-md">
-                                    <div className="px-4 pt-3">
-                                        <div className="relative w-full rounded-[5px] overflow-hidden h-[220px]">
-                                            <Image src={cat.cat_img} alt="Cat Img" className="object-cover hover:scale-105 w-full h-[219px] transition-all duration-300" layout="fill" />
-                                        </div>
-                                        <h3 className="my-3.5 text-primary-100 text-sm font-medium">{cat.title}</h3>
-                                    </div>
-                                </div>
-                            ))
-                        }
-                    </div>
                     <div className='pt-16 pl-4 grid grid-cols-2 2xl:gap-x-40 items-center'>
                         <img src='/images/mockup.png' className='object-cover max-w-full h-[537px]' />
                         <div>

@@ -9,6 +9,7 @@ import { FaTelegramPlane } from 'react-icons/fa';
 import { TbMail } from 'react-icons/tb';
 import { NavBar, RattingBar, SingleProduct } from '../../components';
 import { Niger } from '../../components/icons';
+import { tripodInLagos } from '../../data';
 
 const { TabPane } = Tabs;
 
@@ -67,7 +68,14 @@ const ProductView = () => {
                                 <IoIosArrowDown />
                             </button>
                             <div className='w-[30%] relative overflow-hidden'>
-                                <Carousel ref={carouselRef} className='product-carousel' vertical={true} slidesToShow={3.5} infinite={false} arrows={false} dots={false}>
+                                <Carousel 
+                                    ref={carouselRef} 
+                                    className='product-carousel' 
+                                    slidesToShow={3.5}
+                                    vertical={true}
+                                    infinite={false} 
+                                    arrows={false} 
+                                    dots={false}>
                                     {[...Array(10)].map((_, index) => (
                                         <div key={index} onClick={() => preview(index, '/images/product-1.png')} className='w-full bg-white  rounded-sm p-[2px] overflow-hidden'>
                                             <img className='w-full object-cover h-[143px] rounded-sm' src='/images/product-1.png' />
@@ -208,11 +216,9 @@ const ProductView = () => {
                 <div className="container">
                     <h4 className='text-xl font-medium font-sofia-pro text-primary-100 mb-4'>Other Listing From Owner</h4>
                     <div className="grid grid-cols-5 gap-5">
-                        <SingleProduct />
-                        <SingleProduct />
-                        <SingleProduct />
-                        <SingleProduct />
-                        <SingleProduct />
+                        {
+                            tripodInLagos.slice(0,5).map((pd, idx) => <SingleProduct key={`product_index_${idx}`} data={pd} />)
+                        }
                     </div>
                 </div>
             </section>
@@ -220,11 +226,9 @@ const ProductView = () => {
                 <div className="container">
                     <h4 className='text-xl font-medium font-sofia-pro text-primary-100 mb-4'>Other Listing From Camera</h4>
                     <div className="grid grid-cols-5 gap-5">
-                        <SingleProduct />
-                        <SingleProduct />
-                        <SingleProduct />
-                        <SingleProduct />
-                        <SingleProduct />
+                        {
+                            tripodInLagos.slice(0,5).map((pd, idx) => <SingleProduct key={`product_index_${idx}`} data={pd} />)
+                        }
                     </div>
                 </div>
             </section>

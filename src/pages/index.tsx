@@ -117,7 +117,7 @@ const Home: NextPage = () => {
             <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
               <input placeholder='All Gears' className='min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light' />
               <button className='px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg'>
-                Find Gear
+                Search
               </button>
               <span className='absolute top-4 left-4 text-lg text-[#263238]'>
                 <IoIosSearch />
@@ -128,6 +128,7 @@ const Home: NextPage = () => {
               <img src='/images/logos/leadway.png' className='max-w-full object-cover w-[82px] h-[32px]' />
               <img src='/images/logos/people.png' className='max-w-full object-cover w-[111px] h-[35px]' />
               <img src='/images/logos/wapic.png' className='max-w-full object-cover w-[94px] h-[29px]' />
+              <img src='/images/logos/axamansard.png' className='max-w-full object-cover w-[118px] h-[21px]' />
             </div>
           </div>
 
@@ -242,9 +243,9 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="2xl:ml-[204px] xl:ml-[100px]">
-          <Carousel className='home-carousel' ref={carosuselRef} slidesToShow={3.5} infinite={false} arrows={false} dots={false} centerMode={false}>
+          <Carousel className='home-carousel min-h-[267px]' ref={carosuselRef} slidesToShow={3.5} infinite={false} arrows={false} dots={false} centerMode={false}>
             {slideItems.map((slideItem, i) => (
-              <div className='border border-[#E7EAEC] p-5 h-[267px] rounded-[5px]' key={i}>
+              <div className='border border-[#E7EAEC] p-5 rounded-[5px] min-h-full' key={i}>
                 <div className="flex items-start justify-between">
                   <img src="/images/dummy.png" className='max-w-full object-cover w-[54px] h-[54px] rounded-[5px]' />
                   <RattingBar ratting={slideItem.review} />

@@ -1,12 +1,11 @@
 import React from 'react';
-import { Footer, NavBar } from '../../components';
+import { 
+    Footer, NavBar, Review, 
+    Activities, RentalShop,
+    Settings, EditProfile } from '../../components';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 import Image from 'next/image';
 import { Tabs } from 'antd';
-import Activities from '../../components/profile/Activities';
-import RentalShop from '../../components/profile/RentalShop';
-import Settings from '../../components/profile/Settings';
-import Review from '../../components/profile/Review';
 
 const { TabPane } = Tabs;
 
@@ -41,7 +40,9 @@ return (
                     Videographer by day, night watcher by night
                 </h3>
                 <Tabs className='profile-tabs mt-[121px]'>
-                    <TabPane key={'1'} tab="Edit Profile" />
+                    <TabPane key={'1'} tab="Edit Profile">
+                        <EditProfile />
+                    </TabPane>
                     <TabPane key={'2'} tab="See Activities">
                         <Activities />
                     </TabPane>
