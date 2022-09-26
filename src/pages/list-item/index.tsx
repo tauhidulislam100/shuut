@@ -3,7 +3,7 @@ import { Footer, NavBar } from "../../components";
 import Image from 'next/image';
 import { listItemCat, listItemGetstarted, listItemRenting } from "../../data";
 import { NextPage } from "next";
-
+import { Widget } from "@uploadcare/react-widget";
 const ListItem:NextPage = () => {
 
     return (

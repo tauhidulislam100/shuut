@@ -5,6 +5,7 @@ import { BiCurrentLocation } from 'react-icons/bi';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
 import { Checkbox, Col, DatePicker, Form, Input, Radio, Row, Space, Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
+import { Widget } from '@uploadcare/react-widget';
 
 const GeneralInfo = ({setStep}:{setStep: React.Dispatch<React.SetStateAction<string>>}) => {
 
@@ -44,7 +45,7 @@ return (
             >
             <Form.Item 
                 label="Add Photos">
-                <ImgCrop rotate>
+                {/* <ImgCrop rotate>
                     <Upload
                         fileList={fileList}
                         onChange={onChange}
@@ -52,7 +53,8 @@ return (
                         listType='picture-card' >
                         {fileList.length < 5 && '+ Upload'}
                     </Upload>
-                </ImgCrop>
+                </ImgCrop> */}
+                <Widget publicKey='AIzaSyAHeRsvJ9QE2wfMOPCXBG1YQzDkjoNZbPk' />
             </Form.Item>
             <Form.Item label="Listing Title">
                 <Input placeholder='Enter' />

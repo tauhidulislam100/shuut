@@ -7,7 +7,7 @@ import { BiMinus } from 'react-icons/bi';
 import { IoIosAdd, IoIosArrowDown, IoIosArrowUp, IoIosClose } from 'react-icons/io';
 import { FaTelegramPlane } from 'react-icons/fa';
 import { TbMail } from 'react-icons/tb';
-import { NavBar, RattingBar, SingleProduct } from '../../components';
+import { Modal, NavBar, RattingBar, SingleProduct } from '../../components';
 import { Niger } from '../../components/icons';
 import { tripodInLagos } from '../../data';
 
@@ -32,6 +32,7 @@ const PopoverContent = () => (
 const ProductView = () => {
     
     const carouselRef = useRef<CarouselRef>(null);
+    const [availability, setAvailability] = useState(false);
     const [selectedImage, setSelectedImage] = useState('/images/product-1.png');
 
     const goUp = () => {
@@ -52,7 +53,11 @@ const ProductView = () => {
             <div className="container">
                 <NavBar />
             </div>
-
+            <Modal onCancel={()=> setAvailability(false)} visible={availability}>
+                <div className="">
+                    Calendar
+                </div>
+            </Modal>
             <section className='border-t border-[#D0CFD8] border-opacity-30 pt-5 mb-14'>
                 <div className="container">
                     <button className='text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center'>
@@ -119,7 +124,7 @@ const ProductView = () => {
                                             <p className='text-sm my-5 text-primary-100 text-opacity-90'>We’ve analysed prices for Video CameraREWK17 from all renters on SHUUT.</p>
                                             <p className='text-sm text-primary-100 text-opacity-90'>The advert price is above average.</p>
                                             <div className="mt-6 flex justify-center">
-                                                <button className='font-sofia-pro px-7 bg-secondary rounded-md text-white h-8 inline-flex items-center text-sm font-medium'>
+                                                <button onClick={() => setAvailability(true)} className='font-sofia-pro px-7 bg-secondary rounded-md text-white h-8 inline-flex items-center text-sm font-medium'>
                                                     Check Availabilty
                                                 </button>
                                             </div>
@@ -131,6 +136,40 @@ const ProductView = () => {
                                     </Tabs>
                                 </div>
                             </Popover>
+                            <div className="bg-white rounded-[5px] mb-5">
+                                <div className="px-6 py-5 text-[#0A2429E5] space-y-2.5">
+                                    <div className="flex justify-between">
+                                        <h4 className="font-sofia-pro text-[#0A2429] text-xl font-medium">Days</h4>
+                                        <h5 className="font-sofia-pro text-sm text-[#286EE6]">Chagne</h5>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <h4 className="">14 September</h4>
+                                        <div className="">-</div>
+                                        <h5 className="">24 September</h5>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <h4 className="">Total Cost Per Day</h4>
+                                        <h5 className="">$400,000</h5>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <h4 className="">Service Fee</h4>
+                                        <h5 className="">$400,000</h5>
+                                    </div>
+                                    <div className="flex justify-between">
+                                        <h4 className="">Total</h4>
+                                        <h5 className="">$400,000</h5>
+                                    </div>
+                                    <div className="mt-6 flex justify-end gap-5">
+                                        <button className='w-[133px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-8 items-center text-sm font-medium'>
+                                            Add Cart
+                                        </button>
+                                        <button className='w-[133px] font-sofia-pro bg-secondary rounded-md text-white h-8 items-center text-sm font-medium'>
+                                            Book Now
+                                        </button>
+                                    </div>
+                                    <p className="text-[#EB001B]">48 hours cooling off period</p>
+                                </div>
+                            </div>
                             <div className="bg-white rounded-md p-4 mb-4 h-[180px]">
                                 <h3 className='text-xl text-primary-100 font-medium font-sofia-pro mb-6'>Description</h3>
                                 <p className='text-sm text-primary-100 text-opacity-90'>Second Condition</p>

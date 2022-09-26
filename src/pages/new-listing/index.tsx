@@ -5,7 +5,7 @@ import { BsArrowLeftCircle } from 'react-icons/bs';
 const NewListing = () => {
 
     const [step, setStep] = useState<string>('info');
-
+    
 return (
     <div className="">
         <div className="container">
