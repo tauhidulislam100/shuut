@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -356,16 +358,122 @@
 
 .ant-input {
     border-radius: 5px;
+    padding: 15px 30px;
+    border: 1px solid #DFDFE6;
+    font-family: 'Inter', sans-serif;
+    font-style: Italic;
+    color: #23262F;
 }
+
+.ant-input:hover {
+    border-color: #4436AC;
+}
+.ant-input:focus
+ {
+    border-color: #4436AC;
+    outline: 0;
+    -webkit-box-shadow: 0 0 0 2px rgba(87,168,233, .2);
+    box-shadow: 0 0 0 2px rgba(87,168,233, .2);
+}
+
+.ant-form-item-label {
+    font-size: 18px;
+    font-family: 'Lota Grotesque';
+    line-height: 50px;
+    color: #1B1C20;
+}
+
+
+.ant-checkbox-wrapper.ant-checkbox-wrapper-in-form-item input[type="checkbox"], .ant-checkbox-inner {
+    width: 24px;
+    height: 24px;
+}
+
+.ant-checkbox-inner {
+    border-radius: 4px;
+}
+.ant-checkbox-inner::after {    
+    top: 46%;
+    left: 33.5%;
+    width: 5.71428571px;
+    height: 12.143px;
+}
+.ant-checkbox-checked::after {
+    border-color: #4436AC;
+    border-radius: 4px;
+}
+.ant-checkbox-checked .ant-checkbox-inner::after {
+    border-color: #4436AC;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner,
+.ant-checkbox-wrapper:hover .ant-checkbox-inner, 
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-checkbox-input:focus + .ant-checkbox-inner {
+    background-color: transparent;
+    border-color: #4436AC;
+    color: #4436AC;
+    border-radius: 4px;
+}
+
+.checkbox-label .ant-checkbox {
+    top: 0;
+}
+
+.ant-checkbox-wrapper.checkbox-label {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+/* Radio customization */
+
+.ant-radio-inner::after {
+    background-color: #4436AC;
+}
+.ant-radio:hover .ant-radio-inner,
+.ant-radio:focus .ant-radio-inner
+ {
+    border-color: #4436AC;
+}
+.ant-radio-checked .ant-radio-inner,
+.ant-radio-checked .ant-radio-inner:hover,
+.ant-radio-checked .ant-radio-inner:focus
+ {
+    border-color: #4436AC;
+}
+
+.ant-radio-checked::after {
+    border: 2px solid #4436AC;
+}
+
+.ant-radio-inner:after {
+  background: #4436AC !important;
+}
+
+.ant-radio-checked .ant-radio-inner,
+.ant-radio:hover .ant-radio-inner,
+.ant-radio-input:focus .ant-radio-inner {
+  border-color: #4436AC !important;
+  outline-color: #4436AC !important;
+}
+
+
+
 
 .ant-modal-content {
     border-radius: 20px;
 }
+
 .ant-form.login-form .ant-input,
 .ant-form.login-form .ant-input-password {
     border: none;
     border-radius: 0;
     border-bottom: 1px solid #E8E8E8;
+}
+
+.ant-form-item-label > label{
+    font-size: 18px;
+    font-family: 'Lota Grotesque', sans-serif;
 }
 .ant-form.login-form .ant-input-password .ant-input {
     border: none;

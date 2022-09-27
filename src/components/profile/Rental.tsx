@@ -3,6 +3,7 @@ import { IoIosSearch } from 'react-icons/io';
 import { RiEqualizerLine } from 'react-icons/ri';
 import { AiOutlineCloudDownload } from 'react-icons/ai';
 import SingleProduct from '../products/SingleProduct';
+import { tripodInLagos } from '../../data';
 
 const Rental = () => {
 
@@ -40,7 +41,7 @@ return (
             <h1 className="text-2xl text-primary">Today</h1>
             <div className="grid grid-cols-4">
                 {
-                    Array(8).fill('').map((_,idx) => <SingleProduct key={`today_${idx}`} />)
+                    tripodInLagos.map((product,idx) => <SingleProduct key={`today_${idx}`} data={product} />)
                 }
             </div>
         </div>

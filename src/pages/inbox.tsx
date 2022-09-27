@@ -1,22 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 import { RiDeleteBinFill } from 'react-icons/ri';
 import { Footer, NavBar } from '../components';
 import { Input } from 'antd';
 
-const noItem = (
-    <div className="py-10 flex justify-center items-center">
-        <Image 
-            src={'/images/favorite.png'}
-            alt="Profile Image"
-            width={297}
-            height={365}
-            />
-    </div>
-);
-
 const Message = () => {
+
+    const [message, setMessage] = useState(false);
+
+    const noItem = (
+        <>
+            <div className="mt-20">
+                <h1 className="text-primary text-[32px] font-semibold">Message</h1>
+            </div>
+            <div className="py-10 flex justify-center items-center">
+                <Image 
+                    src={'/images/no_message.png'}
+                    alt="Profile Image"
+                    width={571}
+                    height={365}
+                    />
+            </div>
+            <div className="flex justify-center mt-[60px]">
+                <button onClick={() => setMessage(!message)} className=" bg-secondary hover:bg-primary  h-[48px] w-[193px] text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
+                    Go Home
+                </button>
+            </div>
+        </>
+    );
 
 return (
     <div className="bg-[#F8FAFC]">
@@ -31,6 +43,7 @@ return (
                     back
                 </button>
             </div>
+            { message ? 
             <div className="mt-20 border-b bg-[#FDFCFC] rounded">
                 <div className="flex items-end border-b p-2">
                     <div className="w-2/5">
@@ -129,7 +142,7 @@ return (
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>: noItem}
         </main>
     </div>
 ) 

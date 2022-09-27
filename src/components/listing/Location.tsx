@@ -5,10 +5,14 @@ import { Checkbox, Radio, Space } from 'antd';
 
 const Location = ({setStep}:{setStep: React.Dispatch<React.SetStateAction<string>>}) => {
 
+    const findLocation = () => {
+        window.navigator.geolocation.getCurrentPosition(pos => console.log(pos));
+    };
+
 return (
     <div className="">
         <h3 className="">Enter Location</h3>
-        <div className="mt-5 cursor-pointer flex justify-start items-center w-full border px-7 py-4 rounded-[5px]">
+        <div onClick={findLocation} className="mt-5 cursor-pointer flex justify-start items-center w-full border px-7 py-4 rounded-[5px]">
             <div className="">
                 <BiCurrentLocation className='text-xl text-primary' />
             </div>
@@ -38,8 +42,9 @@ return (
             <h2 className="text-2xl font-lota">Terms &amp; Conditions</h2>
         </div>
         <div className="flex pt-2">
-            <Checkbox /> 
-            <h3 className="pl-2 font-lota">Accept Terms &amp; Conditions</h3>
+            <Checkbox className='checkbox-label'>
+                Accept Terms &amp; Conditions
+            </Checkbox>
         </div>
         <div className="mt-6 flex justify-end gap-5">
             <button onClick={() => setStep('info')} className='w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold'>

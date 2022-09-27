@@ -31,8 +31,9 @@ return (
             <h2 className="text-2xl font-lota">Insurance</h2>
         </div>
         <div className="flex pt-2">
-            <Checkbox /> 
-            <h3 className="pl-2 font-lota">Accept Insurance</h3>
+            <Checkbox className='checkbox-label'>
+                Accept Insurance
+            </Checkbox>
         </div>
         <div className="mt-6 flex justify-end gap-5">
             <button onClick={() => setStep('location')} className='w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold'>
