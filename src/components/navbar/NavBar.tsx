@@ -1,8 +1,9 @@
 import { Dropdown } from 'antd';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useState } from 'react';
 import { MdOutlineKeyboardArrowDown } from 'react-icons/md';
+import { Modal } from '..';
 
 
 const NavLinkItem = ({ label = '', href = "#", className = '', liClass = '' }) => (
@@ -39,8 +40,27 @@ const Menu = () => (
 )
 
 function NavBar() {
+
+    const [logout, setLogout] = useState();
+
     return (
         <nav className='w-full flex justify-between items-center py-5'>
+            <Modal >
+                <div className="flex justify-center items-center">
+                    <Image src="/images/bulb.png" alt="Bulb Icon" width={30} height={30} />
+                </div>
+                <h1 className="mt-5 text-center font-semibold text-4xl text-primary">Enter Your Phone Number</h1>
+                <p className="mt-[18px] text-2xl text-[#010918F7] text-center">
+                    In order to secure your new SHUUT account we will<br/> 
+                    need to verify your phone number.
+                </p>
+                <div className="w-full flex justify-center mt-5">
+                    
+                </div>
+                <div className="mt-5 flex justify-center">
+                    <button onClick={() => console.log('trigger!')} className="min-w-[275px] btn px-6 py-5 text-xl bg-secondary text-white">Send Verification Code</button>
+                </div>
+            </Modal>
             <div className="text-primary text-2xl font-semibold">
                 Shuut
             </div>

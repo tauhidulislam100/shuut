@@ -1,11 +1,35 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { IoIosSearch } from 'react-icons/io';
 import { RiEqualizerLine } from 'react-icons/ri';
 import { AiOutlineCloudDownload } from 'react-icons/ai';
 import SingleProduct from '../products/SingleProduct';
 import { tripodInLagos } from '../../data';
+import { Checkbox, Dropdown } from 'antd';
+import ActiveRental from './ActiveRental';
+
+const Menu = () => (
+    <ul className="shadow-md border rounded-[5px] text-primary text-[10px] font-lota bg-white w-[187px]">
+        <li className="p-2 border-b hover:text-secondary">
+            <Checkbox >
+                <span className="">Date</span>
+            </Checkbox>
+        </li>
+        <li className="p-2 border-b hover:text-secondary">
+            <Checkbox >
+                <span className="">Rented</span>
+            </Checkbox>
+        </li>
+        <li className="p-2 border-b hover:text-secondary">
+            <Checkbox >
+                <span className="">In Process</span>
+            </Checkbox>
+        </li>
+    </ul>
+);
 
 const Rental = () => {
+
+    const [filter, setFilter] = useState('rental');
 
 return (
     <>
@@ -21,13 +45,17 @@ return (
                     </span>
                 </div>
             </div>
-            <div className="space-x-2">
-                <button className="px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] border-[#D0CFD84D] rounded-md font-lota">New Request</button>
-                <button className="px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] border-[#D0CFD84D] rounded-md font-lota">Handover Today</button>
-                <button className="px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] border-[#D0CFD84D] rounded-md font-lota">Handover Tomorrow</button>
-                <button className="px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] border-[#D0CFD84D] rounded-md font-lota">List View</button>
-                <div className="text-3xl text-[#3E4958]">
-                    <RiEqualizerLine />
+            <div className="flex items-center gap-5">
+                <button onClick={() => setFilter('new')} className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${filter === 'new' ? 'border-secondary text-secondary' : 'border-[#D0CFD84D]' }`}>New Request</button>
+                <button onClick={() => setFilter('today')} className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${filter === 'today' ? 'border-secondary text-secondary' : 'border-[#D0CFD84D]'}`}>Handover Today</button>
+                <button onClick={() => setFilter('tomorrow')} className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${filter === 'tomorrow' ? 'border-secondary text-secondary' : 'border-[#D0CFD84D]'}`}>Handover Tomorrow</button>
+                <button onClick={() => setFilter('list')} className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${filter === 'list' ? 'border-secondary text-secondary' : 'border-[#D0CFD84D]'}`}>List View</button>
+                <div className="text-3xl text-[#3E4958] hover:text-secondary cursor-pointer">
+                    <Dropdown 
+                        overlay={<Menu />}
+                        trigger={['click']}>
+                        <RiEqualizerLine />
+                    </Dropdown>
                 </div>
             </div>
         </div>
@@ -37,14 +65,23 @@ return (
                 Download
             </button>
         </div>
-        <div className="">
-            <h1 className="text-2xl text-primary">Today</h1>
-            <div className="grid grid-cols-4">
-                {
-                    tripodInLagos.map((product,idx) => <SingleProduct key={`today_${idx}`} data={product} />)
-                }
-            </div>
-        </div>
+        {filter !== 'rental' ?
+            <div className="">
+                <h1 className="text-2xl text-primary">
+                    {
+                        filter === 'new' ? 'New Request':
+                        filter === 'today' ? 'Today':
+                        filter === 'tomorrow' ? 'Tomorrow': 'List View'
+                    }
+                </h1>
+                <div className="grid grid-cols-4">
+                    {
+                        tripodInLagos.map((product,idx) => <SingleProduct key={`today_${idx}`} data={product} />)
+                    }
+                </div>
+            </div>:
+            <ActiveRental />
+        }
     </>
 ) 
 

@@ -263,6 +263,7 @@
     color: #0A2429;
 }
 
+
 .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
     width: 40px;
     height: 40px;
@@ -288,6 +289,25 @@
     border-bottom: 1px solid #D0CFD8;
 }
 
+.active-state .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-header-text {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Lota Grotesque', sans-serif;
+}
+.active-state .faq-collapse .ant-collapse-item .ant-collapse-content-box {
+    font-size: 10px;
+}
+
+.active-state .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-arrow{
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+}
+
+.active-state .faq-collapse.ant-collapse-borderless>.ant-collapse-item,
+.faq-collapse.ant-collapse-borderless>.ant-collapse-item:last-child {
+    border-bottom: none;
+}
 .price-tabs .ant-tabs-tab-btn,
 .profile-tabs .ant-tabs-tab-btn {
     color: rgba(10, 36, 41, 0.5);
