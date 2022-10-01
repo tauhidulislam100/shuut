@@ -186,10 +186,12 @@ const Login = () => {
         </div>
       </div>
       <Footer />
-      <SocialIncompletSignup
-        query={incompleteQuery}
-        onCancel={() => setInCompleteQuery(undefined)}
-      />
+      {incompleteQuery ? (
+        <SocialIncompletSignup
+          query={incompleteQuery}
+          onCancel={() => setInCompleteQuery(undefined)}
+        />
+      ) : null}
     </div>
   );
 };

@@ -54,6 +54,14 @@ export const VERIFICATION_MUTATION = gql`
   }
 `;
 
+export const SEND_VERIFICATION_CODE_EMAIL = gql`
+  mutation ($email: String!) {
+    send: SendEmailVerificationCode(email: $email) {
+      status
+    }
+  }
+`;
+
 const Signup = () => {
   const { handleOAuth } = useAuth();
   const [signUpUser, { loading: signupLoading }] = useMutation(
@@ -63,6 +71,9 @@ const Signup = () => {
       onCompleted: (data) => onSignupComplete(data),
     }
   );
+  const [sendVerificationCode, {}] = useMutation(SEND_VERIFICATION_CODE_EMAIL, {
+    onError: (e) => onError(e),
+  });
 
   const [verifyEmail, { loading: verificationLoading }] = useMutation(
     VERIFICATION_MUTATION,
@@ -284,11 +295,14 @@ const Signup = () => {
         </div>
       </div>
       <Footer />
-      <SocialIncompletSignup
-        query={incompleteQuery}
-        onCancel={() => setInCompleteQuery(undefined)}
-      />
+      {incompleteQuery ? (
+        <SocialIncompletSignup
+          query={incompleteQuery}
+          onCancel={() => setInCompleteQuery(undefined)}
+        />
+      ) : null}
       <Verification
+        verifyOption="email"
         email={signupForm.email}
         onVerify={(otp) =>
           verifyEmail({ variables: { code: otp, verificationType: "email" } })
@@ -297,6 +311,9 @@ const Signup = () => {
         visible={visible}
         onCancel={() => setVisible(false)}
         loading={verificationLoading}
+        onSendVerificationCode={(email) =>
+          sendVerificationCode({ variables: { email } })
+        }
       />
     </div>
   );

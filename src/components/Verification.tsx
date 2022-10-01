@@ -31,6 +31,7 @@ const Verification = ({
   const [userEmail, setUserEmail] = useState<string>();
   const [otp, setOtp] = useState<string>("");
   const [visibleOTPForm, setVisibleOtpForm] = useState<boolean>();
+  const [resendTimer, setResendTimer] = useState(0);
 
   useEffect(() => {
     setVisibleOtpForm(showOTPForm);
@@ -41,6 +42,26 @@ const Verification = ({
       setUserEmail(email);
     }
   }, [email]);
+
+  const handleResendOtp = () => {
+    if (resendTimer > 0) return;
+    let time = 60;
+    const id = setInterval(() => {
+      time--;
+      setResendTimer(time);
+      if (time <= 0) {
+        clearInterval(id);
+      }
+    }, 1000);
+
+    if (verifyOption === "email") {
+      console.log("email resend ", email);
+      onSendVerificationCode?.(email);
+    } else {
+      console.log("phone resend ", phone);
+      onSendVerificationCode?.(phone);
+    }
+  };
 
   const PhoneNumberForm = (
     <>
@@ -156,6 +177,23 @@ const Verification = ({
         >
           Verify
         </Button>
+      </div>
+      <div className="pb-10 text-center text-[#898CA6] text-2xl font-semibold font-lota pt-4">
+        Didn&apos;t get OTP?{" "}
+        <button
+          disabled={resendTimer > 0}
+          className="text-secondary disabled:text-gray-400"
+          onClick={handleResendOtp}
+        >
+          {resendTimer > 0 ? (
+            <span className="text-secondary font-semibold">
+              {resendTimer}
+              <small>s</small>
+            </span>
+          ) : (
+            "Resend"
+          )}
+        </button>
       </div>
     </>
   );
