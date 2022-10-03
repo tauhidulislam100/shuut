@@ -7,7 +7,7 @@ import { BiMinus } from 'react-icons/bi';
 import { IoIosAdd, IoIosArrowDown, IoIosArrowUp, IoIosClose } from 'react-icons/io';
 import { FaTelegramPlane } from 'react-icons/fa';
 import { TbMail } from 'react-icons/tb';
-import { Modal, NavBar, RattingBar, SingleProduct } from '../../components';
+import { DatePicker, Modal, NavBar, RattingBar, SingleProduct } from '../../components';
 import { Niger } from '../../components/icons';
 import { tripodInLagos } from '../../data';
 
@@ -53,9 +53,23 @@ const ProductView = () => {
             <div className="container">
                 <NavBar />
             </div>
-            <Modal onCancel={()=> setAvailability(false)} visible={availability}>
-                <div className="">
-                    Calendar
+            <Modal 
+                onCancel={()=> setAvailability(false)} 
+                visible={availability}
+                width={750}
+                >
+                <div className="w-full flex justify-center items-center px-10 pt-10">
+                   <div className="shadow rounded-lg px-5">
+                        <DatePicker />
+                   </div>
+                </div>
+                <div className="mt-6 flex justify-end gap-5 py-2">
+                    <button onClick={()=> setAvailability(false)} className='w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold'>
+                        Cancel
+                    </button>
+                    <button className='w-[244px] font-sofia-pro bg-secondary hover:bg-primary rounded-md text-white h-12 items-center text-lg font-semibold'>
+                        Transaction Summary
+                    </button>
                 </div>
             </Modal>
             <section className='border-t border-[#D0CFD8] border-opacity-30 pt-5 mb-14'>

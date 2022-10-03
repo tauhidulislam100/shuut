@@ -247,7 +247,47 @@
     }
 }
 
+.rdp {
+    --rdp-cell-size: 40px;
+    --rdp-accent-color: #4436AC;
+    --rdp-background-color: #e7edff;
+    /* Switch to dark colors for dark themes */
+    --rdp-accent-color-dark: #3003e1;
+    --rdp-background-color-dark: #180270;
+    /* Outline border for focused elements */
+    --rdp-outline: 2px solid var(--rdp-accent-color);
+    /* Outline border for focused and selected elements */
+    --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75);
+  }
 
+.rdp-day_today:not(.rdp-day_outside) {
+    background-color: #4436AC;
+    color: #fff;
+  }
+
+.rdp-day:not(.rdp-day_today):hover{
+    background-color: #4436AC;
+    color: #fff;
+}
+
+.rdp-day_selected {
+    background: #4436AC;
+    color: #fff;
+}
+
+.rdp-caption .rdp-caption-label,
+.rdp-caption .rdp-nav{
+    font-size: 16px;
+    font-family: 'Open Sans';
+    font-weight: 700;
+}
+
+.rdp-head {
+    font-size: 16px;
+    font-family: 'Open Sans';
+    color: #8E8C9A;
+    font-weight: 600;
+}
 
 .faq-collapse .ant-collapse-item .ant-collapse-header {
     padding: 30px 0px;

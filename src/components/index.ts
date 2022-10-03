@@ -15,3 +15,4 @@ export { default as UploadId } from './verification/UploadId';
 export { default as IdForm } from './verification/IdFrom';
 export { default as TakePhoto } from './verification/TakePhoto';
 export { default as UploadPassport } from './verification/UploadPassport';
+export { default as DatePicker } from './DatePicker';

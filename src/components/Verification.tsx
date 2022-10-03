@@ -3,6 +3,7 @@ import PhoneInput from 'react-phone-input-2';
 import Image from 'next/image';
 import OtpInput from 'react-otp-input';
 import { Modal } from '.';
+import { useRouter } from 'next/router';
 
 
 const Verification = ({visible, onCancel}: {visible: boolean, onCancel: () => void}) => {
@@ -11,6 +12,8 @@ const Verification = ({visible, onCancel}: {visible: boolean, onCancel: () => vo
     const [phone, setPhone] = useState<string | undefined>();
     const [otp, setOtp] = useState<string | undefined>();
     const [token, setToken] = useState(false);
+
+    const router = useRouter();
 
     
 
@@ -68,7 +71,7 @@ const enterToken = (
                  />
         </div>
         <div className="mt-5 flex justify-center">
-            <button className="min-w-[275px] btn px-6 py-5 text-xl bg-secondary text-white">Send Verification Code</button>
+            <button onClick={() => router.push('/id-verify')} className="min-w-[275px] btn px-6 py-5 text-xl bg-secondary text-white">Send Verification Code</button>
         </div>
     </>
 )

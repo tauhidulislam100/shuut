@@ -669,6 +669,11 @@ date-fns@2.x:
   resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.2.tgz#0d4b3d0f3dff0f920820a070920f0d9662c51931"
   integrity sha512-0VNbwmWJDS/G3ySwFSJA3ayhbURMTJLtwM2DTxf9CWondCnh6DTNlO9JgRSq6ibf4eD0lfMJNBxUdEAHHix+bA==
 
+date-fns@^2.29.3:
+  version "2.29.3"
+  resolved "https://registry.yarnpkg.com/date-fns/-/date-fns-2.29.3.tgz#27402d2fc67eb442b511b70bbdf98e6411cd68a8"
+  integrity sha512-dDCnyH2WnnKusqvZZ6+jA1O51Ibt8ZMRNkDZdyAyK4YfbDwa/cEmuztzG5pk6hqlp9aSBPYcjOlktquahGwGeA==
+
 dayjs@1.x:
   version "1.11.5"
   resolved "https://registry.yarnpkg.com/dayjs/-/dayjs-1.11.5.tgz#00e8cc627f231f9499c19b38af49f56dc0ac5e93"
@@ -2243,6 +2248,11 @@ rc-virtual-list@^3.2.0, rc-virtual-list@^3.4.8:
     classnames "^2.2.6"
     rc-resize-observer "^1.0.0"
     rc-util "^5.15.0"
+
+react-day-picker@^8.3.0:
+  version "8.3.0"
+  resolved "https://registry.yarnpkg.com/react-day-picker/-/react-day-picker-8.3.0.tgz#c386a0e4b0d453b354560e76f0f00d79c67278d1"
+  integrity sha512-HH473754SU8VOEsM88d9ftv66zj5DGsBn+JepDzCrT7DsrUV5gtso8QaGkcTggRgOPGTn3V8ieC5WLKohnSXQQ==
 
 react-dom@18.2.0:
   version "18.2.0"

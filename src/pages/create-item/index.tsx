@@ -11,7 +11,8 @@ return (
         <div className="container">
             <NavBar />
         </div>
-        <main className="container">
+        <div className="border-b"></div>
+        <main className="container mt-5">
             <div className="">
                 <button className='text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center'>
                     <span className='mr-2 text-secondary'><BsArrowLeftCircle /></span>

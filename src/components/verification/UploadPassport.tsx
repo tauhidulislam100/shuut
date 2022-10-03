@@ -1,18 +1,21 @@
+import { Widget, WidgetAPI } from '@uploadcare/react-widget';
 import Image from 'next/image';
-import React from 'react';
+import React, { useRef } from 'react';
 import { BiCamera } from 'react-icons/bi';
 import { Modal } from '..';
 
-const CheckPhoto = () => {
+const CheckPhoto = ({handleNext}: {handleNext: () => void}) => {
+
+    const uploadRef = useRef<WidgetAPI>(null);
 
 return (
     <div className="mt-5 px-40">
-        <Modal visible={true}>
-            <div className="p-10 font-lota">
-                <h1 className="text-4xl">Thanks For Submitting Your Documents</h1>
+        {/* <Modal visible={true}>
+            <div className="p-10 font-lota text-center">
+                <h1 className="text-4xl text-secondary">Thanks For Submitting Your Documents</h1>
                 <p className="">Let&apos;s wrap up your rentals</p>
             </div>
-        </Modal>
+        </Modal> */}
         <h1 className="text-[32px] font-lota font-semibold text-primary">
             Passport
         </h1>
@@ -39,10 +42,17 @@ return (
             </div>
         </div>
         <div className="mt-12 flex justify-end gap-5">
-            <button onClick={() => console.log("Button!")} className='w-[193px] flex justify-center items-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 text-lg font-semibold'>
+            <span className="hidden">
+                <Widget
+                    ref={uploadRef}
+                    publicKey={`${process.env.NEXT_PUBLIC_UPLOAD_CARE_KEY}`}
+                    previewStep={true}
+                    />
+            </span>
+            <button onClick={() => uploadRef.current?.openDialog()} className='w-[193px] flex justify-center items-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 text-lg font-semibold'>
                 <span className="text-xl pr-2"><BiCamera /></span> Take Photo
             </button>
-            <button onClick={() => console.log("Button!")} className='min-w-[193px] px-8 font-sofia-pro bg-secondary/20 rounded-md text-secondary h-12 items-center text-lg font-semibold'>
+            <button onClick={handleNext} className='min-w-[193px] px-8 font-sofia-pro bg-secondary/20 rounded-md text-secondary h-12 items-center text-lg font-semibold'>
                 Use This Photo
             </button>
             <button onClick={() => console.log("Button!")} className='min-w-[193px] px-8 font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { IoIosSearch } from 'react-icons/io';
-import { NavBar, SingleProduct } from '../../../components';
+import { DatePicker, NavBar, SingleProduct } from '../../../components';
 import { tripodInLagos } from '../../../data';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 import { RiEqualizerLine } from 'react-icons/ri';
@@ -177,8 +177,10 @@ const ProductSearch = () => {
                             filter === 'date' && (
                                 <div className="mt-10">
                                     <h1 className="text-2xl">Date</h1>
-                                    <div className="">
-                                        
+                                    <div className="mt-5 flex justify-center items-center">
+                                        <div className="shadow rounded-lg">
+                                            <DatePicker />
+                                        </div>
                                     </div>
                                 </div>
                             )

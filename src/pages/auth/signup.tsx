@@ -9,7 +9,7 @@ import Link from 'next/link';
 
 const Login = () => {
 
-const [visible, setVisible] = useState<boolean>(true);
+const [visible, setVisible] = useState<boolean>(false);
 
 return (
     <div className="bg-white">
@@ -60,7 +60,7 @@ return (
                         <Checkbox>By signing up, I agree to SHUUT’s <span className="text-secondary">Terms of Service</span> and  <span className="text-secondary">Privacy Policy</span></Checkbox>
                     </Form.Item>
                     <div className="flex justify-center">
-                        <button className="min-w-[275px] btn px-6 py-5 text-xl bg-secondary text-white">Create My Account </button>
+                        <button onClick={() => setVisible(true)} className="min-w-[275px] btn px-6 py-5 text-xl bg-secondary text-white">Create My Account </button>
                     </div>
                     <p className="my-10"> Already have an account? <Link href="/login"><a className="text-secondary">Log In</a></Link></p>
                 </Form>

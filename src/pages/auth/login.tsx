@@ -54,7 +54,7 @@ return (
                         <button className="btn w-[275px] px-6 py-5 text-xl bg-secondary text-white"> Log In </button>
                     </div>
                     <p className="my-10">
-                        Don&apos;t have an account? <Link href={'/signup'}><a className="text-secondary">Sign Up</a></Link>
+                        Don&apos;t have an account? <Link href={'/auth/signup'}><a className="text-secondary">Sign Up</a></Link>
                     </p>
                 </Form>
             </div>

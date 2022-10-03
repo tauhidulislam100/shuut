@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import React from 'react';
 
-const TakePhoto = () => {
+const TakePhoto = ({handleNext}: {handleNext: () => void}) => {
 
 return (
     <div className="mt-5 px-40">
@@ -31,7 +31,7 @@ return (
             </div>
         </div>
         <div className="mt-12 flex justify-end gap-5">
-            <button onClick={() => console.log("Button!")} className='w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold'>
+            <button onClick={handleNext} className='w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold'>
                 Get Started
             </button>
             <button onClick={() => console.log("Button!")} className='min-w-[193px] px-8 font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>

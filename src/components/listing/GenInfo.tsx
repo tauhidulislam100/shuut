@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
-import { Footer, NavBar } from '../../components';
+import { Footer, NavBar, DatePicker } from '../../components';
 import { BsArrowLeftCircle } from 'react-icons/bs';
 import { BiCurrentLocation } from 'react-icons/bi';
 import type { RcFile, UploadFile, UploadProps } from 'antd/es/upload/interface';
-import { Checkbox, Col, DatePicker, Form, Input, Radio, Row, Space, Upload } from 'antd';
+import { Checkbox, Col, Form, Input, Radio, Row, Space, Upload } from 'antd';
 import ImgCrop from 'antd-img-crop';
 import { Widget, WidgetAPI } from '@uploadcare/react-widget';
 import { FaCloudUploadAlt } from 'react-icons/fa';
@@ -74,10 +74,10 @@ return (
                         <FaCloudUploadAlt className="text-3xl" />
                         <span className='hidden'>
                             <Widget
-                        ref={widgetRef2}
-                        publicKey={`${process.env.NEXT_PUBLIC_UPLOAD_CARE_KEY}`}
-                        previewStep={true}
-                        />
+                                ref={widgetRef2}
+                                publicKey={`${process.env.NEXT_PUBLIC_UPLOAD_CARE_KEY}`}
+                                previewStep={true}
+                                />
                         </span>
                     </div>
                     <div onClick={() => widgetRef3?.current?.openDialog()} className="border rounded-lg p-10 cursor-pointer flex justify-center items-center text-primary">
@@ -101,6 +101,9 @@ return (
                         </span>
                     </div>
                 </div>
+                <p className="w-full text-right text-[#98989E] text-lg my-5">
+                    Click to reorder, crop or add photos
+                </p>
             </Form.Item>
             <Form.Item label="Listing Title">
                 <Input placeholder='Enter' />
@@ -154,7 +157,9 @@ return (
                 </Col>
             </Row>
             <h3 className="font-lota text-lg mt-12">Availability Exceptions</h3>
-            {/* <DatePicker defaultOpen={true} autoFocus className='hidden' /> */}
+            <div className="w-full flex justify-center items-center">
+                <DatePicker />
+            </div>
             <Form.Item>
                 <Checkbox name='availability' className='checkbox-label'>
                     Always Available
