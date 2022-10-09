@@ -79,7 +79,7 @@ return (
                     !token ?
                     <Form
                     size='large'
-                    className='login-form w-[65%] mx-auto'>
+                    className='login-form sm:w-[65%] mx-auto'>
                         <Form.Item name="email">
                             <Input placeholder='Email' className='' />
                         </Form.Item>
@@ -89,7 +89,7 @@ return (
                     </Form>:
                     <Form
                     size='large'
-                    className='login-form w-[65%] mx-auto'>
+                    className='login-form sm:w-[65%] mx-auto'>
                         <Form.Item name="password">
                             <Input.Password placeholder='New Password' className='' />
                         </Form.Item>

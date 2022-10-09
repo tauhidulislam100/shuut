@@ -19,7 +19,7 @@ return (
                     back
                 </button>
             </div>
-            <div className="px-[10%]">
+            <div className="md:px-[10%]">
                 <h1 className="mt-[74px] text-[32px] font-lota font-semibold text-primary">New Listings</h1>
                 {
                     step === 'info' ? <GeneralInfo setStep={setStep} /> :

@@ -29,7 +29,7 @@ return (
                     {/* Items */}
                     <div className="border rounded-[5px] mt-10 bg-[#F8FAFC]">
                         {/* Item */}
-                        <div className="p-5 border-b flex justify-between">
+                        <div className="p-5 border-b flex justify-between text-lg sm:text-xl md:text-2xl">
                             <div className="flex">
                                 <div className="relative rounded-sm">
                                     <div className="">
@@ -43,8 +43,8 @@ return (
                                     <div className="absolute top-0 flex justify-center items-center right-0 w-5 h-5 rounded-full p-2 text-xs text-primary shadow">1</div>
                                 </div>
                                 <div className="pl-7 font-lota">
-                                    <h4 className="text-2xl text-primary-100 pt-3">Canon</h4>
-                                    <p className="text-2xl text-[#677489] mt-3">Color: <span className="text-primary-100">Black</span></p>
+                                    <h4 className="text-primary-100 pt-3">Canon</h4>
+                                    <p className="text-[#677489] mt-3">Color: <span className="text-primary-100">Black</span></p>
                                 </div>
                             </div>
                             <div className="">
@@ -65,8 +65,8 @@ return (
                                     <div className="absolute top-0 flex justify-center items-center right-0 w-5 h-5 rounded-full p-2 text-xs text-primary shadow">1</div>
                                 </div>
                                 <div className="pl-7 font-lota">
-                                    <h4 className="text-2xl text-primary-100 pt-3">Canon</h4>
-                                    <p className="text-2xl text-[#677489] mt-3">Color: <span className="text-primary-100">Black</span></p>
+                                    <h4 className=" text-primary-100 pt-3">Canon</h4>
+                                    <p className=" text-[#677489] mt-3">Color: <span className="text-primary-100">Black</span></p>
                                 </div>
                             </div>
                             <div className="">
@@ -74,7 +74,7 @@ return (
                             </div>
                         </div>
                     </div>
-                    <div className="flex justify-between items-center py-7 border-b text-2xl font-lota">
+                    <div className="sm:flex justify-between items-center py-7 border-b text-2xl font-lota">
                         <div className="">
                             <h4 className="">
                                 <span className="text-[#677489]">Owner </span>

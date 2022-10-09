@@ -59,7 +59,7 @@ return (
                         {fileList.length < 5 && '+ Upload'}
                     </Upload>
                 </ImgCrop> */}
-                <div className="grid grid-cols-4 gap-10">
+                <div className="space-y-5 sm:space-y-0 sm:grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10">
                     <div onClick={() => widgetRef?.current?.openDialog()} className="border rounded-lg p-10 cursor-pointer flex justify-center items-center text-primary">
                         <FaCloudUploadAlt className="text-3xl" />
                         <span className='hidden'>
@@ -115,12 +115,12 @@ return (
                 <Input.TextArea placeholder='Enter' className='min-h-24 h-24' />
             </Form.Item>
             <Row gutter={65}>
-                <Col span={12}>
+                <Col span={24} md={12}>
                     <Form.Item label="Location">
                         <Input placeholder='Enter' />
                     </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col span={24} md={12}>
                     <Form.Item label="Item Value">
                         <Input placeholder='Enter' />
                     </Form.Item>
@@ -128,29 +128,29 @@ return (
             </Row>
             <h2 className="font-lota text-2xl font-semibold text-primary mt-12 mb-8">Rent Price Per:</h2>
             <Row gutter={65}>
-                <Col span={8}>
+                <Col span={24} md={12}>
                     <Form.Item label="Day">
                         <Input placeholder='Enter' />
                     </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={24} md={12}>
                     <Form.Item label="Weeks">
                         <Input placeholder='Enter' />
                     </Form.Item>
                 </Col>
-                <Col span={8}>
+                <Col span={24} md={12}>
                     <Form.Item label="Months">
                         <Input placeholder='Enter' />
                     </Form.Item>
                 </Col>
             </Row>
             <Row gutter={65}>
-                <Col span={12}>
+                <Col span={24} md={12}>
                     <Form.Item label="Quantity">
                         <Input placeholder='Enter' />
                     </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col span={24} md={12}>
                     <Form.Item label="Minimum Rental Days">
                         <Input placeholder='Enter' />
                     </Form.Item>

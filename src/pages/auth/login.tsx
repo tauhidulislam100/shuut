@@ -25,12 +25,12 @@ return (
             </div>
             <div className="mt-28">
                 <h1 className="font-lota text-center font-semibold text-[26px] text-[#525252]">Welcome to SHUUT</h1>
-                <div className="flex justify-center items-center gap-5 mt-12">
+                <div className="flex flex-col md:flex-row justify-center items-center gap-5 mt-12">
                     <button className='min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg'>
                         <FcGoogle className='mr-2 text-3xl' /> Continue with Google
                     </button>
                     <button className='min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg'>
-                        <FaApple className='mr-2 text-black text-3xl' /> Continue with Facebook
+                        <FaApple className='mr-2 text-black text-3xl' /> Continue with Apple
                     </button>
                     <button className='min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg'>
                         <FaFacebook className='mr-2 text-[#3b5998] text-3xl' /> Continue with Facebook
@@ -39,7 +39,7 @@ return (
                 <div className="px-2 text-center mt-10 mb-20 uppercase text-[#525252]">-or-</div>
                 <Form
                     size='large'
-                    className='login-form w-[65%] mx-auto'>
+                    className='login-form sm:w-[65%] mx-auto'>
                     <Form.Item name="email">
                         <Input placeholder='Email' className='' />
                     </Form.Item>

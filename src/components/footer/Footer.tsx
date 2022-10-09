@@ -3,10 +3,11 @@ import { BsMessenger, BsTwitter } from 'react-icons/bs';
 import { TiInfinity, TiSocialLinkedin } from 'react-icons/ti';
 
 const Footer = () => {
+
     return (
         <footer>
             <div className="container py-20">
-                <div className="grid grid-cols-6 gap-4">
+                <div className="space-y-10 sm:space-y-0 sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-4">
                     <div className="col-span-2">
                         <h3 className='text-[21px] text-body-200 font-black mb-[18px]'>
                             SHUUT
@@ -64,8 +65,8 @@ const Footer = () => {
                 </div>
             </div>
             <div className="container">
-                <div className='border-t border-[#C6CACC] border-opacity-20 py-4 mx-20'>
-                    <p className="text-center text-primary-100 text-base font-[450]">
+                <div className='border-t border-[#C6CACC] border-opacity-20 py-4 md:mx-20'>
+                    <p className="text-center text-primary-100 text-sm sm:text-base font-[450]">
                         Copyright @SHUUT 2022. All Rights Reserved.
                     </p>
                 </div>

@@ -78,8 +78,8 @@ const ProductView = () => {
                         <span className='mr-2 text-secondary'><BsArrowLeftCircle /></span>
                         back
                     </button>
-                    <div className="grid grid-cols-3 gap-8 mt-14">
-                        <div className="col-span-2 flex gap-x-8 h-[660px] py-6 relative">
+                    <div className="md:grid grid-cols-3 gap-8 mt-14">
+                        <div className="col-span-2 md:flex gap-x-8 h-[660px] py-6 relative">
                             <button onClick={goUp} className='absolute top-0 left-[14%] z-10 text-primary text-opacity-40 text-xl'>
                                 <IoIosArrowUp />
                             </button>
@@ -223,13 +223,13 @@ const ProductView = () => {
                         </div>
                     </div>
 
-                    <div className="mt-8 grid grid-cols-3 gap-8">
+                    <div className="mt-8 md:grid grid-cols-3 gap-8">
                         <div className="col-span-2 rounded-md overflow-hidden">
                             <h4 className='text-xl font-medium font-sofia-pro text-primary-100 mb-4'>Map Location</h4>
                             <img src="/images/map-1.png" className='w-full h-[293px] object-cover rounded-md' />
                         </div>
                         <div className="col-span-1">
-                            <div className="flex items-center justify-between mb-4">
+                            <div className="mt-5 md:mt-0 flex items-center justify-between mb-4">
                                 <h4 className='text-xl font-medium font-sofia-pro text-primary-100'>Reviews</h4>
                                 <a href="#" className='text-sm text-[#286EE6] font-normal font-sofia-pro'>See All</a>
                             </div>
@@ -268,7 +268,7 @@ const ProductView = () => {
             <section className='mb-14'>
                 <div className="container">
                     <h4 className='text-xl font-medium font-sofia-pro text-primary-100 mb-4'>Other Listing From Owner</h4>
-                    <div className="grid grid-cols-5 gap-5">
+                    <div className="space-y-5 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-5 gap-5">
                         {
                             tripodInLagos.slice(0,5).map((pd, idx) => <SingleProduct key={`product_index_${idx}`} data={pd} />)
                         }
@@ -278,7 +278,7 @@ const ProductView = () => {
             <section className='pb-14'>
                 <div className="container">
                     <h4 className='text-xl font-medium font-sofia-pro text-primary-100 mb-4'>Other Listing From Camera</h4>
-                    <div className="grid grid-cols-5 gap-5">
+                    <div className="space-y-5 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-5 gap-5">
                         {
                             tripodInLagos.slice(0,5).map((pd, idx) => <SingleProduct key={`product_index_${idx}`} data={pd} />)
                         }

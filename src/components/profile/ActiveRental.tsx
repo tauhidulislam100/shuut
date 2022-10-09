@@ -12,7 +12,7 @@ const ActiveRental = () => {
         <div className="font-lota">
             <h1 className="text-[32px] text-primary">Rentals</h1>
             <div className="mt-5">
-                <div className="flex gap-10">
+                <div className="space-y-10 md:space-y-0 md:flex gap-10">
                     {/* Right */}
                     <div className="flex-1 bg-[#F8F8F8] rounded-[5px] overflow-hidden border">
                         <div className="border-b p-5">

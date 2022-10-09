@@ -27,7 +27,7 @@ const Review = () => {
 return (
     <div className="mt-[60px]">
         <h1 className="font-lota text-2xl font-semibold">Review</h1>
-        <div className="mt-[60px] w-full flex justify-between items-center gap-10">
+        <div className="mt-[60px] w-full md:flex justify-between items-center gap-10">
             <div className="w-[270px] h-[240px] border border-[#E7E7EC] shadow-md flex justify-center items-center">
                 <div className="">
                     <h1 className="font-jost font-medium text-[60px]">4.93</h1>
@@ -35,7 +35,7 @@ return (
                     <Rate defaultValue={5} disabled/>
                 </div>
             </div>
-            <div className="w-2/5">
+            <div className="md:w-2/5 mt-10">
                 {
                     Array(4).fill('').map((_,idx) => <ReviewDetails key={idx} />)
                 }

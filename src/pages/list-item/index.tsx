@@ -15,7 +15,7 @@ const ListItem:NextPage = () => {
                         <span className='mr-2 text-secondary'><BsArrowLeftCircle /></span>
                         back
                     </button>
-                    <div className="py-20 px-24 flex">
+                    <div className="py-20 md:px-24 md:flex">
                         <div className="w-[450px]">
                             <h1 className="text-[50px] font-semibold text-primary leading-[60px]">
                                 Start Earning On 
@@ -29,9 +29,14 @@ const ListItem:NextPage = () => {
                                 List An Item
                             </button>
                         </div>
-                        <div className="relative flex-1">
-                            <div className="absolute -z-10 -bottom-20 -right-34 w-[724px] h-[454px]">
-                                <Image src="/images/list-item/money.png" layout="fill" alt="Cover" />
+                        <div>
+                            <div className="relative h-full">
+                                <Image 
+                                    src="/images/list-item/money.png" 
+                                    width={724} 
+                                    height={454}
+                                    className="object-fit translate-y-10" 
+                                    alt="Cover" />
                             </div>
                         </div>
                     </div>
@@ -62,9 +67,9 @@ const ListItem:NextPage = () => {
             </div>
             <div className="bg-[#F8F8F8]">
                 <div className="container py-[70px]">
-                    <div className="pl-24">
+                    <div className="md:pl-24">
                         <h1 className="text-[32px] font-semibold text-primary">Getting Started</h1>
-                        <div className="pl-4 grid grid-cols-4 gap-5 mt-[30px]">
+                        <div className="md:pl-4 space-y-5 sm:space-y-0 sm:grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mt-[30px]">
                             {
                                 listItemGetstarted.map((itm, idx) => (
                                     <div key={`get_${idx}`} className="p-6 bg-white rounded">
@@ -86,9 +91,9 @@ const ListItem:NextPage = () => {
             </div>
             <div className="bg-[#F8F8F8]">
                 <div className="container py-[70px]">
-                    <div className="pl-24">
+                    <div className="md:pl-24">
                         <h1 className="text-[32px] font-semibold text-primary">Categories</h1>
-                        <div className="grid grid-cols-4 gap-5 mt-[30px]">
+                        <div className="sm:grid grid-cols-4 gap-5 mt-[30px]">
                             {
                                 listItemCat.map((cat, idx) => (
                                     <div key={`cat_${idx}`} className="bg-white rounded-md">
@@ -109,7 +114,7 @@ const ListItem:NextPage = () => {
                 <div className="container py-[70px] text-white text-center">
                     <h1 className="text-[32px] font-semibold text-inherit">How Renting Works</h1>
                     <p className="mt-[30px] text-2xl">4 Easy steps to get going with rent on SHUUT.</p>
-                    <div className="grid grid-cols-4 mt-[30px]">
+                    <div className="md:grid grid-cols-4 mt-[30px]">
                         {
                             listItemRenting.map((step, idx) => (  
                                 <div key={`step_${idx}`}  className="">

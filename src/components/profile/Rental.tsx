@@ -33,9 +33,9 @@ const Rental = () => {
 
 return (
     <>
-        <div className="mt-[60px] w-full flex justify-between">
+        <div className="mt-[60px] w-full md:flex justify-between">
             <div className="">
-                <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
+                <div className="flex items-center md:w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
                     <input placeholder='Search...' className='min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light bg-transparent' />
                     <button className='px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg'>
                         Find Gear
@@ -45,7 +45,7 @@ return (
                     </span>
                 </div>
             </div>
-            <div className="flex items-center gap-5">
+            <div className="mt-5 md:mt-0 flex items-center gap-5">
                 <button onClick={() => setFilter('new')} className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${filter === 'new' ? 'border-secondary text-secondary' : 'border-[#D0CFD84D]' }`}>New Request</button>
                 <button onClick={() => setFilter('today')} className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${filter === 'today' ? 'border-secondary text-secondary' : 'border-[#D0CFD84D]'}`}>Handover Today</button>
                 <button onClick={() => setFilter('tomorrow')} className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${filter === 'tomorrow' ? 'border-secondary text-secondary' : 'border-[#D0CFD84D]'}`}>Handover Tomorrow</button>
@@ -74,7 +74,7 @@ return (
                         filter === 'tomorrow' ? 'Tomorrow': 'List View'
                     }
                 </h1>
-                <div className="grid grid-cols-4">
+                <div className="space-y-5 sm:space-y-0 sm:grid grid-cols-3 md:grid-cols-4">
                     {
                         tripodInLagos.map((product,idx) => <SingleProduct key={`today_${idx}`} data={product} />)
                     }

@@ -43,7 +43,7 @@ const Favorite = () => {
             {
                 !favorite ?
                 noItem:
-                <div className="grid grid-cols-5">
+                <div className="sm:grid grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                     {
                         tripodInLagos.slice(0,10).map((itm, idx) => <SingleProduct key={`favorite_${idx}`} data={itm} />)
                     }

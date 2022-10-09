@@ -9,7 +9,7 @@ const CheckPhoto = ({handleNext}: {handleNext: () => void}) => {
     const uploadRef = useRef<WidgetAPI>(null);
 
 return (
-    <div className="mt-5 px-40">
+    <div className="mt-5 md:px-40">
         {/* <Modal visible={true}>
             <div className="p-10 font-lota text-center">
                 <h1 className="text-4xl text-secondary">Thanks For Submitting Your Documents</h1>
@@ -41,7 +41,7 @@ return (
                 </div>
             </div>
         </div>
-        <div className="mt-12 flex justify-end gap-5">
+        <div className="mt-12 flex flex-col md:flex-row justify-end gap-5">
             <span className="hidden">
                 <Widget
                     ref={uploadRef}
@@ -49,7 +49,7 @@ return (
                     previewStep={true}
                     />
             </span>
-            <button onClick={() => uploadRef.current?.openDialog()} className='w-[193px] flex justify-center items-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 text-lg font-semibold'>
+            <button onClick={() => uploadRef.current?.openDialog()} className='min-w-[193px] flex justify-center items-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 text-lg font-semibold'>
                 <span className="text-xl pr-2"><BiCamera /></span> Take Photo
             </button>
             <button onClick={handleNext} className='min-w-[193px] px-8 font-sofia-pro bg-secondary/20 rounded-md text-secondary h-12 items-center text-lg font-semibold'>

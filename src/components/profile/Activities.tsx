@@ -8,7 +8,7 @@ const Activities = () => {
     const { RangePicker } = DatePicker;
 return (
     <div className="mt-[60px]">
-        <div className="flex justify-between items-center">
+        <div className="flex justify-between items-center gap-10">
             <h1 className="font-lota text-2xl font-semibold text-primary">Activities</h1>
             <RangePicker suffixIcon={undefined} separator={'-'} />
         </div>

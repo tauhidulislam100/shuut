@@ -5,6 +5,7 @@ import { BsArrowLeft, BsArrowRight, BsPlus, BsX } from 'react-icons/bs';
 import { Footer, NavBar, RattingBar } from '../components';
 import { useRef } from 'react';
 import { CarouselRef } from 'antd/lib/carousel';
+import Image from 'next/image';
 
 
 // convert this array into a list of objects key will be image and title 
@@ -102,15 +103,14 @@ const Home: NextPage = () => {
 
   return (
     <>
+      <NavBar />
       <div className='container'>
-        <NavBar />
-
-        <section className="grid grid-cols-2 gap-10 pt-20">
+        <section className="flex flex-col-reverse lg:flex-row gap-5 md:gap-10 pt-20">
           <div>
-            <h2 className='text-[50px] leading-[60px] font-semibold text-primary max-w-[509px]'>
+            <h2 className='text-4xl leading-[40px] md:text-[50px] md:leading-[60px] font-semibold text-primary lg:max-w-[509px]'>
               Rentals, For Camera Gears
             </h2>
-            <p className='text-2xl text-body font-normal text-opacity-80 mt-7 mb-8 max-w-[469px]'>
+            <p className='text-lg md:text-2xl text-body font-normal text-opacity-80 mt-7 mb-8 max-w-[469px]'>
               The easiest way to rent camera gear, rent from local trusted creatives in your community.
             </p>
 
@@ -131,15 +131,18 @@ const Home: NextPage = () => {
               <img src='/images/logos/axamansard.png' className='max-w-full object-cover w-[118px] h-[21px]' />
             </div>
           </div>
-
-          <div>
-            <img src='/images/camera-big-with-bg.png' className='object-cover max-w-full' />
+          <div className='w-full h-full lg:ml-10'>
+            <Image 
+              src='/images/camera-big-with-bg.png' 
+              alt='Home bg image' 
+              className='object-cover max-w-full'
+              width={822}
+              height={590} />
           </div>
         </section>
-
         <section className='py-16'>
           <h3 className='text-[32px] text-secondary font-semibold tracking-tighter mb-8'>SHUUT Offers</h3>
-          <div className="pl-8 grid grid-cols-3 gap-4">
+          <div className="sm:pl-8 space-y-5 sm:space-y-0 sm:grid sm:grid-cols-2 grid-cols-3 gap-4">
             <div className="border border-[#DFDFDF] rounded-[10px] p-7">
               <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Access To More</h3>
               <p className='text-base font-normal text-primary-100'>
@@ -168,7 +171,7 @@ const Home: NextPage = () => {
             Explore Gears
           </h3>
 
-          <div className="grid grid-cols-4 gap-4 mt-12 pl-4 gap-y-8 pb-16">
+          <div className="space-y-8 sm:space-y-0 sm:grid sm:grid-cols-2 grid-cols-4 gap-4 mt-12 md:pl-4 gap-y-8 pb-16">
             {gears.map(gear => (
               <div className="bg-white rounded-[5px] p-4" key={gear.name}>
                 <img src={`/images/gears/${gear.image}`} className='object-cover hover:scale-105 w-full rounded-[5px] h-[219px] transition-all' />
@@ -177,8 +180,14 @@ const Home: NextPage = () => {
             ))}
           </div>
 
-          <div className='pt-16 pl-4 grid grid-cols-2 2xl:gap-x-40 items-center'>
-            <img src='/images/mockup.png' className='object-cover max-w-full h-[537px]' />
+          <div className='pt-16 pl-4 md:grid grid-cols-2 2xl:gap-x-40 items-center'>
+            <div className="relative w-full h-[537px]">
+              <Image 
+                src='/images/mockup.png' 
+                className='object-contain lg:object-cover left-0 max-w-full'
+                alt='Mobile App'
+                layout='fill' />
+            </div>
             <div>
               <h2 className='text-[32px] font-semibold text-primary-200'>Stay Updated On Our Mobile App</h2>
               <p className='text-body max-w-[498px] text-lg mt-4 mb-7'>
@@ -194,11 +203,11 @@ const Home: NextPage = () => {
       </section>
       <section className="py-10">
         <div className="container">
-          <div className="flex items-start">
-            <h3 className='text-[32px] text-secondary font-semibold tracking-tighter w-[20%]'>
+          <div className="md:flex items-start">
+            <h3 className='text-[32px] text-secondary font-semibold tracking-tighter md:w-[20%]'>
               FAQ
             </h3>
-            <div className='w-[80%]'>
+            <div className='md:w-[80%]'>
               <Collapse className='w-full bg-white faq-collapse' bordered={false} expandIconPosition='end' expandIcon={(p) =>
                 p.isActive ? <span><BsX /></span> : <span><BsPlus /></span>
               }>
@@ -243,7 +252,7 @@ const Home: NextPage = () => {
           </div>
         </div>
         <div className="2xl:ml-[204px] xl:ml-[100px]">
-          <Carousel className='home-carousel min-h-[267px]' ref={carosuselRef} slidesToShow={3.5} infinite={false} arrows={false} dots={false} centerMode={false}>
+          <Carousel className='home-carousel min-h-[267px]' ref={carosuselRef} slidesToShow={1.2} infinite={false} arrows={false} dots={false} centerMode={false}>
             {slideItems.map((slideItem, i) => (
               <div className='border border-[#E7EAEC] p-5 rounded-[5px] min-h-full' key={i}>
                 <div className="flex items-start justify-between">

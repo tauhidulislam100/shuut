@@ -45,7 +45,7 @@ return (
             </div>
             { message ? 
             <div className="mt-20 border-b bg-[#FDFCFC] rounded">
-                <div className="flex items-end border-b p-2">
+                <div className="sm:flex items-end border-b p-2">
                     <div className="w-2/5">
                         <button className="btn border w-40 text-center py-2 cursor-pointer">
                             New Message
@@ -60,21 +60,22 @@ return (
                     </div>
                 </div>
                 <div className="flex">
-                    <div className="w-2/5 min-h-screen p-5">
-                        <div className="flex">
+                    <div className="sm:w-2/5 min-h-screen p-2 sm:p-5">
+                        <div className="flex min-w-[50px] w-[50px]">
                             <div className="">
                                 <Image 
                                     src="/images/profile.png" 
                                     alt="Profile Pic"
                                     width={50}
-                                    height={50} />
+                                    height={50} 
+                                    className="object-cover" />
                             </div>
-                            <div className="flex-1 pl-4">
+                            <div className="hidden sm:block flex-1 pl-4">
                                 <div className="flex justify-between">
                                     <h1 className="font-bold font-sofia-pro">Nelson Mandela</h1>
-                                    <p className="text-xs font-sofia-pro text-[#0A242980]">January, 2022</p>
+                                    <p className="hidden sm:block text-xs font-sofia-pro text-[#0A242980]">January, 2022</p>
                                 </div>
-                                <p className="text-sm font-sofia-pro">Yes, I have the Canon MXTY...</p>
+                                <p className="hidden sm:block text-sm font-sofia-pro">Yes, I have the Canon MXTY...</p>
                             </div>
                         </div>
                     </div>
@@ -85,14 +86,15 @@ return (
                             <h4 className="mb-5 text-xs font-sofia-pro text-[#0A242980] text-center">January, 2022</h4>
                             {/* Left Item */}
                             <div className="w-full">
-                                <div className="w-4/5 flex">
+                                <div className="sm:w-4/5 flex">
                                     <div className="w-20 pt-3">
                                         <Image 
                                             src={'/images/profile.png'}
                                             alt="Profile Pic"
                                             width={50}
                                             height={50}
-                                            objectFit="cover" />
+                                            objectFit="cover"
+                                             />
                                     </div>
                                     <div className="ml-4">
                                         <div className="border rounded-md bg-white">
@@ -109,8 +111,8 @@ return (
                                 </div>
                             </div>
                             {/* Right Item */}
-                            <div className="w-full flex justify-end mt-6">
-                                <div className="w-4/5 flex flex-row-reverse">
+                            <div className="flex justify-end mt-6">
+                                <div className="sm:w-4/5 flex flex-row-reverse">
                                     <div className="w-20 pt-3">
                                         <Image 
                                             src={'/images/profile.png'}
@@ -135,8 +137,8 @@ return (
                             </div>
                         </div>
                         <div className="border-t bg-white flex justify-end pb-5 pr-5">
-                            <div className="w-4/5 flex items-end gap-5 mt-9">
-                                <input type="text" placeholder='Write a message...' className="w-full align-top border px-5 font-sofia-pro border-secondary rounded-md h-20" />
+                            <div className="sm:w-4/5 pl-2 sm:pl-0 flex items-end gap-5 mt-9">
+                                <input type="text" placeholder='Write a message...' className="w-full align-top border px-2 sm:px-5 font-sofia-pro border-secondary rounded-md h-12 sm:h-20" />
                                 <button className="font-sofia-pro font-medium px-6 rounded-md text-white py-2 bg-secondary text-[10px]">Send</button>
                             </div>
                         </div>

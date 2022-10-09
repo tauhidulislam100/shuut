@@ -111,8 +111,8 @@ const ProductSearch = () => {
                     <div className="">
                         {
                             filter === '' && (
-                                <div className="grid grid-cols-3 gap-7 mt-10">
-                                    <div className="col-span-2 grid grid-cols-3 gap-5">
+                                <div className="space-y-5 md:grid grid-cols-3 gap-7 mt-10">
+                                    <div className="col-span-2 sm:grid grid-cols-2 md:grid-cols-3 gap-5">
                                         {
                                             tripodInLagos.slice(9).map(product => <SingleProduct key={product.title} data={product} />)
                                         }

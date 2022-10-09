@@ -15,8 +15,11 @@ const Category = () => {
     <>
         <div className="container">
             <NavBar />
-            <section className="grid grid-cols-2 gap-10 pt-20">
+            <section className="md:flex flex-row-reverse justify-between gap-10 pt-20">
                 <div>
+                    <img src='/images/tripod.png' alt='Tripod' className='object-cover max-w-full' />
+                </div>
+                <div className='mt-10'>
                     <h2 className='text-[50px] leading-[60px] font-semibold text-primary max-w-[509px]'>
                         Rentals, For Camera Gears
                     </h2>
@@ -40,15 +43,12 @@ const Category = () => {
                         <img src='/images/logos/wapic.png' className='max-w-full object-cover w-[94px] h-[29px]' />
                     </div>
                 </div>
-                <div>
-                    <img src='/images/tripod.png' className='object-cover max-w-full' />
-                </div>
             </section>
         </div>
         <section className="bg-[#F8F8F8]">
             <div className="container py-16">
                 <h1 className="text-[32px] text-secondary font-semibold font-lota">Tripods In Lagos</h1>
-                <div className="mt-8 pl-2 grid md:grid-cols-5 gap-5">
+                <div className="mt-8 pl-2 space-y-10 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-5 gap-5">
                     {
                         tripodInLagos.map((product,idx) => <SingleProduct key={`lagos_${idx}`} data={product} />)
                     }
@@ -67,7 +67,7 @@ const Category = () => {
             <div className="container py-[70px]">
                     <div className='py-16'>
                         <h3 className='text-[32px] text-secondary font-semibold tracking-tighter mb-8'>SHUUT Offers</h3>
-                        <div className="pl-8 grid grid-cols-3 gap-4">
+                        <div className="pl-8 space-y-8 md:space-y-0 md:grid grid-cols-3 gap-4">
                             <div className="border border-[#DFDFDF] rounded-[10px] p-7">
                             <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Access To More</h3>
                             <p className='text-base font-normal text-primary-100'>
@@ -109,7 +109,7 @@ const Category = () => {
             <div className="container py-[70px] text-white">
                 <h2 className="text-lg font-medium text-inherit">Try SHUUT</h2>
                 <h1 className="mt-2.5 text-[32px] font-semibold text-inherit">How Rentals Works</h1>
-                <div className="mt-10 grid md:grid-cols-3 gap-6">
+                <div className="mt-10 grid md:grid-cols-3 gap-10 md:gap-6">
                     {
                         hiwBeforeRental.map((itm, idx) => (
                             <div key={`before_rental_${idx}`} className="flex gap-5">
@@ -133,7 +133,7 @@ const Category = () => {
         </section>
         <section className="bg-[#FFFFFF]">
             <div className="container py-[70px]">
-                    <div className='pt-16 pl-4 grid grid-cols-2 2xl:gap-x-40 items-center'>
+                    <div className='pt-16 pl-4 grid md:grid-cols-2 2xl:gap-x-40 items-center'>
                         <img src='/images/mockup.png' className='object-cover max-w-full h-[537px]' />
                         <div>
                         <h2 className='text-[32px] font-semibold text-primary-200'>Stay Updated On Our Mobile App</h2>
@@ -151,13 +151,13 @@ const Category = () => {
         <section className="bg-gradient-radial from-secondary to-primary">
             <div className="container py-[60px] text-white">
                 <h1 className="font-lota font-semibold text-[32px] text-center text-white">Find More In Lagos</h1>
-                <div className="mt-20 grid md:grid-cols-5">
+                <div className="mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
                     {
                         Array(30).fill('Tripod Air').map((_, idx) => <p key={`lagos_${idx}`} className="text-lg font-lota font-semibold">{_}</p>)
                     }
                 </div>
                 <h1 className="mt-[60px] font-lota font-semibold text-[32px] text-center text-white">Browse On Other Cities</h1>
-                <div className="mt-20 grid md:grid-cols-5">
+                <div className="mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
                     {
                         Array(30).fill('').map((_, idx) => <p key={`lagos_${idx}`} className="text-lg font-lota font-semibold">Kaduna</p>)
                     }
