@@ -97,14 +97,14 @@ function NavBar() {
                     <NavLinkItem label='FAQs' />
                     <NavLinkItem label='List Gear' href='/create-item' />
                     <NavLinkItem label='Cart' href='/cart' />
-                    {/* <>
+                    <>
                         <NavLinkItem label='Login' href='/login' liClass='ml-32' />
                         <NavLinkItem
                         label='Sign Up'
                         href='/signup'
                         className='bg-secondary h-[50px] w-[167px]  !text-white hover:text-white text-base font-medium inline-flex justify-center items-center rounded-lg' />
-                    </> */}
-                    <div className="ml-32">
+                    </>
+                    {/* <div className="ml-32">
                         <Dropdown 
                             overlay={<Menu logoutHandler={() => setLogout(true)} />}
                             trigger={['click']} >
@@ -123,7 +123,7 @@ function NavBar() {
                                 <MdOutlineKeyboardArrowDown className='text-xl'/>
                             </div>
                         </Dropdown>
-                    </div>
+                    </div> */}
                 </ul>
                 <div className="lg:hidden">
                     <Dropdown 

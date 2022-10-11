@@ -142,7 +142,7 @@ const Home: NextPage = () => {
         </section>
         <section className='py-16'>
           <h3 className='text-[32px] text-secondary font-semibold tracking-tighter mb-8'>SHUUT Offers</h3>
-          <div className="sm:pl-8 space-y-5 sm:space-y-0 sm:grid sm:grid-cols-2 grid-cols-3 gap-4">
+          <div className="sm:pl-8 space-y-5 sm:space-y-0 sm:grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="border border-[#DFDFDF] rounded-[10px] p-7">
               <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Access To More</h3>
               <p className='text-base font-normal text-primary-100'>
@@ -171,7 +171,7 @@ const Home: NextPage = () => {
             Explore Gears
           </h3>
 
-          <div className="space-y-8 sm:space-y-0 sm:grid sm:grid-cols-2 grid-cols-4 gap-4 mt-12 md:pl-4 gap-y-8 pb-16">
+          <div className="space-y-8 sm:space-y-0 sm:grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 md:pl-4 gap-y-8 pb-16">
             {gears.map(gear => (
               <div className="bg-white rounded-[5px] p-4" key={gear.name}>
                 <img src={`/images/gears/${gear.image}`} className='object-cover hover:scale-105 w-full rounded-[5px] h-[219px] transition-all' />
