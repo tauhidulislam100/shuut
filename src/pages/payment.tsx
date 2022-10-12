@@ -20,11 +20,11 @@ return (
                 </button>
             </div>
             <div className="mt-20">
-                <h1 className="text-[32px] font-semibold text-primary font-lota">Transaction Summary</h1>
+                <h1 className="text-lg sm:text-[32px] font-semibold text-primary font-lota">Transaction Summary</h1>
                 <div className="mt-7 bg-[#FCFCFD] border bg-[] py-9 px-10 border-[#DFDFE6] rounded-[5px]">
                     <div className="flex justify-between items-center">
-                        <h3 className="font-lota font-semibold text-xl text-primary">Order Summary</h3>
-                        <h4 className="font-lota text-2xl text-primary">$51.00</h4>
+                        <h3 className="font-lota font-semibold text-lg sm:text-xl text-primary">Order Summary</h3>
+                        <h4 className="font-lota text-lg sm:text-2xl text-primary">$51.00</h4>
                     </div>
                     {/* Items */}
                     <div className="border rounded-[5px] mt-10 bg-[#F8FAFC]">
@@ -43,15 +43,15 @@ return (
                                     <div className="absolute top-0 flex justify-center items-center right-0 w-5 h-5 rounded-full p-2 text-xs text-primary shadow">1</div>
                                 </div>
                                 <div className="pl-7 font-lota">
-                                    <h4 className="text-primary-100 pt-3">Canon</h4>
+                                    <h4 className="text-primary-100 sm:pt-3">Canon</h4>
                                     <p className="text-[#677489] mt-3">Color: <span className="text-primary-100">Black</span></p>
                                 </div>
                             </div>
                             <div className="">
-                                <h4 className="font-lota text-2xl text-primary">$28.00</h4>
+                                <h4 className="font-lota sm:text-2xl text-primary">$28.00</h4>
                             </div>
                         </div>
-                        <div className="p-5 border-b flex justify-between">
+                        <div className="p-5 border-b flex justify-between text-lg sm:text-xl md:text-2xl">
                             <div className="flex">
                                 <div className="relative rounded-sm">
                                     <div className="">
@@ -64,17 +64,17 @@ return (
                                     </div>
                                     <div className="absolute top-0 flex justify-center items-center right-0 w-5 h-5 rounded-full p-2 text-xs text-primary shadow">1</div>
                                 </div>
-                                <div className="pl-7 font-lota">
-                                    <h4 className=" text-primary-100 pt-3">Canon</h4>
+                                <div className="pl-7 font-lota ">
+                                    <h4 className=" text-primary-100 sm:pt-3">Canon</h4>
                                     <p className=" text-[#677489] mt-3">Color: <span className="text-primary-100">Black</span></p>
                                 </div>
                             </div>
                             <div className="">
-                                <h4 className="font-lota text-2xl text-primary">$28.00</h4>
+                                <h4 className="font-lota sm:text-2xl text-primary">$28.00</h4>
                             </div>
                         </div>
                     </div>
-                    <div className="sm:flex justify-between items-center py-7 border-b text-2xl font-lota">
+                    <div className="sm:flex justify-between items-center py-7 border-b text-lg sm:text-2xl font-lota">
                         <div className="">
                             <h4 className="">
                                 <span className="text-[#677489]">Owner </span>
@@ -86,7 +86,7 @@ return (
                             <span className="text-[#286EE6]">17 reviews</span>
                         </div>
                     </div>
-                    <div className="text-[27px] font-lota py-7 border-b">
+                    <div className="sm:text-[27px] font-lota py-7 border-b">
                         <div className="flex justify-between">
                             <h4 className="text-[#677489]">Total Rental Fee</h4>
                             <p className="">$56.00</p>
@@ -96,18 +96,18 @@ return (
                             <p className="">-$13.00</p>
                         </div>
                     </div>
-                    <div className="flex justify-between items-center pt-7 text-[27px]">
+                    <div className="flex justify-between items-center pt-7 sm:text-[27px]">
                         <h4 className="">Total</h4>
                         <p className="text-[#4436AC] font-semibold">$51.00</p>
                     </div>
                 </div>
             </div>
             <div className="font-lota">
-                <h1 className="text-[32px] text-[#111729] mt-12">
+                <h1 className="text-xl sm:text-[32px] text-[#111729] mt-12">
                     Payment
                 </h1>
                 <div className="border mt-7 p-10 rounded-[5px] bg-[#FCFCFD]">
-                    <h3 className="font-lota font-semibold text-xl mb-10">Payment Methods</h3>
+                    <h3 className="font-lota font-semibold text-lg sm:text-xl mb-10">Payment Methods</h3>
                     <Form
                         wrapperCol={{span: 24}}
                         labelCol={{span: 24}} >

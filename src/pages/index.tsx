@@ -115,7 +115,7 @@ const Home: NextPage = () => {
             </p>
 
             <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
-              <input placeholder='All Gears' className='min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light' />
+              <input placeholder='All Gears' className='sm:min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light' />
               <button className='px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg'>
                 Search
               </button>

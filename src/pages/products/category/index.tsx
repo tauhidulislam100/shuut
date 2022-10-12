@@ -10,12 +10,12 @@ const Category = () => {
     const getCurrentPosition = () => {
         navigator.geolocation.getCurrentPosition((pos) => console.log(pos));
     };
-    
+
     return (
     <>
         <div className="container">
             <NavBar />
-            <section className="md:flex flex-row-reverse justify-between gap-10 pt-20">
+            <section className="md:flex flex-row-reverse justify-between gap-10 md:pt-20">
                 <div>
                     <img src='/images/tripod.png' alt='Tripod' className='object-cover max-w-full' />
                 </div>
@@ -28,7 +28,7 @@ const Category = () => {
                     </p>
 
                     <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
-                    <input placeholder='All Gears' className='min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light' />
+                    <input placeholder='All Gears' className='sm:min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light' />
                     <button className='px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg'>
                         Find Gear
                     </button>
@@ -48,7 +48,7 @@ const Category = () => {
         <section className="bg-[#F8F8F8]">
             <div className="container py-16">
                 <h1 className="text-[32px] text-secondary font-semibold font-lota">Tripods In Lagos</h1>
-                <div className="mt-8 pl-2 space-y-10 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-5 gap-5">
+                <div className="mt-5 sm:mt-8 sm:pl-2 space-y-10 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-5 gap-5">
                     {
                         tripodInLagos.map((product,idx) => <SingleProduct key={`lagos_${idx}`} data={product} />)
                     }
@@ -67,24 +67,24 @@ const Category = () => {
             <div className="container py-[70px]">
                     <div className='py-16'>
                         <h3 className='text-[32px] text-secondary font-semibold tracking-tighter mb-8'>SHUUT Offers</h3>
-                        <div className="pl-8 space-y-8 md:space-y-0 md:grid grid-cols-3 gap-4">
+                        <div className="sm:pl-8 space-y-8 md:space-y-0 md:grid grid-cols-3 gap-4">
                             <div className="border border-[#DFDFDF] rounded-[10px] p-7">
-                            <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Access To More</h3>
-                            <p className='text-base font-normal text-primary-100'>
-                                Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
-                            </p>
+                                <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Access To More</h3>
+                                <p className='text-base font-normal text-primary-100'>
+                                    Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
+                                </p>
                             </div>
                             <div className="border border-[#DFDFDF] rounded-[10px] p-7">
-                            <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Save Money</h3>
-                            <p className='text-base font-normal text-primary-100'>
-                                Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
-                            </p>
+                                <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Save Money</h3>
+                                <p className='text-base font-normal text-primary-100'>
+                                    Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
+                                </p>
                             </div>
                             <div className="border border-[#DFDFDF] rounded-[10px] p-7">
-                            <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Get Insured</h3>
-                            <p className='text-base font-normal text-primary-100'>
-                                Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
-                            </p>
+                                <h3 className='text-2xl text-primary-100 font-semibold mb-7 mt-5'>Get Insured</h3>
+                                <p className='text-base font-normal text-primary-100'>
+                                    Is be upon sang fond must shew. Really boy law county she unable her sister. Feet you off its like like six.
+                                </p>
                             </div>
                         </div>
                     </div>

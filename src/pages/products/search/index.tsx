@@ -70,7 +70,7 @@ const ProductSearch = () => {
                             back
                         </button>
                     </div>
-                    <div className="flex justify-between items-center">
+                    <div className="sm:flex justify-between items-center">
                         <div className="mt-5 flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
                             {/* <input className='min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light bg-transparent' /> */}
                             <AutoComplete 
