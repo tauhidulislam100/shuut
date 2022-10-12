@@ -118,12 +118,12 @@ return (
                             <Input placeholder='Nigeria' />
                         </Form.Item>
                         <Row gutter={200}>
-                            <Col span={12}>
+                            <Col span={24} md={12}>
                                 <Form.Item label="Zip code" >
                                     <Input placeholder='Ex. 73923' />
                                 </Form.Item>
                             </Col>
-                            <Col span={12}>
+                            <Col span={24} md={12}>
                                 <Form.Item label="City" >
                                     <Input placeholder='Ex. Victoria Islan' />
                                 </Form.Item>
