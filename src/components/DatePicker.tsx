@@ -1,18 +1,21 @@
-import React, { useState } from 'react';
-import { DayPicker } from 'react-day-picker';
+import React, { useEffect, useState } from "react";
+import { DateRange, DayPicker } from "react-day-picker";
 
-const DatePicker = () => {
-
-    const [selectedDay, setSelectedDay] = useState<Date>();
-    console.log(selectedDay);
-
-    return (
-        <DayPicker
-            mode='range'
-            numberOfMonths={2} 
-            pagedNavigation
-            selected={selectedDay}
-            onSelect={setSelectedDay} />
-    )
+const DatePicker = ({
+  selected,
+  onChange,
+}: {
+  selected?: DateRange;
+  onChange?: (date?: DateRange) => void;
+}) => {
+  return (
+    <DayPicker
+      defaultMonth={new Date()}
+      mode="range"
+      numberOfMonths={2}
+      selected={selected}
+      onSelect={(range) => onChange?.(range)}
+    />
+  );
 };
 export default DatePicker;
