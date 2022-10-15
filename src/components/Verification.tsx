@@ -5,6 +5,7 @@ import OtpInput from "react-otp-input";
 import { Modal } from ".";
 import Button from "./UI/Button";
 import { Input } from "antd";
+import { useRouter } from "next/router";
 
 interface VerificationProps {
   visible: boolean;
@@ -37,11 +38,7 @@ const Verification = ({
     setVisibleOtpForm(showOTPForm);
   }, [showOTPForm]);
 
-  useEffect(() => {
-    if (email) {
-      setUserEmail(email);
-    }
-  }, [email]);
+  const router = useRouter();
 
   const handleResendOtp = () => {
     if (resendTimer > 0) return;

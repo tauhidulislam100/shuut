@@ -42,7 +42,7 @@ const Login = () => {
   const onSignInComplete = (data: any) => {
     if (data.user.accessToken) {
       cookie.set("token", data.user.accessToken, {
-        expires: parseJwt(data.user.accessToken).exp,
+        expires: 1,
       });
       window.location.href = "/";
     } else {
@@ -87,7 +87,7 @@ const Login = () => {
         <NavBar />
       </div>
       <div className="container">
-        <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
+        {/* <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
           <input
             placeholder="Search..."
             className="min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light bg-transparent"
@@ -98,7 +98,7 @@ const Login = () => {
           <span className="absolute top-4 left-4 text-lg text-[#263238]">
             <IoIosSearch />
           </span>
-        </div>
+        </div> */}
         <div className="mt-28">
           <h1 className="font-lota text-center font-semibold text-[26px] text-[#525252]">
             Welcome to SHUUT

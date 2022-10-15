@@ -3,7 +3,7 @@ import React from 'react';
 
 const { Option } = Select;
 
-const IdFrom = () => {
+const IdFrom = ({handleNext}: {handleNext: () => void}) => {
 
 return (
     <div className="mt-5">
@@ -20,7 +20,7 @@ return (
             {/* <button onClick={() => console.log("Button!")} className='w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold'>
                 Cancel
             </button> */}
-            <button onClick={() => console.log("Button!")} className='w-[193px] font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>
+            <button onClick={handleNext} className='w-[193px] font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>
                 Next
             </button>
         </div>
@@ -35,7 +35,7 @@ return (
                 </p>
             </div>
             <div className="mt-12 flex justify-end gap-5">
-                <button onClick={() => console.log("Button!")} className='w-[193px] font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>
+                <button onClick={handleNext} className='w-[193px] font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>
                     Start Identity Check
                 </button>
             </div>

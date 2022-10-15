@@ -23,7 +23,8 @@ interface IUser {
 export type StateType = {
   user: IUser | null;
   isAuthenticated: boolean;
-  onLogout?: () => void;
+  isLoading: boolean;
+  onLogout?: (reload?: boolean) => void;
   handleOAuth?: (
     provider: string,
     incompleteHandler?: (query: URLSearchParams) => void
@@ -33,6 +34,7 @@ export type StateType = {
 const initalState: StateType = {
   user: null,
   isAuthenticated: false,
+  isLoading: false,
 };
 
 export const AuthContext = React.createContext(initalState);
@@ -80,11 +82,14 @@ const AuthProvider = ({ children }: IProps) => {
     });
   };
 
-  const onLogout = () => {
+  const onLogout = (realod = false) => {
+    console.log("onLogout: ", cookie.get("token"));
     cookie.remove("token");
     setUser(null);
     setIsAuthenticated(false);
-    window.location.reload();
+    if (realod) {
+      window.location.reload();
+    }
   };
 
   const handleOAuth = (provider: string, callback: any) => {
@@ -102,7 +107,7 @@ const AuthProvider = ({ children }: IProps) => {
             const query = new URLSearchParams(win.location.search);
             if (query.get("status") === "success") {
               cookie.set("token", query.get("token") as string, {
-                expires: parseJwt(query.get("token") as string).exp,
+                expires: 1,
               });
               window.location.href = "/";
             } else if (query.get("status") === "failed") {
@@ -119,7 +124,7 @@ const AuthProvider = ({ children }: IProps) => {
           console.log("error ", error);
         }
         waiting++;
-        if (waiting >= 20) {
+        if (waiting >= 100) {
           win?.close();
           clearInterval(intervalId);
         }
@@ -132,6 +137,7 @@ const AuthProvider = ({ children }: IProps) => {
       value={{
         user,
         isAuthenticated,
+        isLoading: loading,
         onLogout,
         handleOAuth,
       }}

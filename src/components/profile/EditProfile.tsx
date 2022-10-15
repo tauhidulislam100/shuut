@@ -15,12 +15,12 @@ return (
                 size="large"
                 className='px-10  py-5'>
                 <Row gutter={87}>
-                    <Col span={12}>
+                    <Col span={24} md={12}>
                         <Form.Item label="First Name" >
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24} md={12}>
                         <Form.Item label="Last Name"  className="">
                             <Input />
                         </Form.Item>
@@ -33,24 +33,24 @@ return (
                 <Divider />
                 <h2 className="text-left text-2xl">Address</h2>
                 <Row gutter={87}>
-                    <Col span={12}>
+                    <Col span={24} md={12}>
                         <Form.Item label="House No.">
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24} md={12}>
                         <Form.Item label="Street">
                             <Input />
                         </Form.Item>
                     </Col>
                 </Row>
                 <Row gutter={87}>
-                    <Col span={12}>
+                    <Col span={24} md={12}>
                         <Form.Item label="City">
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24} md={12}>
                         <Form.Item label="Country">
                             <Input />
                         </Form.Item>
@@ -69,12 +69,12 @@ return (
                     <Input />
                 </Form.Item>
                 <Row gutter={87}>
-                    <Col span={12}>
+                    <Col span={24} md={12}>
                         <Form.Item label="Opening Hours">
                             <Input />
                         </Form.Item>
                     </Col>
-                    <Col span={12}>
+                    <Col span={24} md={12}>
                         <Form.Item label="Closing Hours">
                             <Input />
                         </Form.Item>

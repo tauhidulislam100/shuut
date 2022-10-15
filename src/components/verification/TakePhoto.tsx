@@ -1,10 +1,10 @@
 import Image from 'next/image';
 import React from 'react';
 
-const TakePhoto = () => {
+const TakePhoto = ({handleNext}: {handleNext: () => void}) => {
 
 return (
-    <div className="mt-5 px-40">
+    <div className="mt-5 md:px-40">
         <h1 className="text-[32px] font-lota font-semibold text-primary">
             Let’s Make Sure You’re You.
         </h1>
@@ -30,8 +30,8 @@ return (
                 </div>
             </div>
         </div>
-        <div className="mt-12 flex justify-end gap-5">
-            <button onClick={() => console.log("Button!")} className='w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold'>
+        <div className="mt-12 flex flex-col sm:flex-row justify-end gap-5">
+            <button onClick={handleNext} className='min-w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold'>
                 Get Started
             </button>
             <button onClick={() => console.log("Button!")} className='min-w-[193px] px-8 font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>

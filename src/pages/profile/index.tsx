@@ -24,7 +24,7 @@ return (
                     back
                 </button>
             </div>
-            <section className="px-40 mt-10">
+            <section className="lg:px-40 mt-10">
                 <h1 className="font-lota font-semibold text-[32px]">Profile</h1>
                 <div className="relative mt-7 h-[233px] bg-profile-bg bg-no-repeat bg-cover rounded-md">
                     <div className="absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/3">

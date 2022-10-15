@@ -116,7 +116,7 @@ const SocialIncompletSignup = ({ query, onCancel }: IProps) => {
   const onCompleteVerifyEmail = (data: any) => {
     if (data.verification.status === "success") {
       cookie.set("token", token, {
-        expires: parseJwt(token).exp,
+        expires: 1,
       });
       window.location.href = "/";
     } else {

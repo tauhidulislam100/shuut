@@ -1,9 +1,10 @@
-import { Avatar, Dropdown } from "antd";
+import { Avatar, Dropdown, Input } from "antd";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useState } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
+import { Modal } from "..";
 
 const NavLinkItem = ({
   label = "",
@@ -59,52 +60,58 @@ const Menu = ({ onLogout }: IMenuProps) => (
 function NavBar() {
   const { isAuthenticated, user, onLogout } = useAuth();
   return (
-    <nav className="w-full flex justify-between items-center py-5">
-      <div className="text-primary text-2xl font-semibold">Shuut</div>
-      <ul className="flex items-center ml-auto gap-x-10">
-        <NavLinkItem label="How It Works" href="/how-it-works" />
-        <NavLinkItem label="FAQs" />
-        <NavLinkItem label="List Gear" href="/create-item" />
-        <NavLinkItem label="Cart" href="/cart" />
-        {isAuthenticated ? (
-          <div className="ml-32">
-            <Dropdown
-              overlay={<Menu onLogout={onLogout} />}
-              trigger={["click"]}
-            >
-              <div className="flex items-center font-semibold font-lota cursor-pointer">
-                <div className="">
-                  <Avatar size={40}>
-                    <span className="uppercase font-bold text-primary">
-                      {user?.firstName.charAt(0).toUpperCase()}
-                    </span>
-                  </Avatar>
-                  {/* <Image
+    <div className="container">
+      <nav className="w-full flex justify-between items-center py-5">
+        <div className="text-primary text-2xl font-semibold">
+          <Link href={"/"}>
+            <a className="hover:text-primary">Shuut</a>
+          </Link>
+        </div>
+        <ul className="flex items-center ml-auto gap-x-10">
+          <NavLinkItem label="How It Works" href="/how-it-works" />
+          <NavLinkItem label="FAQs" />
+          <NavLinkItem label="List Gear" href="/create-item" />
+          <NavLinkItem label="Cart" href="/cart" />
+          {isAuthenticated ? (
+            <div className="ml-32">
+              <Dropdown
+                overlay={<Menu onLogout={onLogout} />}
+                trigger={["click"]}
+              >
+                <div className="flex items-center font-semibold font-lota cursor-pointer">
+                  <div className="">
+                    <Avatar size={40}>
+                      <span className="uppercase font-bold text-primary">
+                        {user?.firstName.charAt(0).toUpperCase()}
+                      </span>
+                    </Avatar>
+                    {/* <Image
                     src={"/images/profile.png"}
                     alt="Jon Doe"
                     width={40}
                     height={40}
                   /> */}
+                  </div>
+                  <h1 className="px-5">
+                    {user?.firstName} {user?.lastName}
+                  </h1>
+                  <MdOutlineKeyboardArrowDown className="text-xl" />
                 </div>
-                <h1 className="px-5">
-                  {user?.firstName} {user?.lastName}
-                </h1>
-                <MdOutlineKeyboardArrowDown className="text-xl" />
-              </div>
-            </Dropdown>
-          </div>
-        ) : (
-          <>
-            <NavLinkItem label="Login" href="/auth/login" liClass="ml-32" />
-            <NavLinkItem
-              label="Sign Up"
-              href="/auth/signup"
-              className="bg-secondary h-[50px] w-[167px]  !text-white hover:text-white text-base font-medium inline-flex justify-center items-center rounded-lg"
-            />
-          </>
-        )}
-      </ul>
-    </nav>
+              </Dropdown>
+            </div>
+          ) : (
+            <>
+              <NavLinkItem label="Login" href="/auth/login" liClass="ml-32" />
+              <NavLinkItem
+                label="Sign Up"
+                href="/auth/signup"
+                className="bg-secondary h-[50px] w-[167px]  !text-white hover:text-white text-base font-medium inline-flex justify-center items-center rounded-lg"
+              />
+            </>
+          )}
+        </ul>
+      </nav>
+    </div>
   );
 }
 
