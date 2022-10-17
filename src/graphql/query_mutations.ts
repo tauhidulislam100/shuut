@@ -1,5 +1,99 @@
 import { gql } from "@apollo/client";
 
+export const SIGNUP_MUTATION = gql`
+  mutation (
+    $firstName: String!
+    $lastName: String!
+    $email: String!
+    $password: String!
+    $phone: String
+    $emailVerified: Boolean
+    $phoneVerified: Boolean
+    $isActive: Boolean
+    $postalCode: String
+    $social_id: String
+  ) {
+    result: SignUp(
+      firstName: $firstName
+      lastName: $lastName
+      email: $email
+      password: $password
+      phone: $phone
+      emailVerified: $emailVerified
+      phoneVerified: $phoneVerified
+      isActive: $isActive
+      postalCode: $postalCode
+      social_id: $social_id
+    ) {
+      id
+      token
+    }
+  }
+`;
+
+// const SIGNUP_MUTATION = gql`
+//   mutation (
+//     $firstName: String!
+//     $lastName: String!
+//     $email: String!
+//     $password: String
+//     $phone: String
+//     $emailVerified: Boolean
+//     $phoneVerified: Boolean
+//     $isActive: Boolean
+//     $postalCode: String
+//     $social_id: String!
+//   ) {
+//     user: SignUp(
+//       firstName: $firstName
+//       lastName: $lastName
+//       email: $email
+//       password: $password
+//       phone: $phone
+//       emailVerified: $emailVerified
+//       phoneVerified: $phoneVerified
+//       isActive: $isActive
+//       postalCode: $postalCode
+//       social_id: $social_id
+//     ) {
+//       token
+//     }
+//   }
+// `;
+
+export const VERIFICATION_MUTATION = gql`
+  mutation (
+    $code: String!
+    $verificationType: String!
+    $transactionId: String
+  ) {
+    result: VerifyCode(
+      code: $code
+      verificationType: $verificationType
+      transactionId: $transactionId
+    ) {
+      status
+    }
+  }
+`;
+
+export const SEND_VERIFICATION_CODE_EMAIL = gql`
+  mutation ($email: String!) {
+    result: SendEmailVerificationCode(email: $email) {
+      status
+    }
+  }
+`;
+
+export const SEND_PHONE_VERIFICATION_CDOE = gql`
+  mutation ($phone: String!, $email: String!) {
+    result: SendPhoneVerificationCode(email: $email, phone: $phone) {
+      status
+      transactionId
+    }
+  }
+`;
+
 export const SearchListingQuery = gql`
   query SearchQuery(
     $queryText: String

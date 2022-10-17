@@ -76,7 +76,7 @@ const Verification = ({
       <div className="w-full flex justify-center mt-5">
         <PhoneInput
           value={phone}
-          country="us"
+          country="ng"
           containerClass="w-auto"
           dropdownClass="bg-white"
           inputClass="h-10"
@@ -143,7 +143,7 @@ const Verification = ({
           </>
         ) : (
           <>
-            An OTP was sent to your phone number {5465545},<br />
+            An OTP was sent to your phone number {phone},<br />
             please check and enter below.
           </>
         )}

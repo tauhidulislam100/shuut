@@ -1,66 +1,16 @@
-import React, { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
+import React, { useState } from "react";
 import Link from "next/link";
-import { Form, Input, notification, Spin } from "antd";
-import { ApolloError, gql, useMutation } from "@apollo/client";
+import { Form, Input, notification } from "antd";
+import { ApolloError, useMutation } from "@apollo/client";
 import { Footer, NavBar } from "../../components";
 import { IoIosSearch } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaApple } from "react-icons/fa";
-import Router from "next/router";
 import Button from "../../components/UI/Button";
 import { useAuth } from "../../hooks/useAuth";
 import SocialIncompletSignup from "./social_incomplete_signup";
-
-const Verification = dynamic(() => import("../../components/Verification"), {
-  ssr: false,
-});
-
-export const SIGNUP_MUTATION = gql`
-  mutation (
-    $firstName: String!
-    $lastName: String!
-    $email: String!
-    $password: String!
-    $phone: String
-    $emailVerified: Boolean
-    $phoneVerified: Boolean
-    $isActive: Boolean
-    $postalCode: String
-    $social_id: String
-  ) {
-    user: SignUp(
-      firstName: $firstName
-      lastName: $lastName
-      email: $email
-      password: $password
-      phone: $phone
-      emailVerified: $emailVerified
-      phoneVerified: $phoneVerified
-      isActive: $isActive
-      postalCode: $postalCode
-      social_id: $social_id
-    ) {
-      id
-    }
-  }
-`;
-
-export const VERIFICATION_MUTATION = gql`
-  mutation ($code: String!, $verificationType: String!) {
-    verification: VerifyCode(code: $code, verificationType: $verificationType) {
-      status
-    }
-  }
-`;
-
-export const SEND_VERIFICATION_CODE_EMAIL = gql`
-  mutation ($email: String!) {
-    send: SendEmailVerificationCode(email: $email) {
-      status
-    }
-  }
-`;
+import { SIGNUP_MUTATION } from "../../graphql/query_mutations";
+import VerificationForm from "../../components/VerificationForm";
 
 const Signup = () => {
   const { handleOAuth } = useAuth();
@@ -71,19 +21,7 @@ const Signup = () => {
       onCompleted: (data) => onSignupComplete(data),
     }
   );
-  const [sendVerificationCode, {}] = useMutation(SEND_VERIFICATION_CODE_EMAIL, {
-    onError: (e) => onError(e),
-  });
 
-  const [verifyEmail, { loading: verificationLoading }] = useMutation(
-    VERIFICATION_MUTATION,
-    {
-      onError: (e) => onError(e),
-      onCompleted: (data) => onCompleteVerifyEmail(data),
-    }
-  );
-
-  const [visible, setVisible] = useState<boolean>(false);
   const [submited, setSubmited] = useState(false);
   const [visibleOnlyOtpForm, setVisibleOnlyOtpForm] = useState(true);
   const [signupForm, setSignupForm] = useState({
@@ -93,6 +31,7 @@ const Signup = () => {
     password: "",
   });
   const [incompleteQuery, setInCompleteQuery] = useState<URLSearchParams>();
+  const [showVerificationForm, setShowVerificationForm] = useState(false);
 
   const onChangeField = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSignupForm({
@@ -125,22 +64,8 @@ const Signup = () => {
   };
 
   const onSignupComplete = (data: any) => {
-    setVisible(true);
     setVisibleOnlyOtpForm(true);
-  };
-
-  const onCompleteVerifyEmail = (data: any) => {
-    if (data.verification.status === "failed") {
-      notification.error({
-        message: "invalid opt provided",
-      });
-    } else {
-      notification.success({
-        message: "email verification complete",
-      });
-      setVisible(false);
-      Router.push("/auth/login");
-    }
+    setShowVerificationForm(true);
   };
 
   const onOAuthLogin = async (provider: string) => {
@@ -301,20 +226,13 @@ const Signup = () => {
           onCancel={() => setInCompleteQuery(undefined)}
         />
       ) : null}
-      <Verification
-        verifyOption="email"
-        email={signupForm.email}
-        onVerify={(otp) =>
-          verifyEmail({ variables: { code: otp, verificationType: "email" } })
-        }
-        showOTPForm={visibleOnlyOtpForm}
-        visible={visible}
-        onCancel={() => setVisible(false)}
-        loading={verificationLoading}
-        onSendVerificationCode={(email) =>
-          sendVerificationCode({ variables: { email } })
-        }
-      />
+      {showVerificationForm ? (
+        <VerificationForm
+          onClose={() => setShowVerificationForm(false)}
+          showOnlyOtpForm={visibleOnlyOtpForm}
+          email={signupForm.email}
+        />
+      ) : null}
     </div>
   );
 };

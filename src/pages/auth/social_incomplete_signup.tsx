@@ -3,43 +3,15 @@ import { notification } from "antd";
 import cookie from "js-cookie";
 import React, { useEffect, useState } from "react";
 import Verification from "../../components/Verification";
-import { parseJwt } from "../../utils/utils";
-import { VERIFICATION_MUTATION } from "./signup";
+import {
+  SIGNUP_MUTATION,
+  VERIFICATION_MUTATION,
+} from "../../graphql/query_mutations";
 
 interface IProps {
   query?: URLSearchParams;
   onCancel?: () => void;
 }
-
-const SIGNUP_MUTATION = gql`
-  mutation (
-    $firstName: String!
-    $lastName: String!
-    $email: String!
-    $password: String
-    $phone: String
-    $emailVerified: Boolean
-    $phoneVerified: Boolean
-    $isActive: Boolean
-    $postalCode: String
-    $social_id: String!
-  ) {
-    user: SignUp(
-      firstName: $firstName
-      lastName: $lastName
-      email: $email
-      password: $password
-      phone: $phone
-      emailVerified: $emailVerified
-      phoneVerified: $phoneVerified
-      isActive: $isActive
-      postalCode: $postalCode
-      social_id: $social_id
-    ) {
-      token
-    }
-  }
-`;
 
 let token = "";
 
@@ -91,7 +63,7 @@ const SocialIncompletSignup = ({ query, onCancel }: IProps) => {
         ...signupForm,
         email,
       };
-      setSignupForm((pre) => ({ ...formData }));
+      setSignupForm((pre) => ({ ...pre, ...formData }));
       await signUpUser({
         variables: { ...formData },
       });
@@ -109,7 +81,7 @@ const SocialIncompletSignup = ({ query, onCancel }: IProps) => {
   };
 
   const onSignupComplete = (data: any) => {
-    token = data.user.token;
+    token = data.result.token;
     setShowOtpForm(true);
   };
 
