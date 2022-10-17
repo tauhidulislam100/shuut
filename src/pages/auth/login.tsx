@@ -103,23 +103,23 @@ const Login = () => {
           <h1 className="font-lota text-center font-semibold text-[26px] text-[#525252]">
             Welcome to SHUUT
           </h1>
-          <div className="flex justify-center items-center gap-5 mt-12">
+          <div className="flex justify-center items-center flex-wrap gap-5 mt-12">
             <button
               onClick={() => onOAuthLogin("google")}
-              className="min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
+              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
             >
               <FcGoogle className="mr-2 text-3xl" /> Continue with Google
             </button>
             <button
               onClick={() => onOAuthLogin("apple")}
-              className="min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
+              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
             >
               <FaApple className="mr-2 text-black text-3xl" /> Continue with
               Apple
             </button>
             <button
               onClick={() => onOAuthLogin("facebook")}
-              className="min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
+              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
             >
               <FaFacebook className="mr-2 text-[#3b5998] text-3xl" /> Continue
               with Facebook
@@ -128,7 +128,7 @@ const Login = () => {
           <div className="px-2 text-center mt-10 mb-20 uppercase text-[#525252]">
             -or-
           </div>
-          <Form size="large" className="login-form w-[65%] mx-auto">
+          <Form size="large" className="login-form sm:w-[65%] mx-auto">
             <Form.Item>
               <Input
                 onChange={onChange}
@@ -176,7 +176,7 @@ const Login = () => {
                 Log In
               </Button>
             </div>
-            <p className="my-10">
+            <p className="my-10 text-center sm:text-left">
               Don&apos;t have an account?{" "}
               <Link href={"/auth/signup"}>
                 <a className="text-secondary">Sign Up</a>

@@ -294,15 +294,14 @@
     padding: 30px 0px;
 }
 
-.faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-header-text {
-    /* font-family: 'Lota Grotesque'; */
+/*.faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-header-text {
+    font-family: 'Lota Grotesque';
     font-style: normal;
     font-weight: 600;
     font-size: 24px;
     line-height: 130%;
-    /* or 31px */
     color: #0A2429;
-}
+}*/
 
 
 .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {

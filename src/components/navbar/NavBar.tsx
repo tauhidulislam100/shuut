@@ -5,6 +5,7 @@ import React, { useState } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
 import { Modal } from "..";
+import { RiMenu3Fill } from 'react-icons/ri';
 
 const NavLinkItem = ({
   label = "",
@@ -57,6 +58,36 @@ const Menu = ({ onLogout }: IMenuProps) => (
   </ul>
 );
 
+const AuthLessMenu = () => (
+  <ul className="shadow-md border rounded-[5px] text-primary text-[10px] font-lota bg-white">
+    <li className="p-2 border-b hover:text-secondary">
+      <Link href={"/listgear"}>
+        <a>List Gear</a>
+      </Link>
+    </li>
+    <li className="p-2 border-b hover:text-secondary">
+      <Link href={"/faqs"}>
+        <a>Faqs</a>
+      </Link>
+    </li>
+    <li className="p-2 border-b hover:text-secondary">
+      <Link href={"/cart"}>
+        <a>Cart</a>
+      </Link>
+    </li>
+    <li className="p-2 border-b hover:text-secondary">
+      <Link href={"/auth/login"}>
+        <a>Login</a>
+      </Link>
+    </li>
+    <li className="p-2 border-b hover:text-secondary">
+      <Link href={"/auth/signup"}>
+        <a>Sign Up</a>
+      </Link>
+    </li>
+  </ul>
+);
+
 function NavBar() {
   const { isAuthenticated, user, onLogout } = useAuth();
   return (
@@ -68,10 +99,12 @@ function NavBar() {
           </Link>
         </div>
         <ul className="flex items-center ml-auto gap-x-10">
-          <NavLinkItem label="How It Works" href="/how-it-works" />
-          <NavLinkItem label="FAQs" />
-          <NavLinkItem label="List Gear" href="/create-item" />
-          <NavLinkItem label="Cart" href="/cart" />
+          <div className="hidden lg:flex gap-x-10">
+            <NavLinkItem label="How It Works" href="/how-it-works" />
+            <NavLinkItem label="FAQs" />
+            <NavLinkItem label="List Gear" href="/create-item" />
+            <NavLinkItem label="Cart" href="/cart" />
+          </div>
           {isAuthenticated ? (
             <div className="ml-32">
               <Dropdown
@@ -101,13 +134,22 @@ function NavBar() {
             </div>
           ) : (
             <>
+            <div className="hidden md:flex items-center gap-10">
               <NavLinkItem label="Login" href="/auth/login" liClass="ml-32" />
               <NavLinkItem
                 label="Sign Up"
                 href="/auth/signup"
                 className="bg-secondary h-[50px] w-[167px]  !text-white hover:text-white text-base font-medium inline-flex justify-center items-center rounded-lg"
               />
-            </>
+            </div>
+            <Dropdown
+            overlay={<AuthLessMenu />}
+            trigger={["click"]}
+            className="md:hidden"
+          >
+            <RiMenu3Fill className="text-2xl" />
+          </Dropdown>
+          </>
           )}
         </ul>
       </nav>

@@ -190,50 +190,78 @@ const ProductView = () => {
                 back
               </button>
               <div className="md:grid grid-cols-3 gap-8 mt-14 place-items-start">
-                <div className="col-span-2 flex gap-x-8 h-[660px] py-6 relative">
-                  <button
-                    onClick={goUp}
-                    className="absolute top-0 left-[14%] z-10 text-primary text-opacity-40 text-xl"
-                  >
-                    <IoIosArrowUp />
-                  </button>
-                  <button
-                    onClick={goDown}
-                    className="absolute bottom-0 left-[13%] z-20 text-primary text-opacity-40 text-xl"
-                  >
-                    <IoIosArrowDown />
-                  </button>
-
-                  <div className="w-[30%] relative overflow-hidden">
-                    <Carousel
-                      ref={carouselRef}
-                      className="product-carousel"
-                      vertical={true}
-                      slidesToShow={3.5}
-                      infinite={false}
-                      arrows={false}
-                      dots={false}
+                <div className="col-span-2 w-full">
+                  <div className="flex gap-x-8 h-[660px] py-6 relative">
+                    <button
+                      onClick={goUp}
+                      className="absolute top-0 left-[14%] z-10 text-primary text-opacity-40 text-xl"
                     >
-                      {listing?.images?.map((image: any, index: number) => (
-                        <div
-                          key={image.id}
-                          onClick={() => preview(index, image.url)}
-                          className="w-full bg-white  rounded-sm p-[2px] overflow-hidden"
-                        >
-                          <img
-                            className="w-full object-cover h-[143px] rounded-sm"
-                            src={image.url}
-                          />
-                        </div>
-                      ))}
-                    </Carousel>
+                      <IoIosArrowUp />
+                    </button>
+                    <button
+                      onClick={goDown}
+                      className="absolute bottom-0 left-[13%] z-20 text-primary text-opacity-40 text-xl"
+                    >
+                      <IoIosArrowDown />
+                    </button>
+
+                    <div className="w-[30%] relative overflow-hidden">
+                      <Carousel
+                        ref={carouselRef}
+                        className="product-carousel"
+                        vertical={true}
+                        slidesToShow={3.5}
+                        infinite={false}
+                        arrows={false}
+                        dots={false}
+                      >
+                        {listing?.images?.map((image: any, index: number) => (
+                          <div
+                            key={image.id}
+                            onClick={() => preview(index, image.url)}
+                            className="w-full bg-white  rounded-sm p-[2px] overflow-hidden"
+                          >
+                            <img
+                              className="w-full object-cover h-[143px] rounded-sm"
+                              src={image.url}
+                            />
+                          </div>
+                        ))}
+                      </Carousel>
+                    </div>
+                    <div className="w-[70%] bg-white p-8 rounded-md box-border">
+                      <div className="box-border border border-[#F4F4F4] rounded-md px-4 py-10 h-[550px]">
+                        <img
+                          src={selectedImage}
+                          className="max-w-full object-cover h-full w-full rounded-md"
+                        />
+                      </div>
+                    </div>
                   </div>
-                  <div className="w-[70%] bg-white p-8 rounded-md box-border">
-                    <div className="box-border border border-[#F4F4F4] rounded-md px-4 py-10 h-[550px]">
-                      <img
-                        src={selectedImage}
-                        className="max-w-full object-cover h-full w-full rounded-md"
-                      />
+                  <div className="w-full mt-10">
+                    <h4 className="text-xl font-medium font-sofia-pro text-primary-100 mb-4">
+                      Map Location
+                    </h4>
+                    {/* <img
+                      src="/images/map-1.png"
+                      className="w-full h-[293px] object-cover rounded-md"
+                    /> */}
+                    <div className="w-full h-[293px]">
+                      <Map
+                        center={{ lat: listing?.lat, lng: listing?.lng }}
+                        zoom={20}
+                        style={{ flexGrow: "1", height: "100%" }}
+                        scaleControl={false}
+                        fullscreenControl={false}
+                        mapTypeControl={false}
+                        zoomControl={false}
+                        rotateControl={false}
+                        streetViewControl={false}
+                      >
+                        <Marker
+                          position={{ lat: listing?.lat, lng: listing?.lng }}
+                        />
+                      </Map>
                     </div>
                   </div>
                 </div>
@@ -426,37 +454,56 @@ const ProductView = () => {
                       </div>
                     </div>
                   </div>
+                  <div className="bg-white mt-4">
+                    <div className="p-4 md:mt-0 flex items-center justify-between mb-4">
+                      <h4 className="text-xl font-medium font-sofia-pro text-primary-100">
+                        Reviews
+                      </h4>
+                      <a
+                        href="#"
+                        className="text-sm text-[#286EE6] font-normal font-sofia-pro"
+                      >
+                        See All
+                      </a>
+                    </div>
+                    <div className="bg-white rounded-md p-4 pb-8 h-[293px]">
+                      <div className="flex mb-5">
+                        <Avatar size={41} />
+                        <div className="ml-3 w-[90%]">
+                          <h4 className="text-[15px] font-sofia-pro text-primary-100 flex items-center justify-between">
+                            Jane Doe
+                            <span>05 August 2022</span>
+                          </h4>
+                          <RattingBar ratting={4.5} className="!text-[#FFCB45]" />
+                          <p className="text-sm font-sofia-pro text-primary-100 mt-4">
+                            05 August 2022 We’ve analysed prices for Video
+                            CameraR.... from all renters on SHUUT.
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex">
+                        <Avatar size={41} />
+                        <div className="ml-3 w-[90%]">
+                          <h4 className="text-[15px] font-sofia-pro text-primary-100">
+                            Jane Doe
+                          </h4>
+                          <RattingBar ratting={4.5} className="!text-[#FFCB45]" />
+                          <p className="text-sm font-sofia-pro text-primary-100 mt-4">
+                            05 August 2022 We’ve analysed prices for Video
+                            CameraR.... from all renters on SHUUT.
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
 
               <div className="mt-8 md:grid grid-cols-3 gap-8">
                 <div className="col-span-2 rounded-md overflow-hidden">
-                  <h4 className="text-xl font-medium font-sofia-pro text-primary-100 mb-4">
-                    Map Location
-                  </h4>
-                  {/* <img
-                    src="/images/map-1.png"
-                    className="w-full h-[293px] object-cover rounded-md"
-                  /> */}
-                  <div className="h-[293px]">
-                    <Map
-                      center={{ lat: listing?.lat, lng: listing?.lng }}
-                      zoom={20}
-                      style={{ flexGrow: "1", height: "100%" }}
-                      scaleControl={false}
-                      fullscreenControl={false}
-                      mapTypeControl={false}
-                      zoomControl={false}
-                      rotateControl={false}
-                      streetViewControl={false}
-                    >
-                      <Marker
-                        position={{ lat: listing?.lat, lng: listing?.lng }}
-                      />
-                    </Map>
-                  </div>
+                  {/* Listings owener and other */}
                 </div>
-                <div className="col-span-1">
+                {/* <div className="col-span-1">
                   <div className="mt-5 md:mt-0 flex items-center justify-between mb-4">
                     <h4 className="text-xl font-medium font-sofia-pro text-primary-100">
                       Reviews
@@ -482,8 +529,8 @@ const ProductView = () => {
                           CameraR.... from all renters on SHUUT.
                         </p>
                       </div>
-                    </div>
-                    <div className="flex">
+                    </div> */}
+                    {/* <div className="flex">
                       <Avatar size={41} />
                       <div className="ml-3 w-[90%]">
                         <h4 className="text-[15px] font-sofia-pro text-primary-100">
@@ -496,8 +543,8 @@ const ProductView = () => {
                         </p>
                       </div>
                     </div>
-                  </div>
-                </div>
+                  </div> */}
+                {/* </div> */}
               </div>
             </div>
           </section>

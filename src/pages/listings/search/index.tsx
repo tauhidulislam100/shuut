@@ -28,6 +28,8 @@ import { useRouter } from "next/router";
 import useAsyncEffect from "use-async-effect";
 import { DateRange } from "react-day-picker";
 import { getPosition } from "../../../utils/utils";
+import { useMediaQuery } from "react-responsive";
+import { FaList, FaMapMarkerAlt } from "react-icons/fa";
 
 type dropItems = {
   label: string;
@@ -79,6 +81,7 @@ const DropdownBody = ({
 export const defaultRadius = 80000;
 
 const ProductSearch = () => {
+  const isTablet = useMediaQuery({ query: '(min-width: 768px)' });
   const router = useRouter();
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>(
     topCities[0]
@@ -101,6 +104,7 @@ const ProductSearch = () => {
   const [selectedCategoryName, setSelectedCategoryName] = useState<string>();
   const [selectedDataRange, setSelectedDateRange] = useState<DateRange>();
   const [isMapCenterChanged, setIsMapCenterChanged] = useState<boolean>(false);
+  const [showMap, setShowMap] = useState(false);
   const [selectedSorting, setSelectedSorting] = useState(
     sortingOptions[1].value
   );
@@ -244,7 +248,7 @@ const ProductSearch = () => {
       const m = {
         lat: position.coords.latitude,
         lng: position.coords.longitude,
-        city: "current user location",
+        city: "Current user location",
       };
       setCenter(m);
       setIsMapCenterChanged(false);
@@ -256,8 +260,13 @@ const ProductSearch = () => {
 
   return (
     <>
-      <div className="container">
-        <NavBar />
+      <NavBar />
+      <div onClick={() => setShowMap(prev => !prev)} className="md:hidden z-[5000] fixed bottom-5 left-1/2 text-2xl text-primary">
+        {
+          showMap ?
+          <FaList /> :
+          <FaMapMarkerAlt />
+        }
       </div>
       <div className="bg-[#FFFFFF] border-t border-[#D0CFD8] border-opacity-30 pt-4 pb-10">
         <div className="container">
@@ -272,13 +281,13 @@ const ProductSearch = () => {
               back
             </button>
           </div>
-          <div className="flex justify-between items-center">
+          <div className="space-y-5 sm:space-y-0 sm:flex justify-between items-center">
             <div className="mt-5 flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
               <input
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="All Gears"
-                className="min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
+                className="md:min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
               />
               <button
                 onClick={() => onSearch()}
@@ -290,7 +299,7 @@ const ProductSearch = () => {
                 <IoIosSearch />
               </span>
             </div>
-            <div className="flex items-center gap-5">
+            <div className="flex items-center gap-5 overflow-x-scroll sm:overflow-x-auto">
               <button
                 onClick={() => {
                   if (selectedCategoryName) {
@@ -299,7 +308,7 @@ const ProductSearch = () => {
                     setFilterOption("category");
                   }
                 }}
-                className={`min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center ${
+                className={`px-3 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center ${
                   filterOption === "category"
                 }`}
               >
@@ -307,7 +316,7 @@ const ProductSearch = () => {
               </button>
               <button
                 onClick={() => setFilterOption("location")}
-                className={`min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center ${
+                className={`px-5 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center ${
                   filterOption === "location"
                 }`}
               >
@@ -325,7 +334,7 @@ const ProductSearch = () => {
                     setFilterOption("date");
                   }
                 }}
-                className={`min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center ${
+                className={`px-3 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center ${
                   filterOption === "date"
                 }`}
               >
@@ -367,7 +376,18 @@ const ProductSearch = () => {
               </Dropdown>
             </div>
           </div>
-          <div className="">
+          <div className="pt-5 max-h-[calc(100vh-250px)] h-[calc(100vh-250px)] md:h-[auto] md:max-h-[auto] overflow-y-scroll md:overflow-y-visible">
+            <div className={`min-w-full w-full h-full ${showMap ? 'block md:hidden' : 'hidden'}`}>
+                <MapView
+                  markers={listingMarkers}
+                  center={center}
+                  zoom={zoom}
+                  onIdle={onIdle}
+                  onCenterChange={handleOnChanterChange}
+                  focusedMarker={hovredItem}
+                />
+            </div>
+            <div className={`${showMap ? 'hidden md:block' : 'block'}`}>
             {filterOption === "" && (
               <div className="space-y-5 md:grid grid-cols-3 gap-7 mt-10">
                 {loading ? (
@@ -391,7 +411,7 @@ const ProductSearch = () => {
                     ))}
                   </div>
                 )}
-                <div className="col-span-1  min-h-[70vh] max-h-[70vh] !mt-0">
+                <div className="hidden md:block w-full md:w-auto col-span-1  min-h-[70vh] max-h-[70vh] !mt-0">
                   <MapView
                     markers={listingMarkers}
                     center={center}
@@ -494,6 +514,7 @@ const ProductSearch = () => {
                 </div>
               </div>
             )}
+            </div>
           </div>
         </div>
       </div>

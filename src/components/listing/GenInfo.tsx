@@ -206,9 +206,9 @@ const GeneralInfo = ({
       <Form.Item label="Description">
         <Input.TextArea
           placeholder="Enter"
-          className="min-h-24 h-24"
           value={data.description}
           onChange={(e) => onChange?.("description", e.target.value)}
+          style={{minHeight: '96px'}}
         />
       </Form.Item>
       <Row gutter={65}>
@@ -326,16 +326,18 @@ const GeneralInfo = ({
         </Col>
       </Row>
       <h3 className="font-lota text-lg mt-12">Availability Exceptions</h3>
-      <div className="w-full flex justify-center items-center">
-        <DatePicker
-          onChange={(date) => onChange?.("availability_exceptions", date)}
-          selected={data.availability_exceptions}
-        />
+      <div className="w-full flex justify-center items-center my-5">
+        <div className="p-4 rounded-xl shadow">
+          <DatePicker
+            onChange={(date) => onChange?.("availability_exceptions", date)}
+            selected={data.availability_exceptions}
+          />
+        </div>
       </div>
       <Form.Item>
         <Checkbox
           name="is_always_available"
-          className="checkbox-label"
+          className="checkbox-label ml-40"
           checked={data.is_always_available}
           onChange={(e) => onChange?.("is_always_available", e.target.checked)}
         >

@@ -10,6 +10,7 @@ import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
 import { GetAllCategoryQuery } from "../graphql/query_mutations";
 import Link from "next/link";
+import { useMediaQuery } from "react-responsive";
 
 // convert this array into a list of objects key will be image and title
 const gears = [
@@ -97,6 +98,9 @@ const Home: NextPage = () => {
   const carosuselRef = useRef<CarouselRef>(null);
   const [searchText, setSearchText] = useState<string>();
 
+  const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
+  const isTablet = useMediaQuery({ query: '(min-width: 768px)' });
+
   function next() {
     carosuselRef.current?.next();
   }
@@ -139,7 +143,7 @@ const Home: NextPage = () => {
               <input
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="All Gears"
-                className="min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
+                className="sm:min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
               />
               <button
                 onClick={handleSearch}
@@ -187,7 +191,7 @@ const Home: NextPage = () => {
           <h3 className="text-[32px] text-secondary font-semibold tracking-tighter mb-8">
             SHUUT Offers
           </h3>
-          <div className="sm:pl-8 space-y-5 sm:space-y-0 sm:grid sm:grid-cols-2 grid-cols-3 gap-4">
+          <div className="sm:pl-8 space-y-5 sm:space-y-0 sm:grid grid-cols-2 md:grid-cols-3 gap-4">
             <div className="border border-[#DFDFDF] rounded-[10px] p-7">
               <h3 className="text-2xl text-primary-100 font-semibold mb-7 mt-5">
                 Access To More
@@ -227,7 +231,7 @@ const Home: NextPage = () => {
           {loading ? (
             <Spin size="large" />
           ) : (
-            <div className="space-y-8 sm:space-y-0 sm:grid sm:grid-cols-2 grid-cols-4 gap-4 mt-12 md:pl-4 gap-y-8 pb-16">
+            <div className="space-y-8 sm:space-y-0 sm:grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 md:pl-4 gap-y-8 pb-16">
               {data?.category?.map((category: Record<string, any>) => (
                 <div
                   onClick={() => goToCategory(category.slug, category.name)}
@@ -304,7 +308,7 @@ const Home: NextPage = () => {
             </h3>
             <div className="md:w-[80%]">
               <Collapse
-                className="w-full bg-white faq-collapse"
+                className="w-full bg-white faq-collapse font-lota font-semibold text-sm xs:text-base sm:text-2xl"
                 bordered={false}
                 expandIconPosition="end"
                 expandIcon={(p) =>
@@ -320,7 +324,7 @@ const Home: NextPage = () => {
                 }
               >
                 <Collapse.Panel key={"1"} header="How secured is my Equipment?">
-                  <p>
+                  <p className="font-medium text-sm sm:text-xl">
                     We are currently in the process of identifying interested
                     founding members. When at least 100 have made a verbal
                     commitment, the process of negotiating with potential
@@ -332,7 +336,7 @@ const Home: NextPage = () => {
                   key={"2"}
                   header="Do renter pay for equipment transportation?"
                 >
-                  <p>
+                  <p className="font-medium text-sm sm:text-xl">
                     We are currently in the process of identifying interested
                     founding members. When at least 100 have made a verbal
                     commitment, the process of negotiating with potential
@@ -344,7 +348,7 @@ const Home: NextPage = () => {
                   key={"3"}
                   header="How much money is needed for insurance ?"
                 >
-                  <p>
+                  <p className="font-medium text-sm sm:text-xl">
                     We are currently in the process of identifying interested
                     founding members. When at least 100 have made a verbal
                     commitment, the process of negotiating with potential
@@ -356,7 +360,7 @@ const Home: NextPage = () => {
                   key={"4"}
                   header="What services are available on SHUUT?  "
                 >
-                  <p>
+                  <p className="font-medium text-sm sm:text-xl">
                     We are currently in the process of identifying interested
                     founding members. When at least 100 have made a verbal
                     commitment, the process of negotiating with potential
@@ -394,7 +398,7 @@ const Home: NextPage = () => {
           <Carousel
             className="home-carousel min-h-[267px]"
             ref={carosuselRef}
-            slidesToShow={3.2}
+            slidesToShow={isDesktop ? 3.2 : isTablet ? 2.2 : 1}
             infinite={false}
             arrows={false}
             dots={false}
