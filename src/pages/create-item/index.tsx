@@ -101,8 +101,7 @@ const NewListing = () => {
   };
 
   return (
-    // <AuthGuard>
-    <>
+    <AuthGuard>
       <NavBar />
       <div className="border-b"></div>
       <main className="container mt-5">
@@ -147,8 +146,7 @@ const NewListing = () => {
         </div>
       </main>
       <Footer />
-    {/* </AuthGuard> */}
-    </>
+    </AuthGuard>
   );
 };
 
