@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 import useAsyncEffect from "use-async-effect";
 import cookie from "js-cookie";
 import { notification } from "antd";
-import { parseJwt } from "../utils/utils";
+import { useRouter } from "next/router";
 
 interface IProps {
   children: React.ReactNode;
@@ -24,17 +24,20 @@ export type StateType = {
   user: IUser | null;
   isAuthenticated: boolean;
   isLoading: boolean;
+  token?: string;
   onLogout?: (reload?: boolean) => void;
   handleOAuth?: (
     provider: string,
     incompleteHandler?: (query: URLSearchParams) => void
   ) => void;
+  setToken?: (token?: string) => void;
 };
 
 const initalState: StateType = {
   user: null,
   isAuthenticated: false,
   isLoading: false,
+  token: undefined,
 };
 
 export const AuthContext = React.createContext(initalState);
@@ -55,12 +58,14 @@ const GET_ME_MUTATION = gql`
 `;
 
 const AuthProvider = ({ children }: IProps) => {
+  const router = useRouter();
   const [getCurrentUser, { loading }] = useMutation(GET_ME_MUTATION, {
     onCompleted: (data) => onCompleteFetchUser(data),
     onError: (error) => onFetchUserError(error),
   });
   const [user, setUser] = useState<IUser | null>(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [token, setToken] = useState<string>();
 
   useAsyncEffect(
     async (isMouted) => {
@@ -68,7 +73,7 @@ const AuthProvider = ({ children }: IProps) => {
         await getCurrentUser();
       }
     },
-    [user]
+    [user, isAuthenticated, token]
   );
 
   const onCompleteFetchUser = (data: any) => {
@@ -94,7 +99,7 @@ const AuthProvider = ({ children }: IProps) => {
 
   const handleOAuth = (provider: string, callback: any) => {
     if (provider) {
-      const authUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/oauth2/login/${provider}?redirect=${window.location.href}`;
+      const authUrl = `${process.env.NEXT_PUBLIC_API_ENDPOINT}/oauth2/login/${provider}?redirect=${window.location.origin}${window.location.pathname}`;
       const win = window.open(
         authUrl,
         "auth",
@@ -104,12 +109,16 @@ const AuthProvider = ({ children }: IProps) => {
       const intervalId = setInterval(() => {
         try {
           if (win?.location.href.includes(window.location.host)) {
+            console.log("win.location: ", win.location);
             const query = new URLSearchParams(win.location.search);
             if (query.get("status") === "success") {
               cookie.set("token", query.get("token") as string, {
                 expires: 1,
               });
-              window.location.href = "/";
+              // window.location.href = "/";
+              setToken(query.get("token") as string);
+              console.log("query: ", query.get("token"));
+              router.replace((router.query.redirect as string) ?? "/");
             } else if (query.get("status") === "failed") {
               notification.error({
                 message: query.get("message"),
@@ -138,6 +147,8 @@ const AuthProvider = ({ children }: IProps) => {
         user,
         isAuthenticated,
         isLoading: loading,
+        token,
+        setToken,
         onLogout,
         handleOAuth,
       }}

@@ -315,3 +315,133 @@ export const GetListingByCategory = gql`
     }
   }
 `;
+
+export const CHECK_AVAILABILITY_QUERY = gql`
+  query CheckAvailability(
+    $startdate: date!
+    $enddate: date!
+    $listing_id: Int!
+  ) {
+    result: check_availability(
+      args: {
+        startdate: $startdate
+        enddate: $enddate
+        listing_id: $listing_id
+      }
+    ) {
+      available
+    }
+  }
+`;
+
+export const ADD_TO_CART = gql`
+  mutation ($listing_id: bigint!, $quantity: Int, $start: date!, $end: date!) {
+    AddToCart(
+      listing_id: $listing_id
+      quantity: $quantity
+      start: $start
+      end: $end
+    ) {
+      id
+    }
+  }
+`;
+
+export const GET_CART_ITEMS = gql`
+  query GetCartItems($userId: bigint!) {
+    cart: transaction(
+      where: { ordered: { _eq: false }, _and: { customer: { _eq: $userId } } }
+      limit: 1
+    ) {
+      cartItems: bookings {
+        id
+        quantity
+        listing {
+          id
+          slug
+          title
+          daily_price
+          location_name
+          images {
+            url
+            id
+          }
+          user {
+            firstName
+            lastName
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const DELETE_CART_ITEM = gql`
+  mutation ($id: bigint!) {
+    delete_booking_by_pk(id: $id) {
+      id
+    }
+  }
+`;
+
+export const GET_TRANSACTION_SUMMARY = gql`
+  query {
+    summary: GetTransactionSummary {
+      transactionId
+      total
+      serviceCharge
+      vat
+      items {
+        listings {
+          from
+          to
+          price
+          quantity
+          serviceCharge
+          listingId
+          transactionItemId
+          title
+          images
+        }
+        user {
+          id
+          firstName
+          lastName
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_PAYMENT = gql`
+  mutation CreatePayment(
+    $amount: numeric!
+    $status: String!
+    $reference: String!
+  ) {
+    result: insert_payment_one(
+      object: { amount: $amount, status: $status, reference: $reference }
+    ) {
+      id
+    }
+  }
+`;
+
+export const CONFIRM_TRANSACTION = gql`
+  mutation ($id: bigint!, $paymentId: bigint!, $payinTotal: numeric) {
+    update_transaction(
+      where: { id: { _eq: $id } }
+      _set: { ordered: true, paymentId: $paymentId, payinTotal: $payinTotal }
+    ) {
+      affected_rows
+    }
+
+    update_booking(
+      where: { transaction_id: { _eq: $id } }
+      _set: { state: "PENDING" }
+    ) {
+      affected_rows
+    }
+  }
+`;

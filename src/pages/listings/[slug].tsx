@@ -1,4 +1,4 @@
-import { Avatar, Carousel, Popover, Spin, Tabs } from "antd";
+import { Avatar, Carousel, notification, Popover, Spin, Tabs } from "antd";
 import { CarouselRef } from "antd/lib/carousel";
 import React, { useEffect, useRef, useState } from "react";
 import cookie from "js-cookie";
@@ -26,12 +26,19 @@ import {
   SingleProduct,
 } from "../../components";
 import { Niger } from "../../components/icons";
-import { useLazyQuery } from "@apollo/client";
-import { GetListingDetailsBySlug } from "../../graphql/query_mutations";
+import { useLazyQuery, useMutation } from "@apollo/client";
+import {
+  ADD_TO_CART,
+  CHECK_AVAILABILITY_QUERY,
+  GetListingDetailsBySlug,
+} from "../../graphql/query_mutations";
 import { useRouter } from "next/router";
 import useAsyncEffect from "use-async-effect";
 import { formatMoney } from "../../utils/utils";
 import { Map, Marker } from "../../components/map/MapView";
+import { DateRange } from "react-day-picker";
+import { differenceInDays, differenceInMonths, format } from "date-fns";
+import { useAuth } from "../../hooks/useAuth";
 
 const { TabPane } = Tabs;
 
@@ -101,17 +108,55 @@ const PricingTab = ({
   );
 };
 
+interface Billing {
+  totalDays?: number;
+  totalDiscount?: number;
+  totalAmount?: number;
+  totalServiceCharge?: number;
+}
 const ProductView = () => {
   const router = useRouter();
-  const [visibleHelpPopup, setVisibleHelpPopup] = useState(false);
+  const { isAuthenticated } = useAuth();
   const [getListingBySlug, { data, loading }] = useLazyQuery(
     GetListingDetailsBySlug
   );
+  const [addToCart, { loading: cartInProgress }] = useMutation(ADD_TO_CART, {
+    onError: (error) => {
+      notification.error({
+        message: error.message,
+      });
+    },
+    onCompleted: (data) => {
+      setAddedToCart(true);
+      notification.success({
+        message: "Product added to cart successfully",
+        placement: "bottom",
+      });
+    },
+  });
+  const [checkAvailability, { loading: checkInProgress }] = useLazyQuery(
+    CHECK_AVAILABILITY_QUERY,
+    {
+      onCompleted: (data) => onAvailabilityCheckComplete(data),
+      onError(error) {
+        notification.error({
+          message: error.message,
+        });
+      },
+    }
+  );
+  const [visibleHelpPopup, setVisibleHelpPopup] = useState(false);
+  const [billing, setBilling] = useState<Billing>({});
   const carouselRef = useRef<CarouselRef>(null);
-  const [availability, setAvailability] = useState(false);
+  const [showAvailabilityCalendar, setShowAvailabilityCalendar] =
+    useState(false);
   const [selectedImage, setSelectedImage] = useState<string>();
   const [listing, setListing] = useState<Record<string, any>>();
   const [expanded, setExpanded] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<DateRange>();
+  const [showBookingInfoCard, setShowBookingInfoCard] = useState(false);
+  const [addedToCart, setAddedToCart] = useState(false);
+  const [quantity, setQuantity] = useState(1);
 
   const goUp = () => {
     carouselRef.current?.next();
@@ -134,6 +179,10 @@ const ProductView = () => {
           variables: { slug },
         });
       }
+      setShowBookingInfoCard(false);
+      setSelectedDate(undefined);
+      setQuantity(1);
+      setBilling({});
     },
     [router]
   );
@@ -145,30 +194,132 @@ const ProductView = () => {
     }
   }, [data]);
 
+  useEffect(() => {
+    if (selectedDate?.from && selectedDate?.to && listing) {
+      const days = differenceInDays(selectedDate.to, selectedDate.from);
+      const charge = process.env
+        .NEXT_PUBLIC_SERIVCE_CHARGE as unknown as number;
+      let totalAmount = 0;
+      let totalCharge = 0;
+      let totalDiscount = 0;
+      if (days < 7 && days >= 1) {
+        totalAmount = listing.daily_price * days;
+        totalCharge = totalAmount * charge;
+        totalAmount += totalCharge;
+      } else if (days >= 7 && days < 30) {
+        totalAmount = (listing.weekly_price / 7) * days;
+        totalCharge = totalAmount * charge;
+        totalDiscount = listing.daily_price * days - totalAmount;
+        totalAmount += totalCharge;
+      } else if (days >= 30) {
+        totalAmount = (listing.monthly_price / 30) * days;
+        totalCharge = totalAmount * charge;
+        totalDiscount = listing.daily_price * days - totalAmount;
+        totalAmount += totalCharge;
+      }
+      setBilling({
+        totalDays: days,
+        totalAmount,
+        totalServiceCharge: totalCharge,
+        totalDiscount,
+      });
+    }
+  }, [selectedDate, listing]);
+
+  const onCheckAvailability = async () => {
+    setShowBookingInfoCard(false);
+    if (!selectedDate?.from || !selectedDate?.to) {
+      notification.warn({
+        message: "please select a date range",
+      });
+      return;
+    }
+
+    await checkAvailability({
+      variables: {
+        listing_id: listing?.id,
+        startdate: format(selectedDate?.from, "yyyy-MM-dd"),
+        enddate: format(selectedDate?.to, "yyyy-MM-dd"),
+      },
+    });
+  };
+
+  const onAvailabilityCheckComplete = (data: any) => {
+    if (data?.result[0]?.available) {
+      setShowAvailabilityCalendar(false);
+      setShowBookingInfoCard(true);
+    } else {
+      notification.error({
+        message: "product is not available, please check another date",
+      });
+    }
+  };
+
+  const onAddToCart = async () => {
+    setAddedToCart(false);
+    if (!isAuthenticated) {
+      return router.push({
+        pathname: "/auth/login",
+        query: {
+          redirect: `/listings/${router.query.slug}`,
+        },
+      });
+    }
+
+    await addToCart({
+      variables: {
+        listing_id: listing?.id,
+        quantity: quantity,
+        start: format(selectedDate?.from as Date, "yyyy-MM-ddd"),
+        end: format(selectedDate?.to as Date, "yyyy-MM-ddd"),
+      },
+    });
+  };
+
+  const bookNow = () => {
+    router.push({
+      pathname: "/transaction-summary",
+      query: {
+        start: format(selectedDate?.from as Date, "yyyy-MM-ddd"),
+        end: format(selectedDate?.to as Date, "yyyy-MM-ddd"),
+        listingId: listing?.id,
+        quantity,
+      },
+    });
+  };
+
   return (
     <div className="bg-[#F8F8F8] min-h-screen">
       <div className="container">
         <NavBar />
       </div>
       <Modal
-        onCancel={() => setAvailability(false)}
-        visible={availability}
+        onCancel={() => setShowAvailabilityCalendar(false)}
+        visible={showAvailabilityCalendar}
         width={750}
       >
         <div className="w-full flex justify-center items-center px-10 pt-10">
           <div className="shadow rounded-lg px-5">
-            <DatePicker />
+            <DatePicker selected={selectedDate} onChange={setSelectedDate} />
           </div>
         </div>
         <div className="mt-6 flex justify-end gap-5 py-2">
           <button
-            onClick={() => setAvailability(false)}
+            onClick={() => {
+              setShowAvailabilityCalendar(false);
+              setShowBookingInfoCard(false);
+              setSelectedDate(undefined);
+            }}
             className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
           >
             Cancel
           </button>
-          <button className="w-[244px] font-sofia-pro bg-secondary hover:bg-primary rounded-md text-white h-12 items-center text-lg font-semibold">
-            Transaction Summary
+          <button
+            disabled={!selectedDate?.from || !selectedDate?.to}
+            onClick={onCheckAvailability}
+            className="w-[244px] purple-button font-sofia-pro bg-secondary hover:bg-primary disabled:bg-primary disabled:cursor-not-allowed rounded-md text-white h-12 items-center text-lg font-semibold"
+          >
+            {checkInProgress ? <Spin size="small" /> : "Submit"}
           </button>
         </div>
       </Modal>
@@ -271,37 +422,185 @@ const ProductView = () => {
                       {listing?.title}
                     </h3>
                     <div className="inline-flex items-center bg-white rounded-md px-2 w-20 justify-between">
-                      <button className="text-xl">
+                      <button
+                        className="text-xl"
+                        onClick={() => setQuantity((p) => p + 1)}
+                      >
                         <IoIosAdd />
                       </button>
                       <input
                         className="focus:outline-none py-2 w-[10px] text-center text-black font-medium font-sofia-pro"
-                        placeholder="1"
+                        placeholder={"" + quantity}
                       />
-                      <button className="text-xl">
+                      <button
+                        className="text-xl"
+                        onClick={() => setQuantity((p) => (p > 1 ? p - 1 : p))}
+                      >
                         <BiMinus />
                       </button>
                     </div>
                   </div>
-                  <div className="bg-white rounded-md p-4 mb-4 relative h-[285px]">
-                    <button className="absolute top-3 right-3 rounded-full w-6 h-6 inline-grid place-items-center border border-[#F4F4F4]">
+                  <Popover
+                    visible={visibleHelpPopup}
+                    content={
+                      <PopoverContent
+                        onSubmit={() => {
+                          setVisibleHelpPopup(false);
+                          cookie.set("__pop__", "1");
+                        }}
+                      />
+                    }
+                    placement="leftTop"
+                    overlayClassName="price-popover"
+                  >
+                    {showBookingInfoCard &&
+                    selectedDate?.from &&
+                    selectedDate.to ? (
+                      <div className="bg-white rounded-[5px] mb-5">
+                        <div className="px-6 py-5 text-[#0A2429E5] space-y-2.5">
+                          <div className="flex justify-between">
+                            <h4 className="font-sofia-pro text-[#0A2429] text-xl font-medium">
+                              {differenceInDays(
+                                selectedDate?.to as Date,
+                                selectedDate?.from as Date
+                              )}{" "}
+                              Days
+                            </h4>
+                            <button
+                              onClick={() => setShowAvailabilityCalendar(true)}
+                              className="font-sofia-pro text-sm text-[#286EE6] "
+                            >
+                              Change
+                            </button>
+                          </div>
+                          <div className="flex justify-between">
+                            <h4 className="">
+                              {format(selectedDate?.from as Date, "dd LLLL")}
+                            </h4>
+                            <div className="">-</div>
+                            <h5 className="">
+                              {format(selectedDate?.to as Date, "dd LLLL")}
+                            </h5>
+                          </div>
+                          <div className="flex justify-between">
+                            <h4 className="">Total Cost Per Day</h4>
+                            <h5 className="">₦{listing?.daily_price}</h5>
+                          </div>
+                          <div className="flex justify-between">
+                            <h4 className="">Service Fee</h4>
+                            <h5 className="">₦{billing.totalServiceCharge}</h5>
+                          </div>
+                          {billing &&
+                          billing.totalDiscount &&
+                          (billing.totalDays as unknown as number) < 30 ? (
+                            <div className="flex justify-between">
+                              <h4 className="text-green-500">
+                                Weekly price discount
+                              </h4>
+                              <h5 className="text-green-500">
+                                ₦{billing.totalDiscount}
+                              </h5>
+                            </div>
+                          ) : billing &&
+                            billing.totalDiscount &&
+                            (billing.totalDays as unknown as number) >= 30 ? (
+                            <div className="flex justify-between text-green-500">
+                              <h4 className="text-green-500">
+                                Monthly price discount
+                              </h4>
+                              <h5 className="text-green-500">
+                                ₦{billing.totalDiscount}
+                              </h5>
+                            </div>
+                          ) : null}
+                          <div className="flex justify-between">
+                            <h4 className="">Total</h4>
+                            <h5 className="">₦{billing.totalAmount}</h5>
+                          </div>
+                          <div className="mt-6 flex justify-end gap-5">
+                            {addedToCart ? (
+                              <button
+                                onClick={() => router.push("/listings/search")}
+                                className="w-[133px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-8 items-center text-sm font-medium"
+                              >
+                                Add More
+                              </button>
+                            ) : (
+                              <button
+                                onClick={onAddToCart}
+                                className="w-[133px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-8 items-center text-sm font-medium"
+                              >
+                                {cartInProgress ? (
+                                  <Spin size="small" />
+                                ) : (
+                                  "Add Cart"
+                                )}
+                              </button>
+                            )}
+                            <button
+                              onClick={() => {
+                                if (addedToCart) {
+                                  router.push("/cart");
+                                } else {
+                                  bookNow();
+                                }
+                              }}
+                              className="w-[133px] font-sofia-pro bg-secondary rounded-md text-white h-8 items-center text-sm font-medium"
+                            >
+                              {addedToCart ? "View Cart" : "Book Now"}
+                            </button>
+                          </div>
+                          <p className="text-[#EB001B]">
+                            48 hours cooling off period
+                          </p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="bg-white rounded-md p-6 mb-4 relative min-h-[255px]">
+                        <h3 className="font-medium text-xl">
+                          {listing?.title}
+                        </h3>
+                        <div className="grid grid-cols-3 gap-4 mt-5">
+                          <div className="border border-[#DFDFE6] p-4 rounded-[5px]">
+                            <h3 className="text-base font-semibold font-sofia-pro text-[#23262F]">
+                              Monthly
+                            </h3>
+                            <p className="text-xs text-[#677489] font-medium font-sofia-pro">
+                              ₦{listing?.monthly_price}/30days
+                            </p>
+                          </div>
+                          <div className="border border-[#DFDFE6] p-4 rounded-[5px]">
+                            <h3 className="text-base font-semibold font-sofia-pro text-[#23262F]">
+                              Weekly
+                            </h3>
+                            <p className="text-xs text-[#677489] font-medium font-sofia-pro">
+                              ₦{listing?.weekly_price}/7days
+                            </p>
+                          </div>
+                          <div className="border border-[#DFDFE6] p-4 rounded-[5px]">
+                            <h3 className="text-base font-semibold font-sofia-pro text-[#23262F]">
+                              Daily
+                            </h3>
+                            <p className="text-xs text-[#677489] font-medium font-sofia-pro">
+                              ₦{listing?.daily_price}/day
+                            </p>
+                          </div>
+                        </div>
+                        <div className="mt-12 flex justify-center">
+                          <button
+                            onClick={() => setShowAvailabilityCalendar(true)}
+                            className="font-sofia-pro px-7 bg-secondary rounded-md text-white h-8 inline-flex items-center text-sm font-medium"
+                          >
+                            Check Availabilty
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* <button className="absolute top-3 right-3 rounded-full w-6 h-6 inline-grid place-items-center border border-[#F4F4F4]">
                       <IoIosClose />
-                    </button>
-                    <Popover
-                      visible={visibleHelpPopup}
-                      trigger="click"
-                      content={
-                        <PopoverContent
-                          onSubmit={() => {
-                            setVisibleHelpPopup(false);
-                            cookie.set("__pop__", "1");
-                          }}
-                        />
-                      }
-                      placement="leftTop"
-                      overlayClassName="price-popover"
-                    >
-                      <Tabs
+                    </button> */}
+                    {/* <Tabs
                         className="price-tabs"
                         onChange={(k) => {
                           if (!cookie.get("__pop__")) {
@@ -333,51 +632,10 @@ const ProductView = () => {
                             onClick={() => setAvailability(true)}
                           />
                         </TabPane>
-                      </Tabs>
-                    </Popover>
-                  </div>
+                      </Tabs> */}
+                  </Popover>
                   {/** this part will be enable later when availability check implemented, please do not remove this commented code if you want to modify you can */}
 
-                  {/* <div className="bg-white rounded-[5px] mb-5">
-                    <div className="px-6 py-5 text-[#0A2429E5] space-y-2.5">
-                      <div className="flex justify-between">
-                        <h4 className="font-sofia-pro text-[#0A2429] text-xl font-medium">
-                          Days
-                        </h4>
-                        <h5 className="font-sofia-pro text-sm text-[#286EE6]">
-                          Chagne
-                        </h5>
-                      </div>
-                      <div className="flex justify-between">
-                        <h4 className="">14 September</h4>
-                        <div className="">-</div>
-                        <h5 className="">24 September</h5>
-                      </div>
-                      <div className="flex justify-between">
-                        <h4 className="">Total Cost Per Day</h4>
-                        <h5 className="">$400,000</h5>
-                      </div>
-                      <div className="flex justify-between">
-                        <h4 className="">Service Fee</h4>
-                        <h5 className="">$400,000</h5>
-                      </div>
-                      <div className="flex justify-between">
-                        <h4 className="">Total</h4>
-                        <h5 className="">$400,000</h5>
-                      </div>
-                      <div className="mt-6 flex justify-end gap-5">
-                        <button className="w-[133px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-8 items-center text-sm font-medium">
-                          Add Cart
-                        </button>
-                        <button className="w-[133px] font-sofia-pro bg-secondary rounded-md text-white h-8 items-center text-sm font-medium">
-                          Book Now
-                        </button>
-                      </div>
-                      <p className="text-[#EB001B]">
-                        48 hours cooling off period
-                      </p>
-                    </div>
-                  </div> */}
                   <div className="bg-white rounded-md p-4 mb-4">
                     <h3 className="text-xl text-primary-100 font-medium font-sofia-pro mb-6">
                       description
@@ -474,7 +732,10 @@ const ProductView = () => {
                             Jane Doe
                             <span>05 August 2022</span>
                           </h4>
-                          <RattingBar ratting={4.5} className="!text-[#FFCB45]" />
+                          <RattingBar
+                            ratting={4.5}
+                            className="!text-[#FFCB45]"
+                          />
                           <p className="text-sm font-sofia-pro text-primary-100 mt-4">
                             05 August 2022 We’ve analysed prices for Video
                             CameraR.... from all renters on SHUUT.
@@ -487,7 +748,10 @@ const ProductView = () => {
                           <h4 className="text-[15px] font-sofia-pro text-primary-100">
                             Jane Doe
                           </h4>
-                          <RattingBar ratting={4.5} className="!text-[#FFCB45]" />
+                          <RattingBar
+                            ratting={4.5}
+                            className="!text-[#FFCB45]"
+                          />
                           <p className="text-sm font-sofia-pro text-primary-100 mt-4">
                             05 August 2022 We’ve analysed prices for Video
                             CameraR.... from all renters on SHUUT.
@@ -530,7 +794,7 @@ const ProductView = () => {
                         </p>
                       </div>
                     </div> */}
-                    {/* <div className="flex">
+                {/* <div className="flex">
                       <Avatar size={41} />
                       <div className="ml-3 w-[90%]">
                         <h4 className="text-[15px] font-sofia-pro text-primary-100">

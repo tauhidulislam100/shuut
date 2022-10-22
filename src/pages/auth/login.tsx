@@ -11,6 +11,7 @@ import Button from "../../components/UI/Button";
 import { parseJwt } from "../../utils/utils";
 import { useAuth } from "../../hooks/useAuth";
 import SocialIncompletSignup from "./social_incomplete_signup";
+import { useRouter } from "next/router";
 
 const SIGNIN_MUTATION = gql`
   mutation ($email: String!, $password: String!) {
@@ -21,7 +22,8 @@ const SIGNIN_MUTATION = gql`
 `;
 
 const Login = () => {
-  const { handleOAuth } = useAuth();
+  const { handleOAuth, setToken } = useAuth();
+  const router = useRouter();
   const [signInUser, { loading }] = useMutation(SIGNIN_MUTATION, {
     onError: (e) => onError(e),
     onCompleted: (data) => onSignInComplete(data),
@@ -44,7 +46,8 @@ const Login = () => {
       cookie.set("token", data.user.accessToken, {
         expires: 1,
       });
-      window.location.href = "/";
+      setToken?.(data.user.accessToken);
+      router.replace((router.query.redirect as string) ?? "/");
     } else {
       notification.error({
         message: "something went wrong, login not success",
