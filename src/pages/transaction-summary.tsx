@@ -13,7 +13,7 @@ import {
 } from "antd";
 import { useRouter } from "next/router";
 import AuthGuard from "../components/auth-guard/AuthGuard";
-import { useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   ADD_TO_CART,
   CONFIRM_TRANSACTION,
@@ -60,14 +60,9 @@ const Payment = () => {
   const [completeTransaction, setCompleteTransaction] = useState(false);
   const [transactionSummary, setTransactionSummary] =
     useState<Record<string, any>>();
-  const {
-    loading,
-    error,
-    data: transactionData,
-    refetch,
-  } = useQuery(GET_TRANSACTION_SUMMARY, {
-    fetchPolicy: "network-only",
-  });
+  const [getSummary, { loading, error, data: transactionData }] = useLazyQuery(
+    GET_TRANSACTION_SUMMARY
+  );
   const [addToCart, { loading: cartInProgress }] = useMutation(ADD_TO_CART, {
     onError: (error) => {
       notification.error({
@@ -75,7 +70,10 @@ const Payment = () => {
       });
     },
     onCompleted(data) {
-      refetch();
+      console.log("add to cart is complete, ", data);
+      getSummary({
+        fetchPolicy: "network-only",
+      });
     },
   });
   const [confirmTransaction, { loading: confirmTransactionLoading }] =
@@ -117,6 +115,10 @@ const Payment = () => {
 
   useAsyncEffect(
     async (isMounted) => {
+      await getSummary({
+        fetchPolicy: "cache-and-network",
+      });
+
       if (isMounted() && router && !ref.current) {
         ref.current = true;
         const { start, end, quantity, listingId } = router.query;

@@ -119,7 +119,10 @@ const ProductView = () => {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
   const [getListingBySlug, { data, loading }] = useLazyQuery(
-    GetListingDetailsBySlug
+    GetListingDetailsBySlug,
+    {
+      nextFetchPolicy: "cache-and-network",
+    }
   );
   const [addToCart, { loading: cartInProgress }] = useMutation(ADD_TO_CART, {
     onError: (error) => {
@@ -568,7 +571,7 @@ const ProductView = () => {
                                   {cartInProgress ? (
                                     <Spin size="small" />
                                   ) : (
-                                    "Add Cart"
+                                    "Add to Cart"
                                   )}
                                 </button>
                               )}
