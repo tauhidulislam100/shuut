@@ -200,8 +200,8 @@ const Home: NextPage = () => {
                 Access To More
               </h3>
               <p className="text-base font-normal text-primary-100">
-                Is be upon sang fond must shew. Really boy law county she unable
-                her sister. Feet you off its like like six.
+                Get access to a wide range of products to pursue your goals.
+                More products, more possibilities
               </p>
             </div>
             <div className="border border-[#DFDFDF] rounded-[10px] p-7">
@@ -209,8 +209,8 @@ const Home: NextPage = () => {
                 Save Money
               </h3>
               <p className="text-base font-normal text-primary-100">
-                Is be upon sang fond must shew. Really boy law county she unable
-                her sister. Feet you off its like like six.
+                Renting world-class gadgets saves you money you, than buying.
+                Spend less, achieve more
               </p>
             </div>
             <div className="border border-[#DFDFDF] rounded-[10px] p-7">
@@ -218,8 +218,8 @@ const Home: NextPage = () => {
                 Get Insured
               </h3>
               <p className="text-base font-normal text-primary-100">
-                Is be upon sang fond must shew. Really boy law county she unable
-                her sister. Feet you off its like like six.
+                Insurance gives security to gadgets. Your insurance, your
+                security.
               </p>
             </div>
           </div>
