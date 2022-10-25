@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from "@apollo/client";
+import { gql, useLazyQuery, useQuery } from "@apollo/client";
 import { Spin } from "antd";
 import Image from "next/image";
 import Link from "next/link";
@@ -13,14 +13,20 @@ import {
   topCities,
   tripodInLagos,
 } from "../../../data";
-import { GetListingByCategory } from "../../../graphql/query_mutations";
+import {
+  GetCategoryWithImages,
+  GetListingByCategory,
+} from "../../../graphql/query_mutations";
 import { defaultRadius } from "../search";
 
 const Category = () => {
   const router = useRouter();
   const [searchText, setSearchText] = useState<string>();
-  const [getListingByCategory, { data, loading }] =
+  const [getListingByCategory, { data, loading, client }] =
     useLazyQuery(GetListingByCategory);
+  // const cachedCategories = client.readQuery({
+  //   query: GetCategoryWithImages,
+  // });
 
   useAsyncEffect(
     async (isMounted) => {
@@ -52,8 +58,8 @@ const Category = () => {
         <section className="md:flex flex-row-reverse justify-between gap-10 md:pt-20">
           <div>
             <img
-              src="/images/tripod.png"
-              alt="Tripod"
+              src={"/images/tripod.png"}
+              alt={router.query?.name as string}
               className="object-cover max-w-full"
             />
           </div>
@@ -100,6 +106,11 @@ const Category = () => {
             </p>
             <div className="flex items-center gap-6 mt-4">
               <img
+                alt="axa mansard"
+                src="/images/logos/axamansard.png"
+                className="max-w-full object-cover w-[118px] h-[21px]"
+              />
+              {/* <img
                 src="/images/logos/leadway.png"
                 className="max-w-full object-cover w-[82px] h-[32px]"
               />
@@ -110,7 +121,7 @@ const Category = () => {
               <img
                 src="/images/logos/wapic.png"
                 className="max-w-full object-cover w-[94px] h-[29px]"
-              />
+              /> */}
             </div>
           </div>
         </section>

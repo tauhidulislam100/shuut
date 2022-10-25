@@ -50,10 +50,9 @@ const PayButton = ({
     onSuccess: onSuccess,
     onClose: onClose,
   };
-
-  console.log("config: ", config);
   return <PaystackButton {...config} />;
 };
+
 const Payment = () => {
   const ref = useRef<boolean>();
   const router = useRouter();
@@ -67,7 +66,7 @@ const Payment = () => {
     data: transactionData,
     refetch,
   } = useQuery(GET_TRANSACTION_SUMMARY, {
-    fetchPolicy: "cache-and-network",
+    fetchPolicy: "network-only",
   });
   const [addToCart, { loading: cartInProgress }] = useMutation(ADD_TO_CART, {
     onError: (error) => {

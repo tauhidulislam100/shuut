@@ -8,7 +8,7 @@ import { CarouselRef } from "antd/lib/carousel";
 import Image from "next/image";
 import { useRouter } from "next/router";
 import { useQuery } from "@apollo/client";
-import { GetAllCategoryQuery } from "../graphql/query_mutations";
+import { GetCategoryWithImages } from "../graphql/query_mutations";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
 
@@ -94,12 +94,14 @@ const slideItems = [
 
 const Home: NextPage = () => {
   const router = useRouter();
-  const { loading, data } = useQuery(GetAllCategoryQuery);
+  const { loading, data } = useQuery(GetCategoryWithImages, {
+    fetchPolicy: "cache-and-network",
+  });
   const carosuselRef = useRef<CarouselRef>(null);
   const [searchText, setSearchText] = useState<string>();
 
-  const isDesktop = useMediaQuery({ query: '(min-width: 1024px)' });
-  const isTablet = useMediaQuery({ query: '(min-width: 768px)' });
+  const isDesktop = useMediaQuery({ query: "(min-width: 1024px)" });
+  const isTablet = useMediaQuery({ query: "(min-width: 768px)" });
 
   function next() {
     carosuselRef.current?.next();
@@ -159,7 +161,7 @@ const Home: NextPage = () => {
               In Partnership With
             </p>
             <div className="flex items-center gap-6 mt-4">
-              <img
+              {/* <img
                 src="/images/logos/leadway.png"
                 className="max-w-full object-cover w-[82px] h-[32px]"
               />
@@ -170,8 +172,9 @@ const Home: NextPage = () => {
               <img
                 src="/images/logos/wapic.png"
                 className="max-w-full object-cover w-[94px] h-[29px]"
-              />
+              /> */}
               <img
+                alt="axa mansard"
                 src="/images/logos/axamansard.png"
                 className="max-w-full object-cover w-[118px] h-[21px]"
               />
@@ -223,7 +226,7 @@ const Home: NextPage = () => {
         </section>
       </div>
 
-      <section className="py-20 bg-[#F8F8F8]">
+      <section className="pt-20 sm:pb-0 pb-20 bg-[#F8F8F8]">
         <div className="container">
           <h3 className="text-[32px] text-secondary font-semibold tracking-tighter mb-8">
             Explore Gears
@@ -239,6 +242,7 @@ const Home: NextPage = () => {
                   key={category.slug}
                 >
                   <img
+                    alt="category logo"
                     src={category.image}
                     className="object-cover hover:scale-105 w-full rounded-[5px] h-[219px] transition-all"
                   />
@@ -264,12 +268,11 @@ const Home: NextPage = () => {
           </div> */}
 
           <div className="pt-16 pl-4 md:grid grid-cols-2 2xl:gap-x-40 items-center">
-            <div className="relative w-full h-[537px]">
-              <Image
+            <div className="relative w-full">
+              <img
                 src="/images/mockup.png"
-                className="object-contain lg:object-cover left-0 max-w-full"
                 alt="Mobile App"
-                layout="fill"
+                className="object-cover max-w-full w-full"
               />
             </div>
             <div>
@@ -287,12 +290,14 @@ const Home: NextPage = () => {
                   <img
                     src="/images/logos/appstore.png"
                     className="max-w-full object-cover"
+                    alt="app store"
                   />
                 </a>
                 <a href="#">
                   <img
                     src="/images/logos/google-play.png"
                     className="max-w-full object-cover"
+                    alt="playstore"
                   />
                 </a>
               </div>
@@ -374,7 +379,7 @@ const Home: NextPage = () => {
         </div>
       </section>
 
-      <section className="py-16">
+      {/* <section className="py-16">
         <div className="container">
           <h3 className="text-[32px] text-secondary font-semibold tracking-tighter">
             Our Customers Feedback
@@ -424,7 +429,7 @@ const Home: NextPage = () => {
             ))}
           </Carousel>
         </div>
-      </section>
+      </section> */}
       <Footer />
     </>
   );

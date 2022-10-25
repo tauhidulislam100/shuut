@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import { MdOutlineKeyboardArrowDown } from "react-icons/md";
 import { useAuth } from "../../hooks/useAuth";
 import { Modal } from "..";
-import { RiMenu3Fill } from 'react-icons/ri';
+import { RiMenu3Fill } from "react-icons/ri";
 
 const NavLinkItem = ({
   label = "",
@@ -95,7 +95,13 @@ function NavBar() {
       <nav className="w-full flex justify-between items-center py-5">
         <div className="text-primary text-2xl font-semibold">
           <Link href={"/"}>
-            <a className="hover:text-primary">Shuut</a>
+            <a className="hover:text-primary">
+              <img
+                src="/images/logos/shuut-logo.png"
+                className="object-cover max-w-full h-10"
+                alt="shuut"
+              />
+            </a>
           </Link>
         </div>
         <ul className="flex items-center ml-auto gap-x-10">
@@ -134,22 +140,22 @@ function NavBar() {
             </div>
           ) : (
             <>
-            <div className="hidden md:flex items-center gap-10">
-              <NavLinkItem label="Login" href="/auth/login" liClass="ml-32" />
-              <NavLinkItem
-                label="Sign Up"
-                href="/auth/signup"
-                className="bg-secondary h-[50px] w-[167px]  !text-white hover:text-white text-base font-medium inline-flex justify-center items-center rounded-lg"
-              />
-            </div>
-            <Dropdown
-            overlay={<AuthLessMenu />}
-            trigger={["click"]}
-            className="md:hidden"
-          >
-            <RiMenu3Fill className="text-2xl" />
-          </Dropdown>
-          </>
+              <div className="hidden md:flex items-center gap-10">
+                <NavLinkItem label="Login" href="/auth/login" liClass="ml-32" />
+                <NavLinkItem
+                  label="Sign Up"
+                  href="/auth/signup"
+                  className="bg-secondary h-[50px] w-[167px]  !text-white hover:text-white text-base font-medium inline-flex justify-center items-center rounded-lg"
+                />
+              </div>
+              <Dropdown
+                overlay={<AuthLessMenu />}
+                trigger={["click"]}
+                className="md:hidden"
+              >
+                <RiMenu3Fill className="text-2xl" />
+              </Dropdown>
+            </>
           )}
         </ul>
       </nav>

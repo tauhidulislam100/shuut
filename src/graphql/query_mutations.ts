@@ -149,6 +149,18 @@ export const GetAllCategoryQuery = gql`
   }
 `;
 
+export const GetCategoryWithImages = gql`
+  query {
+    category(where: { image: { _neq: "" } }) {
+      id
+      slug
+      name
+      image
+      description
+    }
+  }
+`;
+
 export const GetAllInsuranceQuery = gql`
   query {
     insurance {
@@ -215,7 +227,7 @@ export const CreateListingMutation = gql`
 `;
 
 export const GetListingDetailsBySlug = gql`
-  query ListingDetailBySlug($slug: String!) {
+  query ListingDetailBySlug($slug: String!, $currentDate: date) {
     listing(where: { slug: { _eq: $slug } }, limit: 1) {
       id
       title
@@ -230,6 +242,7 @@ export const GetListingDetailsBySlug = gql`
         url
         id
       }
+      availability_exceptions
       category {
         id
         name
@@ -273,6 +286,21 @@ export const GetListingDetailsBySlug = gql`
             name
           }
         }
+      }
+      bookings(
+        where: {
+          _or: [
+            { end: { _gte: $currentDate } }
+            { start: { _gte: $currentDate } }
+          ]
+          _and: {
+            _or: [{ state: { _eq: "PENDING" } }, { state: { _eq: "ACCEPTED" } }]
+          }
+        }
+      ) {
+        quantity
+        start
+        end
       }
     }
   }
