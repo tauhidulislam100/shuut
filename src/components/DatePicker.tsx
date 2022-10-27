@@ -1,26 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { DateRange, DayPicker, Matcher } from "react-day-picker";
+import {
+  DateRange,
+  DayClickEventHandler,
+  DayModifiers,
+  DayPicker,
+  Matcher,
+} from "react-day-picker";
 
 const DatePicker = ({
   selected,
   onChange,
   disabled,
+  priceOption,
+  onDayClick,
 }: {
   selected?: DateRange;
   onChange?: (date?: DateRange) => void;
   disabled?: Matcher | Matcher[];
+  priceOption?: string;
+  onDayClick?: DayClickEventHandler;
 }) => {
-  // useEffect(() => {
-  //   console.log("disabled: ", disabled);
-  // }, [disabled]);
+  const min =
+    priceOption === "daily"
+      ? 2
+      : priceOption === "weekly"
+      ? 8
+      : priceOption === "monthly"
+      ? 31
+      : undefined;
+
   return (
     <DayPicker
+      onDayClick={onDayClick}
       defaultMonth={new Date()}
-      disabled={disabled}
+      disabled={disabled ?? { before: new Date() }}
       mode="range"
       numberOfMonths={2}
       selected={selected}
       onSelect={(range) => onChange?.(range)}
+      max={priceOption === "daily" ? 6 : undefined}
+      min={min}
     />
   );
 };

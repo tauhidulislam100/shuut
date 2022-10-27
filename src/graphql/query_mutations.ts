@@ -144,6 +144,7 @@ export const GetAllCategoryQuery = gql`
       slug
       name
       image
+      icon
       description
     }
   }
@@ -236,6 +237,7 @@ export const GetListingDetailsBySlug = gql`
       weekly_price
       monthly_price
       location_name
+      quantity
       lat
       lng
       images {
@@ -345,17 +347,32 @@ export const GetListingByCategory = gql`
 `;
 
 export const CHECK_AVAILABILITY_QUERY = gql`
+  # query CheckAvailability(
+  #   $startdate: date!
+  #   $enddate: date!
+  #   $listing_id: Int!
+  # ) {
+  #   result: check_availability(
+  #     args: {
+  #       startdate: $startdate
+  #       enddate: $enddate
+  #       listing_id: $listing_id
+  #     }
+  #   ) {
+  #     available
+  #   }
+  # }
   query CheckAvailability(
-    $startdate: date!
-    $enddate: date!
-    $listing_id: Int!
+    $start: date!
+    $end: date!
+    $quantity: Int
+    $listing_id: bigint!
   ) {
-    result: check_availability(
-      args: {
-        startdate: $startdate
-        enddate: $enddate
-        listing_id: $listing_id
-      }
+    result: CheckAvailability(
+      start: $start
+      end: $end
+      quantity: $quantity
+      listing_id: $listing_id
     ) {
       available
     }

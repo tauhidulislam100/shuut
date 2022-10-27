@@ -81,7 +81,7 @@ const DropdownBody = ({
 export const defaultRadius = 80000;
 
 const ProductSearch = () => {
-  const isTablet = useMediaQuery({ query: '(min-width: 768px)' });
+  const isTablet = useMediaQuery({ query: "(min-width: 768px)" });
   const router = useRouter();
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>(
     topCities[0]
@@ -261,12 +261,11 @@ const ProductSearch = () => {
   return (
     <>
       <NavBar />
-      <div onClick={() => setShowMap(prev => !prev)} className="md:hidden z-[5000] fixed bottom-5 left-1/2 text-2xl text-primary">
-        {
-          showMap ?
-          <FaList /> :
-          <FaMapMarkerAlt />
-        }
+      <div
+        onClick={() => setShowMap((prev) => !prev)}
+        className="md:hidden z-[5000] fixed bottom-5 left-1/2 text-2xl text-primary"
+      >
+        {showMap ? <FaList /> : <FaMapMarkerAlt />}
       </div>
       <div className="bg-[#FFFFFF] border-t border-[#D0CFD8] border-opacity-30 pt-4 pb-10">
         <div className="container">
@@ -377,143 +376,147 @@ const ProductSearch = () => {
             </div>
           </div>
           <div className="pt-5 max-h-[calc(100vh-250px)] h-[calc(100vh-250px)] md:h-[auto] md:max-h-[auto] overflow-y-scroll md:overflow-y-visible">
-            <div className={`min-w-full w-full h-full ${showMap ? 'block md:hidden' : 'hidden'}`}>
-                <MapView
-                  markers={listingMarkers}
-                  center={center}
-                  zoom={zoom}
-                  onIdle={onIdle}
-                  onCenterChange={handleOnChanterChange}
-                  focusedMarker={hovredItem}
-                />
+            <div
+              className={`min-w-full w-full h-full ${
+                showMap ? "block md:hidden" : "hidden"
+              }`}
+            >
+              <MapView
+                markers={listingMarkers}
+                center={center}
+                zoom={zoom}
+                onIdle={onIdle}
+                onCenterChange={handleOnChanterChange}
+                focusedMarker={hovredItem}
+              />
             </div>
-            <div className={`${showMap ? 'hidden md:block' : 'block'}`}>
-            {filterOption === "" && (
-              <div className="space-y-5 md:grid grid-cols-3 gap-7 mt-10">
-                {loading ? (
-                  <div className="col-span-2 grid place-items-center">
-                    <Spin size="large" />
-                  </div>
-                ) : (
-                  <div className="col-span-2 sm:grid grid-cols-2 md:grid-cols-3 gap-5 items-start">
-                    {data?.listings?.map((listing: Record<string, any>) => (
-                      <SingleProduct
-                        onMouseOver={() =>
-                          handleMouseOver({
-                            lat: listing.lat,
-                            lng: listing.lng,
-                          })
-                        }
-                        onMouseLeave={() => setHovredItem(undefined)}
-                        key={listing.id}
-                        data={listing as any}
-                      />
-                    ))}
-                  </div>
-                )}
-                <div className="hidden md:block w-full md:w-auto col-span-1  min-h-[70vh] max-h-[70vh] !mt-0">
-                  <MapView
-                    markers={listingMarkers}
-                    center={center}
-                    zoom={zoom}
-                    onIdle={onIdle}
-                    onCenterChange={handleOnChanterChange}
-                    focusedMarker={hovredItem}
-                  />
-                </div>
-              </div>
-            )}
-            {filterOption === "category" && (
-              <div className="">
-                <h1 className="text-2xl font-lota font-semibold mt-5">
-                  Category
-                </h1>
-                <div className="flex flex-wrap gap-10 mt-5 px-16">
-                  {categoryList?.category?.map(
-                    (category: Record<string, string>) => (
-                      <div
-                        onClick={() => onSearchByCategory(category.name)}
-                        key={category.id}
-                        className="cursor-pointer"
-                      >
-                        <div className="w-36 h-36 font-lota bg-[#9D9D9D]/10 text-[#0A2429] rounded-full flex justify-center items-center">
-                          <img
-                            src={category.image}
-                            alt={category.name}
-                            className="object-cover w-[43px] max-w-full"
-                          />
-                        </div>
-                        <h4 className="text-center text-2xl mt-5">
-                          {category.name}
-                        </h4>
-                      </div>
-                    )
+            <div className={`${showMap ? "hidden md:block" : "block"}`}>
+              {filterOption === "" && (
+                <div className="space-y-5 md:grid grid-cols-3 gap-7 mt-10">
+                  {loading ? (
+                    <div className="col-span-2 grid place-items-center">
+                      <Spin size="large" />
+                    </div>
+                  ) : (
+                    <div className="col-span-2 sm:grid grid-cols-2 md:grid-cols-3 gap-5 items-start">
+                      {data?.listings?.map((listing: Record<string, any>) => (
+                        <SingleProduct
+                          onMouseOver={() =>
+                            handleMouseOver({
+                              lat: listing.lat,
+                              lng: listing.lng,
+                            })
+                          }
+                          onMouseLeave={() => setHovredItem(undefined)}
+                          key={listing.id}
+                          data={listing as any}
+                        />
+                      ))}
+                    </div>
                   )}
-                </div>
-              </div>
-            )}
-            {filterOption === "location" && (
-              <div className="mt-10">
-                <h1 className="text-2xl">Select Location</h1>
-                <div className="mt-10">
-                  <div
-                    className="py-3 px-7 text-white flex items-center border rounded-[5px] cursor-pointer"
-                    onClick={getCurrentLocation}
-                  >
-                    <div className="pr-3">
-                      <BiCurrentLocation className="text-xl text-primary" />
-                    </div>
-                    <div className="text-[#263238] font-sofia-pro">
-                      <h3 className="text-sm">Select My Location</h3>
-                      <p className="text-xs font-light mt-2">
-                        We will show you items near you sorted by distance
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                <h1 className="mt-7 font-lota text-2xl text-[#0A2429]">
-                  Popular
-                </h1>
-                <ul className="mt-7">
-                  {topCities.map((itm, idx) => (
-                    <li
-                      onClick={() => onLocationSelect(itm)}
-                      className="text-lg py-2.5 font-lota text-[#0A2429] cursor-pointer"
-                      key={idx}
-                    >
-                      {itm.city}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-            {filterOption === "date" && (
-              <div className="mt-10">
-                <h1 className="text-2xl">Date</h1>
-                <div className="mt-5 flex justify-center items-center">
-                  <div className="shadow rounded-lg">
-                    <DatePicker
-                      selected={selectedDataRange}
-                      onChange={setSelectedDateRange}
+                  <div className="hidden md:block w-full md:w-auto col-span-1  min-h-[70vh] max-h-[70vh] !mt-0">
+                    <MapView
+                      markers={listingMarkers}
+                      center={center}
+                      zoom={zoom}
+                      onIdle={onIdle}
+                      onCenterChange={handleOnChanterChange}
+                      focusedMarker={hovredItem}
                     />
                   </div>
                 </div>
-                <div className="mt-6 flex justify-end gap-5 py-2 w-[71%]">
-                  <button
-                    onClick={clearDateFilter}
-                    className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
-                  >
-                    Clear
-                  </button>
-                  <button
-                    onClick={applyDateFilter}
-                    className="px-10 font-sofia-pro bg-secondary hover:bg-primary rounded-md text-white h-12 items-center text-lg font-semibold"
-                  >
-                    Apply Filter
-                  </button>
+              )}
+              {filterOption === "category" && (
+                <div className="">
+                  <h1 className="text-2xl font-lota font-semibold mt-5">
+                    Category
+                  </h1>
+                  <div className="flex flex-wrap gap-10 mt-5 px-16">
+                    {categoryList?.category?.map(
+                      (category: Record<string, string>) => (
+                        <div
+                          onClick={() => onSearchByCategory(category.name)}
+                          key={category.id}
+                          className="cursor-pointer"
+                        >
+                          <div className="w-36 h-36 font-lota bg-[#9D9D9D]/10 text-[#0A2429] rounded-full flex justify-center items-center">
+                            <img
+                              src={category.icon}
+                              alt={category.name}
+                              className="object-cover w-[43px] max-w-full"
+                            />
+                          </div>
+                          <h4 className="text-center text-2xl mt-5">
+                            {category.name}
+                          </h4>
+                        </div>
+                      )
+                    )}
+                  </div>
                 </div>
-              </div>
-            )}
+              )}
+              {filterOption === "location" && (
+                <div className="mt-10">
+                  <h1 className="text-2xl">Select Location</h1>
+                  <div className="mt-10">
+                    <div
+                      className="py-3 px-7 text-white flex items-center border rounded-[5px] cursor-pointer"
+                      onClick={getCurrentLocation}
+                    >
+                      <div className="pr-3">
+                        <BiCurrentLocation className="text-xl text-primary" />
+                      </div>
+                      <div className="text-[#263238] font-sofia-pro">
+                        <h3 className="text-sm">Select My Location</h3>
+                        <p className="text-xs font-light mt-2">
+                          We will show you items near you sorted by distance
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <h1 className="mt-7 font-lota text-2xl text-[#0A2429]">
+                    Popular
+                  </h1>
+                  <ul className="mt-7">
+                    {topCities.map((itm, idx) => (
+                      <li
+                        onClick={() => onLocationSelect(itm)}
+                        className="text-lg py-2.5 font-lota text-[#0A2429] cursor-pointer"
+                        key={idx}
+                      >
+                        {itm.city}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {filterOption === "date" && (
+                <div className="mt-10">
+                  <h1 className="text-2xl">Date</h1>
+                  <div className="mt-5 flex justify-center items-center">
+                    <div className="shadow rounded-lg">
+                      <DatePicker
+                        selected={selectedDataRange}
+                        onChange={setSelectedDateRange}
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-6 flex justify-end gap-5 py-2 w-[71%]">
+                    <button
+                      onClick={clearDateFilter}
+                      className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      onClick={applyDateFilter}
+                      className="px-10 font-sofia-pro bg-secondary hover:bg-primary rounded-md text-white h-12 items-center text-lg font-semibold"
+                    >
+                      Apply Filter
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

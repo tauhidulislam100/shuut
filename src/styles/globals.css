@@ -261,14 +261,8 @@
     --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75);
 }
 
-.rdp-day_today:not(.rdp-day_outside) {
-    background-color: #4436AC;
-    color: #fff;
-}
-
-.rdp-day:not(.rdp-day_today):hover {
-    background-color: #4436AC;
-    color: #fff;
+button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
+    text-decoration: line-through;
 }
 
 .rdp-day_selected {

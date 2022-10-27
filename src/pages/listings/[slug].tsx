@@ -1,6 +1,12 @@
 import { Avatar, Carousel, notification, Popover, Spin, Tabs } from "antd";
 import { CarouselRef } from "antd/lib/carousel";
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import cookie from "js-cookie";
 import {
   BsArrowLeftCircle,
@@ -35,10 +41,10 @@ import {
 } from "../../graphql/query_mutations";
 import { useRouter } from "next/router";
 import useAsyncEffect from "use-async-effect";
-import { formatMoney } from "../../utils/utils";
+import { checkDateOverlaps, formatMoney } from "../../utils/utils";
 import { Map, Marker } from "../../components/map/MapView";
-import { DateRange, Matcher } from "react-day-picker";
-import { differenceInDays, differenceInMonths, format } from "date-fns";
+import { DateRange, DayClickEventHandler, Matcher } from "react-day-picker";
+import { addDays, differenceInDays, differenceInHours, format } from "date-fns";
 import { useAuth } from "../../hooks/useAuth";
 
 const { TabPane } = Tabs;
@@ -62,52 +68,6 @@ const PopoverContent = ({ onSubmit }: { onSubmit?: () => void }) => (
     </button>
   </div>
 );
-
-const PricingTab = ({
-  title = "",
-  price = "",
-  pricingType = "",
-  onClick,
-}: {
-  title?: string;
-  price?: string;
-  pricingType?: string;
-  onClick?: () => void;
-}) => {
-  return (
-    <>
-      <div className="flex items-center">
-        <p className="inline-flex items-center text-lg font-sofia-pro text-secondary">
-          <span>
-            <Niger />
-          </span>
-          {formatMoney(price)}/{pricingType}
-        </p>
-        <p className="text-lg font-sofia-pro text-secondary mx-2">-</p>
-        <p className="inline-flex items-center text-lg font-sofia-pro text-secondary">
-          <span>
-            <Niger />
-          </span>{" "}
-          {formatMoney(price)}
-        </p>
-      </div>
-      <p className="text-sm my-5 text-primary-100 text-opacity-90">
-        We’ve analysed prices for {title} from all renters on SHUUT.
-      </p>
-      <p className="text-sm text-primary-100 text-opacity-90">
-        The advert price is above average.
-      </p>
-      <div className="mt-6 flex justify-center">
-        <button
-          onClick={onClick}
-          className="font-sofia-pro px-7 bg-secondary rounded-md text-white h-8 inline-flex items-center text-sm font-medium"
-        >
-          Check Availabilty
-        </button>
-      </div>
-    </>
-  );
-};
 
 interface Billing {
   totalDays?: number;
@@ -162,6 +122,10 @@ const ProductView = () => {
   const [addedToCart, setAddedToCart] = useState(false);
   const [quantity, setQuantity] = useState(1);
   const [disabledDays, setDisabledDays] = useState<Matcher | Matcher[]>([]);
+  const [priceOption, setPriceOption] = useState<
+    "weekly" | "monthly" | "daily"
+  >("weekly");
+  const [nextDisable, setNextDisable] = useState<{ from: Date; to: Date }>();
 
   const goUp = () => {
     carouselRef.current?.next();
@@ -201,19 +165,53 @@ const ProductView = () => {
       setListing(l);
       setSelectedImage(l?.images?.[0].url);
       const blockedDays: any = [{ before: new Date() }];
+      const filterRedBooking: any = {};
+
       for (const item of l.bookings ?? []) {
-        blockedDays.push({
-          from: new Date(item.start),
-          to: new Date(item.end),
-        });
+        const key = `${item.start}-${item.end}`;
+        if (filterRedBooking[key]) {
+          filterRedBooking[key].quantity += item.quantity;
+        } else {
+          filterRedBooking[key] = {
+            from: new Date(item.start),
+            to: new Date(item.end),
+            quantity: item.quantity,
+          };
+        }
       }
+
+      const overlapsed: Record<string, any>[] = Object.values(filterRedBooking);
+      for (let i = 0; i < overlapsed.length - 1; i += 1) {
+        for (let j = i + 1; j < overlapsed.length; j += 1) {
+          console.log(overlapsed[i]);
+          if (
+            checkDateOverlaps(
+              overlapsed[i].from,
+              overlapsed[i].to,
+              overlapsed[j].from,
+              overlapsed[j].to
+            )
+          ) {
+            overlapsed[i].quantity += overlapsed[j].quantity;
+          }
+        }
+      }
+
+      for (const k in overlapsed) {
+        if (overlapsed[k].quantity < l.quantity) {
+          delete overlapsed[k];
+        }
+      }
+      // console.log("overlapsed: ", overlapsed);
+
       if (l.availability_exceptions) {
         blockedDays.push({
           from: new Date(l.availability_exceptions.from),
           to: new Date(l.availability_exceptions.to),
         });
       }
-      setDisabledDays([...blockedDays]);
+
+      setDisabledDays([...blockedDays, ...overlapsed]);
     }
   }, [data]);
 
@@ -261,14 +259,16 @@ const ProductView = () => {
     await checkAvailability({
       variables: {
         listing_id: listing?.id,
-        startdate: format(selectedDate?.from, "yyyy-MM-dd"),
-        enddate: format(selectedDate?.to, "yyyy-MM-dd"),
+        start: format(selectedDate?.from, "yyyy-MM-dd"),
+        end: format(selectedDate?.to, "yyyy-MM-dd"),
+        quantity,
       },
     });
+    setNextDisable(undefined);
   };
 
   const onAvailabilityCheckComplete = (data: any) => {
-    if (data?.result[0]?.available) {
+    if (data?.result?.available) {
       setShowAvailabilityCalendar(false);
       setShowBookingInfoCard(true);
     } else {
@@ -311,12 +311,51 @@ const ProductView = () => {
     });
   };
 
+  const onChangePriceOption = (option: "monthly" | "weekly" | "daily") => {
+    setPriceOption(option);
+    setSelectedDate(undefined);
+  };
+
+  const onDayClick: DayClickEventHandler = (day, modifiers) => {
+    setSelectedDate((prev) => {
+      if (prev?.to) {
+        return { from: day, to: undefined };
+      }
+
+      if (!prev?.from) {
+        return { ...prev, from: day };
+      }
+
+      if (!prev?.to) {
+        let d: any = { from: undefined, to: undefined };
+        const days = differenceInDays(day, prev.from);
+
+        if (priceOption === "weekly") {
+          d = { from: addDays(day, 1), to: addDays(day, 6) };
+        }
+
+        if (priceOption === "monthly") {
+          d = { from: addDays(day, 1), to: addDays(day, 29) };
+        }
+
+        if (priceOption === "weekly" && Math.abs(days) % 7 !== 0) {
+          return prev;
+        }
+
+        if (priceOption === "monthly" && Math.abs(days) % 30 !== 0) {
+          return prev;
+        }
+
+        setNextDisable(d);
+        return { ...prev, to: day };
+      }
+    });
+  };
+
   return (
     <>
       <div className="bg-[#F8F8F8] min-h-screen">
-        <div className="container">
-          <NavBar />
-        </div>
+        <NavBar />
         <Modal
           onCancel={() => setShowAvailabilityCalendar(false)}
           visible={showAvailabilityCalendar}
@@ -325,22 +364,24 @@ const ProductView = () => {
           <div className="w-full flex justify-center items-center px-10 pt-10">
             <div className="shadow rounded-lg px-5">
               <DatePicker
-                disabled={disabledDays}
+                onDayClick={onDayClick}
+                priceOption={priceOption}
+                disabled={[...(disabledDays as any), nextDisable]}
                 selected={selectedDate}
-                onChange={setSelectedDate}
               />
             </div>
           </div>
           <div className="mt-6 flex justify-end gap-5 py-2">
             <button
               onClick={() => {
-                setShowAvailabilityCalendar(false);
+                // setShowAvailabilityCalendar(false);
                 setShowBookingInfoCard(false);
                 setSelectedDate(undefined);
+                setNextDisable(undefined);
               }}
-              className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
+              className="px-8 font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
             >
-              Cancel
+              Clear
             </button>
             <button
               disabled={!selectedDate?.from || !selectedDate?.to}
@@ -454,7 +495,14 @@ const ProductView = () => {
                       <div className="inline-flex items-center bg-white rounded-md px-2 w-20 justify-between">
                         <button
                           className="text-xl"
-                          onClick={() => setQuantity((p) => p + 1)}
+                          onClick={() =>
+                            setQuantity((p) => {
+                              if (p < listing?.quantity) {
+                                return p + 1;
+                              }
+                              return p;
+                            })
+                          }
                         >
                           <IoIosAdd />
                         </button>
@@ -599,7 +647,14 @@ const ProductView = () => {
                             {listing?.title}
                           </h3>
                           <div className="grid grid-cols-3 gap-4 mt-5">
-                            <div className="border border-[#DFDFE6] p-4 rounded-[5px]">
+                            <div
+                              onClick={() => onChangePriceOption("monthly")}
+                              className={`border  p-4 rounded-[5px] hover:border-secondary cursor-pointer ${
+                                priceOption === "monthly"
+                                  ? "border-secondary"
+                                  : "border-[#DFDFE6]"
+                              }`}
+                            >
                               <h3 className="text-base font-semibold font-sofia-pro text-[#23262F]">
                                 Monthly
                               </h3>
@@ -607,7 +662,14 @@ const ProductView = () => {
                                 ₦{listing?.monthly_price}/30days
                               </p>
                             </div>
-                            <div className="border border-[#DFDFE6] p-4 rounded-[5px]">
+                            <div
+                              onClick={() => onChangePriceOption("weekly")}
+                              className={`border  p-4 rounded-[5px] hover:border-secondary cursor-pointer ${
+                                priceOption === "weekly"
+                                  ? "border-secondary"
+                                  : "border-[#DFDFE6]"
+                              }`}
+                            >
                               <h3 className="text-base font-semibold font-sofia-pro text-[#23262F]">
                                 Weekly
                               </h3>
@@ -615,7 +677,14 @@ const ProductView = () => {
                                 ₦{listing?.weekly_price}/7days
                               </p>
                             </div>
-                            <div className="border border-[#DFDFE6] p-4 rounded-[5px]">
+                            <div
+                              onClick={() => onChangePriceOption("daily")}
+                              className={`border  p-4 rounded-[5px] hover:border-secondary cursor-pointer ${
+                                priceOption === "daily"
+                                  ? "border-secondary"
+                                  : "border-[#DFDFE6]"
+                              }`}
+                            >
                               <h3 className="text-base font-semibold font-sofia-pro text-[#23262F]">
                                 Daily
                               </h3>
