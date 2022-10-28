@@ -115,10 +115,6 @@ const Payment = () => {
 
   useAsyncEffect(
     async (isMounted) => {
-      await getSummary({
-        fetchPolicy: "cache-and-network",
-      });
-
       if (isMounted() && router && !ref.current) {
         ref.current = true;
         const { start, end, quantity, listingId } = router.query;
@@ -130,6 +126,10 @@ const Payment = () => {
               quantity: quantity ?? 1,
               listing_id: listingId,
             },
+          });
+        } else {
+          await getSummary({
+            fetchPolicy: "cache-and-network",
           });
         }
       }
@@ -149,8 +149,6 @@ const Payment = () => {
   const onClose = (e?: any) => {
     console.log("close: ", e);
   };
-
-  console.log("transactionSummary: ", +transactionSummary?.total);
 
   return (
     <AuthGuard>
