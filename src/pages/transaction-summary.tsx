@@ -70,7 +70,6 @@ const Payment = () => {
       });
     },
     onCompleted(data) {
-      console.log("add to cart is complete, ", data);
       getSummary({
         fetchPolicy: "network-only",
       });
@@ -116,6 +115,9 @@ const Payment = () => {
   useAsyncEffect(
     async (isMounted) => {
       if (isMounted() && router && !ref.current) {
+        await getSummary({
+          fetchPolicy: "cache-and-network",
+        });
         ref.current = true;
         const { start, end, quantity, listingId } = router.query;
         if (listingId && start && end) {
@@ -126,10 +128,6 @@ const Payment = () => {
               quantity: quantity ?? 1,
               listing_id: listingId,
             },
-          });
-        } else {
-          await getSummary({
-            fetchPolicy: "cache-and-network",
           });
         }
       }
