@@ -115,10 +115,10 @@ const Payment = () => {
   useAsyncEffect(
     async (isMounted) => {
       if (isMounted() && router && !ref.current) {
+        ref.current = true;
         await getSummary({
           fetchPolicy: "cache-and-network",
         });
-        ref.current = true;
         const { start, end, quantity, listingId } = router.query;
         if (listingId && start && end) {
           await addToCart({

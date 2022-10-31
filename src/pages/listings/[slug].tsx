@@ -22,7 +22,12 @@ import {
   IoIosArrowUp,
   IoIosClose,
 } from "react-icons/io";
-import { FaTelegramPlane } from "react-icons/fa";
+import {
+  FaCheck,
+  FaCheckSquare,
+  FaInfoCircle,
+  FaTelegramPlane,
+} from "react-icons/fa";
 import { TbMail } from "react-icons/tb";
 import {
   DatePicker,
@@ -41,7 +46,7 @@ import {
 } from "../../graphql/query_mutations";
 import { useRouter } from "next/router";
 import useAsyncEffect from "use-async-effect";
-import { checkDateOverlaps, formatMoney } from "../../utils/utils";
+import { checkDateOverlaps, formatMoney, roundBy } from "../../utils/utils";
 import { Map, Marker } from "../../components/map/MapView";
 import { DateRange, DayClickEventHandler, Matcher } from "react-day-picker";
 import { addDays, differenceInDays, differenceInHours, format } from "date-fns";
@@ -125,7 +130,6 @@ const ProductView = () => {
   const [priceOption, setPriceOption] = useState<
     "weekly" | "monthly" | "daily"
   >("weekly");
-  const [nextDisable, setNextDisable] = useState<{ from: Date; to: Date }>();
 
   const goUp = () => {
     carouselRef.current?.next();
@@ -155,6 +159,7 @@ const ProductView = () => {
       setSelectedDate(undefined);
       setQuantity(1);
       setBilling({});
+      setPriceOption("weekly");
     },
     [router]
   );
@@ -226,17 +231,17 @@ const ProductView = () => {
       if (days < 7 && days >= 1) {
         totalAmount = listing.daily_price * days;
         totalCharge = totalAmount * charge;
-        totalAmount += totalCharge;
+        // totalAmount += totalCharge;
       } else if (days >= 7 && days < 30) {
         totalAmount = (listing.weekly_price / 7) * days;
         totalCharge = totalAmount * charge;
         totalDiscount = listing.daily_price * days - totalAmount;
-        totalAmount += totalCharge;
+        // totalAmount += totalCharge;
       } else if (days >= 30) {
         totalAmount = (listing.monthly_price / 30) * days;
         totalCharge = totalAmount * charge;
         totalDiscount = listing.daily_price * days - totalAmount;
-        totalAmount += totalCharge;
+        // totalAmount += totalCharge;
       }
       setBilling({
         totalDays: days,
@@ -264,7 +269,6 @@ const ProductView = () => {
         quantity,
       },
     });
-    setNextDisable(undefined);
   };
 
   const onAvailabilityCheckComplete = (data: any) => {
@@ -316,40 +320,31 @@ const ProductView = () => {
     setSelectedDate(undefined);
   };
 
-  const onDayClick: DayClickEventHandler = (day, modifiers) => {
-    setSelectedDate((prev) => {
-      if (prev?.to) {
-        return { from: day, to: undefined };
-      }
-
-      if (!prev?.from) {
-        return { ...prev, from: day };
-      }
-
-      if (!prev?.to) {
-        let d: any = { from: undefined, to: undefined };
-        const days = differenceInDays(day, prev.from);
-
-        if (priceOption === "weekly") {
-          d = { from: addDays(day, 1), to: addDays(day, 6) };
-        }
-
-        if (priceOption === "monthly") {
-          d = { from: addDays(day, 1), to: addDays(day, 29) };
-        }
-
-        if (priceOption === "weekly" && Math.abs(days) % 7 !== 0) {
-          return prev;
-        }
-
-        if (priceOption === "monthly" && Math.abs(days) % 30 !== 0) {
-          return prev;
-        }
-
-        setNextDisable(d);
-        return { ...prev, to: day };
-      }
-    });
+  const onRangeChange = (range: DateRange | undefined) => {
+    if (
+      range?.from &&
+      range?.to &&
+      range?.from?.toDateString() === range?.to?.toDateString()
+    ) {
+      return;
+    }
+    if (
+      range?.from &&
+      range.to &&
+      (priceOption === "weekly" || priceOption === "monthly")
+    ) {
+      const days = differenceInDays(range.to, range.from);
+      console.log("days: ", days);
+      setSelectedDate({
+        ...range,
+        to: addDays(
+          range.from,
+          roundBy(days, priceOption === "monthly" ? 30 : 7)
+        ),
+      });
+      return;
+    }
+    setSelectedDate(range);
   };
 
   return (
@@ -364,10 +359,10 @@ const ProductView = () => {
           <div className="w-full flex justify-center items-center px-10 pt-10">
             <div className="shadow rounded-lg px-5">
               <DatePicker
-                onDayClick={onDayClick}
                 priceOption={priceOption}
-                disabled={[...(disabledDays as any), nextDisable]}
+                disabled={disabledDays}
                 selected={selectedDate}
+                onChange={onRangeChange}
               />
             </div>
           </div>
@@ -377,7 +372,7 @@ const ProductView = () => {
                 // setShowAvailabilityCalendar(false);
                 setShowBookingInfoCard(false);
                 setSelectedDate(undefined);
-                setNextDisable(undefined);
+                // setNextDisable(undefined);
               }}
               className="px-8 font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
             >
@@ -537,14 +532,15 @@ const ProductView = () => {
                       selectedDate?.from &&
                       selectedDate.to ? (
                         <div className="bg-white rounded-[5px] mb-5">
-                          <div className="px-6 py-5 text-[#0A2429E5] space-y-2.5">
+                          <div className="px-6 pt-5 text-[#0A2429E5] space-y-2.5">
                             <div className="flex justify-between">
-                              <h4 className="font-sofia-pro text-[#0A2429] text-xl font-medium">
-                                {differenceInDays(
-                                  selectedDate?.to as Date,
-                                  selectedDate?.from as Date
-                                )}{" "}
-                                Days
+                              <h4 className="font-sofia-pro text-[#0A2429] text-sm font-medium">
+                                {billing.totalDays} Days
+                                <span className="ml-2 inline-flex items-center">
+                                  {format(selectedDate?.from as Date, "dd LLL")}
+                                  <span className="mx-1">-</span>
+                                  {format(selectedDate?.to as Date, "dd LLL")}
+                                </span>
                               </h4>
                               <button
                                 onClick={() =>
@@ -555,18 +551,28 @@ const ProductView = () => {
                                 Change
                               </button>
                             </div>
-                            <div className="flex flex-col items-end">
+                            {/* <div className="flex flex-col items-end">
                               <h4 className="">
                                 {format(selectedDate?.from as Date, "dd LLLL")}
                               </h4>
-                              {/* <div className="">-</div> */}
+                             
                               <h5 className="">
                                 {format(selectedDate?.to as Date, "dd LLLL")}
                               </h5>
-                            </div>
+                            </div> */}
                             <div className="flex justify-between">
-                              <h4 className="">Total Cost Per Day</h4>
-                              <h5 className="">₦{listing?.daily_price}</h5>
+                              <h4 className="">
+                                {priceOption === "weekly"
+                                  ? listing?.weekly_price /
+                                    (billing?.totalDays as number)
+                                  : priceOption === "monthly"
+                                  ? listing?.monthly_price /
+                                    (billing?.totalDays as number)
+                                  : listing?.daily_price}
+                                <span className="mx-1">x</span>
+                                {billing?.totalDays} days
+                              </h4>
+                              <h5 className="">₦{billing?.totalAmount}</h5>
                             </div>
                             <div className="flex justify-between">
                               <h4 className="">Service Fee</h4>
@@ -576,7 +582,7 @@ const ProductView = () => {
                             </div>
                             {billing &&
                             billing.totalDiscount &&
-                            (billing.totalDays as unknown as number) < 30 ? (
+                            priceOption === "weekly" ? (
                               <div className="flex justify-between">
                                 <h4 className="text-green-500">
                                   Weekly price discount
@@ -587,7 +593,7 @@ const ProductView = () => {
                               </div>
                             ) : billing &&
                               billing.totalDiscount &&
-                              (billing.totalDays as unknown as number) >= 30 ? (
+                              priceOption === "monthly" ? (
                               <div className="flex justify-between text-green-500">
                                 <h4 className="text-green-500">
                                   Monthly price discount
@@ -599,7 +605,19 @@ const ProductView = () => {
                             ) : null}
                             <div className="flex justify-between">
                               <h4 className="">Total</h4>
-                              <h5 className="">₦{billing.totalAmount}</h5>
+                              <h5 className="">
+                                ₦
+                                {(billing.totalAmount as number) +
+                                  (billing.totalServiceCharge as number)}
+                              </h5>
+                            </div>
+                            <div className="flex items-center text-xs font-sofia-pro font-normal text-[#0A2429E5] my-3">
+                              <span className="text-[#286EE6] mr-2">
+                                <FaInfoCircle />
+                              </span>
+                              Items are handed over to borrowers a day before
+                              the first date booked and handed in (returned) the
+                              day after the last date booked
                             </div>
                             <div className="mt-6 flex justify-end gap-5">
                               {addedToCart ? (
@@ -636,7 +654,10 @@ const ProductView = () => {
                                 {addedToCart ? "View Cart" : "Book Now"}
                               </button>
                             </div>
-                            <a href="#" className="text-[#EB001B]">
+                            <a
+                              href="#"
+                              className="text-[#EB001B] mt-5 inline-block"
+                            >
                               48 hours cooling off period
                             </a>
                           </div>
@@ -649,9 +670,9 @@ const ProductView = () => {
                           <div className="grid grid-cols-3 gap-4 mt-5">
                             <div
                               onClick={() => onChangePriceOption("monthly")}
-                              className={`border  p-4 rounded-[5px] hover:border-secondary cursor-pointer ${
+                              className={`border relative p-4 rounded-[5px] hover:border-green-500 cursor-pointer ${
                                 priceOption === "monthly"
-                                  ? "border-secondary"
+                                  ? "border-green-500"
                                   : "border-[#DFDFE6]"
                               }`}
                             >
@@ -661,12 +682,17 @@ const ProductView = () => {
                               <p className="text-xs text-[#677489] font-medium font-sofia-pro">
                                 ₦{listing?.monthly_price}/30days
                               </p>
+                              {priceOption === "monthly" ? (
+                                <span className="absolute top-2 right-2 text-green-500">
+                                  <FaCheckSquare />
+                                </span>
+                              ) : null}
                             </div>
                             <div
                               onClick={() => onChangePriceOption("weekly")}
-                              className={`border  p-4 rounded-[5px] hover:border-secondary cursor-pointer ${
+                              className={`border relative p-4 rounded-[5px] hover:border-green-500 cursor-pointer ${
                                 priceOption === "weekly"
-                                  ? "border-secondary"
+                                  ? "border-green-500"
                                   : "border-[#DFDFE6]"
                               }`}
                             >
@@ -676,12 +702,17 @@ const ProductView = () => {
                               <p className="text-xs text-[#677489] font-medium font-sofia-pro">
                                 ₦{listing?.weekly_price}/7days
                               </p>
+                              {priceOption === "weekly" ? (
+                                <span className="absolute top-2 right-2 text-green-500">
+                                  <FaCheckSquare />
+                                </span>
+                              ) : null}
                             </div>
                             <div
                               onClick={() => onChangePriceOption("daily")}
-                              className={`border  p-4 rounded-[5px] hover:border-secondary cursor-pointer ${
+                              className={`border relative p-4 rounded-[5px] hover:border-green-500 cursor-pointer ${
                                 priceOption === "daily"
-                                  ? "border-secondary"
+                                  ? "border-green-500"
                                   : "border-[#DFDFE6]"
                               }`}
                             >
@@ -691,6 +722,11 @@ const ProductView = () => {
                               <p className="text-xs text-[#677489] font-medium font-sofia-pro">
                                 ₦{listing?.daily_price}/day
                               </p>
+                              {priceOption === "daily" ? (
+                                <span className="absolute top-2 right-2 text-green-500">
+                                  <FaCheckSquare />
+                                </span>
+                              ) : null}
                             </div>
                           </div>
                           <div className="mt-12 flex justify-center">

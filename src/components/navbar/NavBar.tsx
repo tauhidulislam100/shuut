@@ -62,7 +62,7 @@ const AuthLessMenu = () => (
   <ul className="shadow-md border rounded-[5px] text-primary text-[10px] font-lota bg-white">
     <li className="p-2 border-b hover:text-secondary">
       <Link href={"/listgear"}>
-        <a>List Gear</a>
+        <a>List Item</a>
       </Link>
     </li>
     <li className="p-2 border-b hover:text-secondary">
@@ -108,7 +108,7 @@ function NavBar() {
           <div className="hidden lg:flex gap-x-10">
             <NavLinkItem label="How It Works" href="/how-it-works" />
             <NavLinkItem label="FAQs" />
-            <NavLinkItem label="List Gear" href="/create-item" />
+            <NavLinkItem label="List Item" href="/create-item" />
             <NavLinkItem label="Cart" href="/cart" />
           </div>
           {isAuthenticated ? (

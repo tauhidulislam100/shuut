@@ -18,6 +18,7 @@ interface IUser {
   emailVerified: boolean;
   phoneVerified: boolean;
   postalCode: boolean;
+  phone?: string;
 }
 
 export type StateType = {

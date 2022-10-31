@@ -56,3 +56,11 @@ export function checkDateOverlaps(
   }
   return false;
 }
+
+export function roundBy(n = 1, _r = 7) {
+  if (n % _r === 0) {
+    return n;
+  } else {
+    return Math.round(Math.floor(n / _r)) * _r + _r;
+  }
+}

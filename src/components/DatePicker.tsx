@@ -20,14 +20,12 @@ const DatePicker = ({
   priceOption?: string;
   onDayClick?: DayClickEventHandler;
 }) => {
-  const min =
-    priceOption === "daily"
-      ? 2
-      : priceOption === "weekly"
-      ? 8
-      : priceOption === "monthly"
-      ? 31
-      : undefined;
+  const min = priceOption === "daily" ? 2 : undefined;
+  // priceOption === "weekly"
+  // ? 8
+  // : priceOption === "monthly"
+  // ? 31
+  // : undefined;
 
   return (
     <DayPicker
@@ -38,7 +36,6 @@ const DatePicker = ({
       numberOfMonths={2}
       selected={selected}
       onSelect={(range) => onChange?.(range)}
-      max={priceOption === "daily" ? 6 : undefined}
       min={min}
     />
   );
