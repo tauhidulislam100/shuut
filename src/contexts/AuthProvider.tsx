@@ -4,6 +4,7 @@ import useAsyncEffect from "use-async-effect";
 import cookie from "js-cookie";
 import { notification } from "antd";
 import { useRouter } from "next/router";
+import { GET_ME_MUTATION } from "../graphql/query_mutations";
 
 interface IProps {
   children: React.ReactNode;
@@ -42,21 +43,6 @@ const initalState: StateType = {
 };
 
 export const AuthContext = React.createContext(initalState);
-
-const GET_ME_MUTATION = gql`
-  mutation {
-    currentUser: GetMe {
-      id
-      firstName
-      lastName
-      email
-      isActive
-      emailVerified
-      phoneVerified
-      postalCode
-    }
-  }
-`;
 
 const AuthProvider = ({ children }: IProps) => {
   const router = useRouter();

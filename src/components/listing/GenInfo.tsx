@@ -208,7 +208,7 @@ const GeneralInfo = ({
           placeholder="Enter"
           value={data.description}
           onChange={(e) => onChange?.("description", e.target.value)}
-          style={{minHeight: '96px'}}
+          style={{ minHeight: "96px" }}
         />
       </Form.Item>
       <Row gutter={65}>

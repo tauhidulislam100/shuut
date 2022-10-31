@@ -61,6 +61,20 @@ export const SIGNUP_MUTATION = gql`
 //   }
 // `;
 
+export const GET_ME_MUTATION = gql`
+  mutation {
+    currentUser: GetMe {
+      id
+      firstName
+      lastName
+      email
+      isActive
+      emailVerified
+      phoneVerified
+      postalCode
+    }
+  }
+`;
 export const VERIFICATION_MUTATION = gql`
   mutation (
     $code: String!
@@ -487,6 +501,113 @@ export const CONFIRM_TRANSACTION = gql`
       _set: { state: "PENDING" }
     ) {
       affected_rows
+    }
+  }
+`;
+
+export const UPSERT_PROFILE = gql`
+  mutation UpsertProfile(
+    $userId: Int!
+    $cover_photo: String
+    $description: String
+    $advance: numeric
+    $business_name: String
+    $opening_hours: String
+    $closing_hours: String
+    $store_location: String
+    $city: String
+    $country: String
+    $house_no: String
+    $postcode: String
+    $state: String
+    $street: String
+    $firstName: String
+    $lastName: String
+    $phone: String!
+    $profile_photo: String
+  ) {
+    insert_profiles_one(
+      object: {
+        user_id: $userId
+        description: $description
+        advance: $advance
+        business_name: $business_name
+        cover_photo: $cover_photo
+        opening_hours: $opening_hours
+        closing_hours: $closing_hours
+        store_location: $store_location
+      }
+      on_conflict: {
+        constraint: profiles_user_id_key
+        update_columns: [
+          description
+          advance
+          business_name
+          closing_hours
+          cover_photo
+          opening_hours
+          store_location
+        ]
+      }
+    ) {
+      id
+    }
+    insert_address_one(
+      object: {
+        city: $city
+        country: $country
+        house_no: $house_no
+        state: $state
+        street: $street
+        postcode: $postcode
+        user_id: $userId
+      }
+      on_conflict: {
+        constraint: address_user_id_key
+        update_columns: [city, country, house_no, postcode, state, street]
+      }
+    ) {
+      id
+    }
+
+    update_user(
+      where: { id: { _eq: $userId } }
+      _set: {
+        firstName: $firstName
+        lastName: $lastName
+        phone: $phone
+        profile_photo: $profile_photo
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const GET_USER_INFO_BY_ID = gql`
+  query GetUserInfoById($id: Int!) {
+    userInfo: user_by_pk(id: $id) {
+      firstName
+      lastName
+      phone
+      profile_photo
+      profile {
+        description
+        advance
+        business_name
+        closing_hours
+        opening_hours
+        store_location
+        cover_photo
+      }
+      address {
+        city
+        country
+        house_no
+        postcode
+        state
+        street
+      }
     }
   }
 `;
