@@ -1,35 +1,229 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import { RiEqualizerLine } from "react-icons/ri";
 import { AiOutlineCloudDownload } from "react-icons/ai";
 import SingleProduct from "../products/SingleProduct";
-import { tripodInLagos } from "../../data";
-import { Checkbox, Dropdown } from "antd";
-import ActiveRental from "./ActiveRental";
+import { Checkbox, Dropdown, notification, Radio } from "antd";
+import RentalDetailView from "./RentalDetailView";
+import { useAuth } from "../../hooks/useAuth";
+import { gql, useLazyQuery } from "@apollo/client";
+import useAsyncEffect from "use-async-effect";
+import loadingAnimation from "../lottie/loading.json";
+import Lottie from "lottie-react";
+import { addDays, format } from "date-fns";
 
-const Menu = () => (
-  <ul className="shadow-md border rounded-[5px] text-primary text-[10px] font-lota bg-white w-[187px]">
+type FilterType =
+  | "request"
+  | "handover-today"
+  | "handover-tomorrow"
+  | "rented"
+  | "returned";
+
+export const FilterMenu = ({
+  onChange,
+  value,
+}: {
+  onChange?: (v: FilterType) => void;
+  value?: string;
+}) => (
+  <Radio.Group
+    value={value}
+    onChange={(e) => onChange?.(e.target.value)}
+    className="shadow-md border rounded-[5px] text-primary text-[10px] font-lota bg-white w-[187px]"
+  >
     <li className="p-2 border-b hover:text-secondary">
-      <Checkbox>
+      <Radio>
         <span className="">Date</span>
-      </Checkbox>
+      </Radio>
     </li>
     <li className="p-2 border-b hover:text-secondary">
-      <Checkbox>
+      <Radio value={"rented"}>
         <span className="">Rented</span>
-      </Checkbox>
+      </Radio>
     </li>
     <li className="p-2 border-b hover:text-secondary">
-      <Checkbox>
+      <Radio value={"request"}>
         <span className="">In Process</span>
-      </Checkbox>
+      </Radio>
     </li>
-  </ul>
+  </Radio.Group>
 );
 
-const Rental = () => {
-  const [filter, setFilter] = useState("rental");
+const query = gql`
+  query GetBookings($state: String!, $customer: bigint!) {
+    booking(
+      where: {
+        state: { _eq: $state }
+        _and: { transaction: { customer: { _eq: $customer } } }
+      }
+    ) {
+      id
+      start
+      end
+      cost
+      discount
+      vat
+      service_charge
+      state
+      listing {
+        id
+        slug
+        title
+        daily_price
+        location_name
+        images {
+          url
+          id
+        }
+        user {
+          firstName
+          lastName
+          id
+          profile_photo
+        }
+      }
+    }
+  }
+`;
 
+const queryHandOverListing = gql`
+  query GetBookings($state: String!, $customer: bigint!, $start: date!) {
+    booking(
+      where: {
+        state: { _eq: $state }
+        _and: {
+          transaction: { customer: { _eq: $customer } }
+          start: { _eq: $start }
+        }
+      }
+    ) {
+      id
+      start
+      end
+      cost
+      discount
+      vat
+      service_charge
+      state
+      listing {
+        id
+        slug
+        title
+        daily_price
+        location_name
+        images {
+          url
+          id
+        }
+        user {
+          firstName
+          lastName
+          id
+          profile_photo
+        }
+      }
+    }
+  }
+`;
+
+const Rental = () => {
+  const { user } = useAuth();
+  const [getMyBookings, { loading, data }] = useLazyQuery(query, {
+    fetchPolicy: "cache-and-network",
+  });
+
+  const [
+    getHandOverListing,
+    { loading: handoverItemLoading, data: handOverItems },
+  ] = useLazyQuery(queryHandOverListing, {
+    onError(error) {
+      notification.error({
+        message: error.message,
+      });
+    },
+    fetchPolicy: "cache-and-network",
+  });
+  const [filter, setFilter] = useState<FilterType>("request");
+  const [view, setView] = useState<"grid" | "detail">("grid");
+  const [selectedItem, setSelectedItem] = useState<Record<string, any>>();
+
+  useAsyncEffect(
+    async (isMounted) => {
+      if (isMounted() && user) {
+        switch (filter) {
+          case "request":
+            await getMyBookings({
+              variables: {
+                customer: user?.id,
+                state: "PENDING",
+              },
+            });
+            return;
+          case "handover-today":
+            let start = format(addDays(new Date(), 1), "yyyy-MM-dd");
+            await getHandOverListing({
+              variables: {
+                customer: user.id,
+                state: "ACCEPTED",
+                start: start,
+              },
+            });
+            return;
+          case "handover-tomorrow":
+            start = format(addDays(new Date(), 2), "yyyy-MM-dd");
+            await getHandOverListing({
+              variables: {
+                customer: user.id,
+                state: "ACCEPTED",
+                start: start,
+              },
+            });
+            return;
+          case "returned":
+            await await getMyBookings({
+              variables: {
+                customer: user?.id,
+                state: "RETURNED",
+              },
+            });
+            return;
+          case "rented":
+            await await getMyBookings({
+              variables: {
+                customer: user?.id,
+                state: "ACCEPTED",
+              },
+            });
+            return;
+          default:
+            return null;
+        }
+      }
+    },
+    [user?.id, filter]
+  );
+
+  const activeTitle = useMemo(() => {
+    let title = "";
+    switch (filter) {
+      case "request":
+        title = "My Request";
+        break;
+      case "handover-today":
+        title = "Handover Today";
+        break;
+      case "handover-tomorrow":
+        title = "Handover Tomorrow";
+        break;
+      case "returned":
+        title = "Returned";
+        break;
+      case "rented":
+        title = "Rented";
+        break;
+    }
+    return <h1 className="text-2xl text-primary mb-4">{title}</h1>;
+  }, [filter]);
   return (
     <>
       <div className="mt-[60px] w-full md:flex justify-between">
@@ -47,53 +241,67 @@ const Rental = () => {
             </span>
           </div>
         </div>
-        <div className="mt-5 md:mt-0 flex items-center gap-5">
-          <button
-            onClick={() => setFilter("new")}
-            className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
-              filter === "new"
-                ? "border-secondary text-secondary"
-                : "border-[#D0CFD84D]"
-            }`}
-          >
-            New Request
-          </button>
-          <button
-            onClick={() => setFilter("today")}
-            className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
-              filter === "today"
-                ? "border-secondary text-secondary"
-                : "border-[#D0CFD84D]"
-            }`}
-          >
-            Handover Today
-          </button>
-          <button
-            onClick={() => setFilter("tomorrow")}
-            className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
-              filter === "tomorrow"
-                ? "border-secondary text-secondary"
-                : "border-[#D0CFD84D]"
-            }`}
-          >
-            Handover Tomorrow
-          </button>
-          <button
-            onClick={() => setFilter("list")}
-            className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
-              filter === "list"
-                ? "border-secondary text-secondary"
-                : "border-[#D0CFD84D]"
-            }`}
-          >
-            List View
-          </button>
-          <div className="text-3xl text-[#3E4958] hover:text-secondary cursor-pointer">
-            <Dropdown overlay={<Menu />} trigger={["click"]}>
-              <RiEqualizerLine />
-            </Dropdown>
+        {view === "grid" ? (
+          <div className="mt-5 md:mt-0 flex items-center gap-5">
+            <button
+              onClick={() => setFilter("request")}
+              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
+                filter === "request"
+                  ? "border-secondary text-secondary"
+                  : "border-[#D0CFD84D]"
+              }`}
+            >
+              New Request
+            </button>
+            <button
+              onClick={() => setFilter("handover-today")}
+              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
+                filter === "handover-today"
+                  ? "border-secondary text-secondary"
+                  : "border-[#D0CFD84D]"
+              }`}
+            >
+              Handover Today
+            </button>
+            <button
+              onClick={() => setFilter("handover-tomorrow")}
+              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
+                filter === "handover-tomorrow"
+                  ? "border-secondary text-secondary"
+                  : "border-[#D0CFD84D]"
+              }`}
+            >
+              Handover Tomorrow
+            </button>
+            <button
+              onClick={() => setFilter("returned")}
+              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
+                filter === "returned"
+                  ? "border-secondary text-secondary"
+                  : "border-[#D0CFD84D]"
+              }`}
+            >
+              Returned
+            </button>
+            <div className="text-3xl text-[#3E4958] hover:text-secondary cursor-pointer">
+              <Dropdown
+                overlay={<FilterMenu onChange={setFilter} value={filter} />}
+                trigger={["click"]}
+              >
+                <RiEqualizerLine />
+              </Dropdown>
+            </div>
           </div>
-        </div>
+        ) : (
+          <div>
+            <button
+              onClick={() => setView("grid")}
+              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota border-[#D0CFD84D]`}
+            >
+              List View
+            </button>
+          </div>
+        )}
       </div>
       <div className="w-full mt-[60px] flex justify-end">
         <button className="bg-secondary text-white font-lota rounded-md px-8 py-2.5 flex items-center">
@@ -101,26 +309,64 @@ const Rental = () => {
           Download
         </button>
       </div>
-      {filter !== "rental" ? (
+      {view === "grid" ? (
         <div className="">
-          <h1 className="text-2xl text-primary">
-            {filter === "new"
-              ? "New Request"
-              : filter === "today"
-              ? "Today"
-              : filter === "tomorrow"
-              ? "Tomorrow"
-              : "List View"}
-          </h1>
-          <div className="space-y-5 sm:space-y-0 sm:grid grid-cols-3 md:grid-cols-4">
-            {tripodInLagos.map((product, idx) => (
-              <SingleProduct key={`today_${idx}`} data={product as any} />
-            ))}
-          </div>
+          {activeTitle}
+          {loading || handoverItemLoading ? (
+            <div className="grid place-items-center w-full">
+              <Lottie
+                animationData={loadingAnimation}
+                loop={true}
+                style={{ height: 350 }}
+              />
+            </div>
+          ) : (
+            <div className="grid grid-cols-5 gap-4">
+              {filter === "request" ||
+              filter === "returned" ||
+              filter === "rented"
+                ? data?.booking?.map((booking: Record<string, any>) => (
+                    <SingleProduct
+                      onClick={() => {
+                        setSelectedItem(booking);
+                        setView("detail");
+                      }}
+                      key={booking.id}
+                      data={{
+                        ...booking.listing,
+                        state: filter === "request" ? "In Progress" : filter,
+                      }}
+                    />
+                  ))
+                : null}
+
+              {filter === "handover-today" || filter === "handover-tomorrow"
+                ? handOverItems?.booking?.map(
+                    (booking: Record<string, any>) => (
+                      <SingleProduct
+                        onClick={() => {
+                          setSelectedItem(booking);
+                          setView("detail");
+                        }}
+                        key={booking.id}
+                        data={{ ...booking.listing, state: "Rented" }}
+                      />
+                    )
+                  )
+                : null}
+            </div>
+          )}
         </div>
-      ) : (
-        <ActiveRental />
-      )}
+      ) : view === "detail" ? (
+        <RentalDetailView
+          activeItem={selectedItem}
+          bookings={
+            filter === "handover-today" || "handover-tomorrow"
+              ? handOverItems?.booking
+              : data?.booking
+          }
+        />
+      ) : null}
     </>
   );
 };

@@ -186,9 +186,9 @@ const Payment = () => {
                   loop={false}
                   style={{ height: 350 }}
                 />
-                <Link href={"/"}>
+                <Link href={"/profile?tab=rentals"}>
                   <a className="text-secondary font-medium text-base">
-                    Go Home
+                    Go Rentals
                   </a>
                 </Link>
               </div>

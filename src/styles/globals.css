@@ -1,5 +1,4 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700&display=swap');
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -628,4 +627,12 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 
 .ant-select-auto-complete.search.auto-complete .ant-select-selection-search-input {
     padding-left: 40px;
+}
+
+.setting-switch {
+    background-color: rgb(148 163 184);
+}
+
+.setting-switch.ant-switch-checked {
+    background-color: #32A071;
 }

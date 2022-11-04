@@ -61,8 +61,8 @@ export const SIGNUP_MUTATION = gql`
 //   }
 // `;
 
-export const GET_ME_MUTATION = gql`
-  mutation {
+export const GET_ME_QUERY = gql`
+  query {
     currentUser: GetMe {
       id
       firstName
@@ -71,7 +71,9 @@ export const GET_ME_MUTATION = gql`
       isActive
       emailVerified
       phoneVerified
-      postalCode
+      allowNotification
+      showRating
+      paused
     }
   }
 `;
@@ -608,6 +610,26 @@ export const GET_USER_INFO_BY_ID = gql`
         state
         street
       }
+    }
+  }
+`;
+
+export const UPDATE_SETTING = gql`
+  mutation UPDATE_SETTING(
+    $userId: Int!
+    $allowNotification: Boolean
+    $showRating: Boolean
+    $paused: Boolean
+  ) {
+    update_user(
+      where: { id: { _eq: $userId } }
+      _set: {
+        allowNotification: $allowNotification
+        showRating: $showRating
+        paused: $paused
+      }
+    ) {
+      affected_rows
     }
   }
 `;

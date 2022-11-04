@@ -1,34 +1,66 @@
-import React, { useState } from 'react';
-import { IoIosSearch } from 'react-icons/io';
-import { RiEqualizerLine } from 'react-icons/ri';
-import { AiOutlineCloudDownload } from 'react-icons/ai';
-import SingleProduct from '../products/SingleProduct';
-import Rental from './Rental';
-import Calendar from './Calendar';
+import React, { useEffect, useState } from "react";
+import Rental from "./Rental";
+import Calendar from "./Calendar";
+import MyItems from "./MyItems";
+import { useRouter } from "next/router";
 
+type TabType = "rentals" | "calendar" | "my-items";
 const RentalShop = () => {
+  const router = useRouter();
+  const [tab, setTab] = useState<TabType>("rentals");
 
-    const [tab, setTAb] = useState('rental');
+  const tabHandler = (text: TabType) => {
+    setTab(text);
+  };
 
-    const tabHandler = (text:string) => {
-        setTAb(text);
+  useEffect(() => {
+    if (router && router.query?.tab) {
+      setTab(router.query?.tab as TabType);
     }
+  }, [router]);
 
-return (
-    <div className="relative w-screen left-[calc(-50vw+50%)] px-[10%]">
-        <div className="w-full flex justify-center mt-[60px]">
-            <div className="bg-[#EAEAEA4D] flex flex-wrap justify-center gap-5 font-lota text-2xl border text-[#6C6C6C] border-[#D9D8E34D] rounded-[5px] py-3.5 px-7">
-                <button onClick={() => tabHandler('rental')} className={`w-[201px] py-1  px-4 ${tab === 'rental' && 'shadow-md text-primary font-semibold rounded'}`}>Rentals</button>
-                <button onClick={() => tabHandler('calendar')} className={`w-[201px] py-1  px-4 ${tab === 'calendar' && 'shadow-md text-primary font-semibold rounded'}`}>Calendar</button>
-                <button onClick={() => tabHandler('item')} className={`w-[201px] py-1  px-4 ${tab === 'item' && 'shadow-md text-primary font-semibold rounded'}`}>My Items</button>
-            </div>
+  return (
+    <div className="relative">
+      <div className="w-full flex justify-center mt-[60px]">
+        <div className="bg-[#EAEAEA4D] flex flex-wrap justify-center gap-5 font-lota text-2xl border text-[#6C6C6C] border-[#D9D8E34D] rounded-[5px] py-3.5 px-7">
+          <button
+            onClick={() => tabHandler("rentals")}
+            className={`w-[201px] py-1  px-4 ${
+              tab === "rentals" &&
+              "shadow-md text-primary font-semibold rounded"
+            }`}
+          >
+            Rentals
+          </button>
+          <button
+            onClick={() => tabHandler("calendar")}
+            className={`w-[201px] py-1  px-4 ${
+              tab === "calendar" &&
+              "shadow-md text-primary font-semibold rounded"
+            }`}
+          >
+            Calendar
+          </button>
+          <button
+            onClick={() => tabHandler("my-items")}
+            className={`w-[201px] py-1  px-4 ${
+              tab === "my-items" &&
+              "shadow-md text-primary font-semibold rounded"
+            }`}
+          >
+            My Items
+          </button>
         </div>
-        {
-            tab === 'rental' ? <Rental /> : <Calendar />
-        }
+      </div>
+      {tab === "rentals" ? (
+        <Rental />
+      ) : tab === "calendar" ? (
+        <Calendar />
+      ) : (
+        <MyItems />
+      )}
     </div>
-)  
-
+  );
 };
 
 export default RentalShop;

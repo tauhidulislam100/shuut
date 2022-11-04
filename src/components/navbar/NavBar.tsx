@@ -48,7 +48,7 @@ const Menu = ({ onLogout }: IMenuProps) => (
       </Link>
     </li>
     <li className="p-2 border-b hover:text-secondary">
-      <Link href={"/profile?tab=myitems"}>
+      <Link href={"/profile?tab=my-items"}>
         <a>My Items</a>
       </Link>
     </li>

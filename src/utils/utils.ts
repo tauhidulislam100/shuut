@@ -14,8 +14,8 @@ export function parseJwt(token: string) {
   return JSON.parse(jsonPayload);
 }
 
-export const turnicate = (name: string) => {
-  return name.length <= 24 ? name : name.substring(0, 21) + "...";
+export const turnicate = (name: string, len = 21) => {
+  return name.length <= len ? name : name.substring(0, len) + "...";
 };
 
 export const formatMoney = (item: string, symbol = "", readable = false) => {

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useMemo, useRef, useState } from "react";
 import {
   Footer,
   NavBar,
@@ -32,11 +32,12 @@ import { RiImageEditFill } from "react-icons/ri";
 const { TabPane } = Tabs;
 
 const Profile = () => {
+  const [activeTab, setActiveTab] = useState<string>("4");
   const profileRef = useRef<WidgetAPI | null>(null);
   const coverRef = useRef<WidgetAPI | null>(null);
   const { user } = useAuth();
   const [editProfileForm, setEditProfileForm] = useState({
-    cover_photo: "",
+    cover_photo: null,
     description: "",
     advance: 0,
     business_name: "",
@@ -52,7 +53,7 @@ const Profile = () => {
     firstName: "",
     lastName: "",
     phone: "",
-    profile_photo: "",
+    profile_photo: null,
   });
   const { data: profileData } = useQuery(GET_USER_INFO_BY_ID, {
     variables: {
@@ -98,6 +99,15 @@ const Profile = () => {
     }));
   };
 
+  const getActiveTab = useMemo(() => {
+    switch (activeTab) {
+      case "4":
+        return <RentalShop />;
+      default:
+        return null;
+    }
+  }, [activeTab]);
+
   return (
     <AuthGuard>
       <NavBar />
@@ -130,7 +140,7 @@ const Profile = () => {
             </div>
             <span className="hidden">
               <Widget
-                value={editProfileForm?.cover_photo}
+                value={editProfileForm?.cover_photo as any}
                 doNotStore={false}
                 onDialogClose={async (info: any) => {
                   const url = (await info.promise()).cdnUrl;
@@ -145,7 +155,7 @@ const Profile = () => {
             </span>
             <span className="hidden">
               <Widget
-                value={editProfileForm?.profile_photo}
+                value={editProfileForm?.profile_photo as any}
                 doNotStore={false}
                 onDialogClose={async (info: any) => {
                   const url = (await info.promise()).cdnUrl;
@@ -174,7 +184,11 @@ const Profile = () => {
           <h3 className="mt-[88px] font-lota text-lg text-center text-[#23262F]">
             Videographer by day, night watcher by night
           </h3>
-          <Tabs className="profile-tabs mt-[121px]">
+          <Tabs
+            className="profile-tabs mt-[121px]"
+            onChange={setActiveTab}
+            activeKey={activeTab}
+          >
             <TabPane key={"1"} tab="Edit Profile">
               <EditProfile
                 onSave={() =>
@@ -193,14 +207,13 @@ const Profile = () => {
             <TabPane key={"3"} tab="Settings">
               <Settings />
             </TabPane>
-            <TabPane key={"4"} tab="Rental Shop">
-              <RentalShop />
-            </TabPane>
+            <TabPane key={"4"} tab="Rental Shop"></TabPane>
             <TabPane key={"5"} tab="Review">
               <Review />
             </TabPane>
           </Tabs>
         </section>
+        {getActiveTab}
       </main>
       <Footer />
     </AuthGuard>

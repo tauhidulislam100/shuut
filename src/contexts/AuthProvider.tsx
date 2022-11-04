@@ -1,10 +1,10 @@
-import { ApolloError, gql, useMutation } from "@apollo/client";
+import { ApolloError, gql, useLazyQuery, useMutation } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import useAsyncEffect from "use-async-effect";
 import cookie from "js-cookie";
 import { notification } from "antd";
 import { useRouter } from "next/router";
-import { GET_ME_MUTATION } from "../graphql/query_mutations";
+import { GET_ME_QUERY } from "../graphql/query_mutations";
 
 interface IProps {
   children: React.ReactNode;
@@ -20,6 +20,9 @@ interface IUser {
   phoneVerified: boolean;
   postalCode: boolean;
   phone?: string;
+  paused?: boolean;
+  allowNotification?: boolean;
+  showRating?: boolean;
 }
 
 export type StateType = {
@@ -33,6 +36,7 @@ export type StateType = {
     incompleteHandler?: (query: URLSearchParams) => void
   ) => void;
   setToken?: (token?: string) => void;
+  updateUser?: (user: any) => void;
 };
 
 const initalState: StateType = {
@@ -46,7 +50,7 @@ export const AuthContext = React.createContext(initalState);
 
 const AuthProvider = ({ children }: IProps) => {
   const router = useRouter();
-  const [getCurrentUser, { loading }] = useMutation(GET_ME_MUTATION, {
+  const [getCurrentUser, { loading }] = useLazyQuery(GET_ME_QUERY, {
     onCompleted: (data) => onCompleteFetchUser(data),
     onError: (error) => onFetchUserError(error),
   });
@@ -75,7 +79,6 @@ const AuthProvider = ({ children }: IProps) => {
   };
 
   const onLogout = (realod = false) => {
-    console.log("onLogout: ", cookie.get("token"));
     cookie.remove("token");
     setUser(null);
     setIsAuthenticated(false);
@@ -128,6 +131,13 @@ const AuthProvider = ({ children }: IProps) => {
     }
   };
 
+  const updateUser = (data: IUser) => {
+    setUser((p) => ({
+      ...p,
+      ...data,
+    }));
+  };
+
   return (
     <AuthContext.Provider
       value={{
@@ -138,6 +148,7 @@ const AuthProvider = ({ children }: IProps) => {
         setToken,
         onLogout,
         handleOAuth,
+        updateUser,
       }}
     >
       {loading ? <h2>Loading...</h2> : children}
