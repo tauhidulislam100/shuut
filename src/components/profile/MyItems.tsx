@@ -105,6 +105,29 @@ const GET_MY_LISTINGS = gql`
   }
 `;
 
+const GET_MY_UNAVAILABLE_ITEMS = gql`
+  query ($startdate: date!, $enddate: date!, $user_id: Int!) {
+    listing: get_unavailable_listing(
+      args: { startdate: $startdate, enddate: $enddate, user_id: $user_id }
+    ) {
+      id
+      slug
+      title
+      daily_price
+      location_name
+      images {
+        url
+        id
+      }
+      user {
+        firstName
+        lastName
+        id
+      }
+    }
+  }
+`;
+
 const UPDATE_BOOKING_STATE_MUTATION = gql`
   mutation UpdateBookingState($id: bigint!, $state: String!) {
     result: update_booking_by_pk(
@@ -123,7 +146,15 @@ const MyItems = () => {
     BOOKING_REQUEST_QUERY
   );
   const [getMyListings, { loading: myItemLoading, data: myListings }] =
-    useLazyQuery(GET_MY_LISTINGS);
+    useLazyQuery(GET_MY_LISTINGS, {
+      fetchPolicy: "cache-and-network",
+    });
+  const [
+    getUnAvailableListing,
+    { data: unavailableData, loading: unavailableLoading },
+  ] = useLazyQuery(GET_MY_UNAVAILABLE_ITEMS, {
+    fetchPolicy: "cache-and-network",
+  });
   const [updateBookingState, {}] = useMutation(UPDATE_BOOKING_STATE_MUTATION, {
     onError(error) {
       setInProgress("");
@@ -167,7 +198,15 @@ const MyItems = () => {
               variables: {
                 userId: user?.id,
               },
-              fetchPolicy: "cache-and-network",
+            });
+            return;
+          case "unavailable":
+            await getUnAvailableListing({
+              variables: {
+                user_id: user?.id,
+                startdate: format(new Date(), "yyyy-MM-dd"),
+                enddate: format(new Date(), "yyyy-MM-dd"),
+              },
             });
             return;
           default:
@@ -176,6 +215,29 @@ const MyItems = () => {
       }
     },
     [user?.id, filter]
+  );
+
+  useAsyncEffect(
+    async (isMounted) => {
+      if (isMounted() && user) {
+        await Promise.all([
+          getBookingRequest({
+            variables: {
+              userId: user?.id,
+              state: "PENDING",
+            },
+          }),
+          getUnAvailableListing({
+            variables: {
+              user_id: user?.id,
+              startdate: format(new Date(), "yyyy-MM-dd"),
+              enddate: format(new Date(), "yyyy-MM-dd"),
+            },
+          }),
+        ]);
+      }
+    },
+    [user?.id]
   );
 
   const approveBooking = async (bookingId: number) => {
@@ -200,6 +262,22 @@ const MyItems = () => {
     });
   };
 
+  const getStatus = (id: number) => {
+    const inProgress =
+      data?.booking?.listing?.map((item: any) => item.id) ?? [];
+    const rented = unavailableData?.listing?.map((item: any) => item.id) ?? [];
+
+    console.log("InProgress ", inProgress);
+    console.log("rented ", rented);
+
+    if (inProgress.includes(id)) {
+      return "in progress";
+    }
+
+    if (rented.includes(id)) {
+      return "rented";
+    }
+  };
   return (
     <>
       <div className="mt-[60px] w-full md:flex justify-between">
@@ -274,7 +352,7 @@ const MyItems = () => {
               ? "My Items"
               : "Unavailable"}
           </h1>
-          {loading || myItemLoading ? (
+          {loading || myItemLoading || unavailableLoading ? (
             <div className="grid place-items-center w-full">
               <Lottie
                 animationData={loadingAnimation}
@@ -284,7 +362,7 @@ const MyItems = () => {
             </div>
           ) : (
             <div className="grid grid-cols-5 gap-4">
-              {(filter === "request" || filter === "unavailable") &&
+              {filter === "request" &&
                 data?.booking?.map((booking: Record<string, any>) => (
                   <SingleProduct
                     onClick={() => {
@@ -297,8 +375,21 @@ const MyItems = () => {
                 ))}
               {filter === "my-items" &&
                 myListings?.listing?.map((listing: Record<string, any>) => (
-                  <SingleProduct key={listing?.id} data={listing as any} />
+                  <SingleProduct
+                    key={listing?.id}
+                    data={{ ...listing, state: getStatus(listing.id) } as any}
+                  />
                 ))}
+              {filter === "unavailable"
+                ? unavailableData?.listing?.map(
+                    (listing: Record<string, any>) => (
+                      <SingleProduct
+                        key={listing?.id}
+                        data={{ ...listing, state: "Not Available" } as any}
+                      />
+                    )
+                  )
+                : null}
             </div>
           )}
         </div>

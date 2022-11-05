@@ -304,9 +304,26 @@ const Rental = () => {
         )}
       </div>
       <div className="w-full mt-[60px] flex justify-end">
-        <button className="bg-secondary text-white font-lota rounded-md px-8 py-2.5 flex items-center">
-          <AiOutlineCloudDownload className="mr-2 text-lg" />
-          Download
+        <button
+          className={`${
+            (filter === "handover-today" ||
+              filter === "handover-tomorrow" ||
+              filter === "rented") &&
+            view == "detail"
+              ? "bg-[#06E775]"
+              : "bg-secondary"
+          }  text-white font-lota rounded-md px-8 py-2.5 flex items-center`}
+        >
+          {filter === "request" && view === "detail" ? (
+            "Awaiting Approval"
+          ) : filter !== "request" && view === "detail" ? (
+            "Rented"
+          ) : (
+            <span className="inline-flex">
+              <AiOutlineCloudDownload className="mr-2 text-lg" />
+              Download
+            </span>
+          )}
         </button>
       </div>
       {view === "grid" ? (

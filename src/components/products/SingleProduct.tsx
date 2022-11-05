@@ -76,6 +76,8 @@ const SingleProduct = ({
             className={`text-xs font-medium font-sofia-pro mt-2 capitalize ${
               state.toLocaleLowerCase() === "rented"
                 ? "text-[#06E775]"
+                : state.toLocaleLowerCase() === "not available"
+                ? "text-[#EB001B]"
                 : "text-orange-500"
             }`}
           >

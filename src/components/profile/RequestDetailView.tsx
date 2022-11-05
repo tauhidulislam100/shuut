@@ -1,4 +1,5 @@
 import { Avatar, Collapse, Spin } from "antd";
+import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
@@ -112,7 +113,8 @@ const RequestDetailView = ({
               </div>
               <div className="">
                 <p className="text-primary-100">
-                  {selectedBooking?.start} - {selectedBooking?.end}
+                  {format(new Date(selectedBooking?.start as string), "qo MMM")}{" "}
+                  - {selectedBooking?.end}
                 </p>
                 <p>Location: </p>
                 <p>Phone Number: {selectedBooking?.transaction?.user?.phone}</p>

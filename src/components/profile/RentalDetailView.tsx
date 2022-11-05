@@ -1,8 +1,10 @@
 import { Avatar, Collapse } from "antd";
+import { format } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useState } from "react";
 import { BsPlus, BsX } from "react-icons/bs";
+import { turnicate } from "../../utils/utils";
 
 const ShortListingInfo = ({
   booking,
@@ -34,11 +36,14 @@ const ShortListingInfo = ({
               className="w-[166px] h-[129px]"
             />
           </div>
-          <h5 className="text-primary-100 pl-4">{booking?.listing?.title}</h5>
+          <h5 className="text-primary-100 pl-4">
+            {turnicate(booking?.listing?.title, 30)}
+          </h5>
         </div>
         <div className="">
           <p className="text-primary-100/30">
-            {booking?.start} - {booking?.end}
+            {format(new Date(booking?.start as string), "qo MMM")} -{" "}
+            {format(new Date(booking?.end as string), "qo MMMM yyyy")}
           </p>
         </div>
       </div>
@@ -54,7 +59,11 @@ const ShortListingInfo = ({
         </div>
       </div>
       <button className="bg-secondary text-white w-full hover:bg-primary py-2.5 text-sm font-sofia-pro mt-4">
-        Pending Availability Confirmation
+        {booking.state === "PENDING"
+          ? "Pending Availability Confirmation"
+          : booking.state === "ACCEPTED"
+          ? "Rented"
+          : booking.state}
       </button>
     </div>
   );
@@ -109,12 +118,17 @@ const RentalDetailView = ({ bookings = [], activeItem }: IProps) => {
                   />
                 </div>
                 <h5 className="text-primary-100 pl-4">
-                  {selectedBooking?.listing?.title}
+                  {turnicate(selectedBooking?.listing?.title, 30)}
                 </h5>
               </div>
               <div className="">
                 <p className="text-primary-100">
-                  {selectedBooking?.start} - {selectedBooking?.end}
+                  {format(new Date(selectedBooking?.start as string), "qo MMM")}{" "}
+                  -{" "}
+                  {format(
+                    new Date(selectedBooking?.end as string),
+                    "qo MMMM yyyy"
+                  )}
                 </p>
               </div>
             </div>
