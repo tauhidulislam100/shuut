@@ -8,6 +8,7 @@ import { ApolloProvider } from "@apollo/client";
 import { client } from "../graphql/apollo-client";
 import AuthProvider from "../contexts/AuthProvider";
 import { Wrapper } from "@googlemaps/react-wrapper";
+import GlobalStateProvider from "../contexts/GlobalStateProvider";
 
 function MyApp({ Component, pageProps }: AppProps) {
   return (
@@ -20,9 +21,11 @@ function MyApp({ Component, pageProps }: AppProps) {
           return <h2>{status}</h2>;
         }}
       >
-        <AuthProvider>
-          <Component {...pageProps} />
-        </AuthProvider>
+        <GlobalStateProvider>
+          <AuthProvider>
+            <Component {...pageProps} />
+          </AuthProvider>
+        </GlobalStateProvider>
       </Wrapper>
     </ApolloProvider>
   );

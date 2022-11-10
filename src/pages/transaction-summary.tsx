@@ -1,23 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Footer, NavBar } from "../components";
 import { BsArrowLeftCircle } from "react-icons/bs";
-import {
-  Checkbox,
-  Col,
-  Form,
-  Input,
-  notification,
-  Rate,
-  Row,
-  Spin,
-} from "antd";
+import { notification, Rate, Row, Spin } from "antd";
 import { useRouter } from "next/router";
 import AuthGuard from "../components/auth-guard/AuthGuard";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   ADD_TO_CART,
   CONFIRM_TRANSACTION,
-  CREATE_PAYMENT,
   GET_TRANSACTION_SUMMARY,
 } from "../graphql/query_mutations";
 import Link from "next/link";
@@ -27,7 +17,7 @@ import paymentAnimation from "../components/lottie/payment-success.json";
 import Lottie from "lottie-react";
 import useAsyncEffect from "use-async-effect";
 
-const PayButton = ({
+export const PayButton = ({
   amount = 0,
   email = "",
   onSuccess,
@@ -41,7 +31,7 @@ const PayButton = ({
   amount: number;
 }) => {
   const config = {
-    text: loading ? "Confirming..." : "MakePayment",
+    text: loading ? "Confirming..." : "Make Payment",
     publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
     email: email as string,
     amount: Math.round(amount * 100),
@@ -86,25 +76,6 @@ const Payment = () => {
         });
       },
     });
-  const [createPayment, { loading: createPaymentLoading }] = useMutation(
-    CREATE_PAYMENT,
-    {
-      onError(error) {
-        notification.error({
-          message: error.message,
-        });
-      },
-      onCompleted(data) {
-        confirmTransaction({
-          variables: {
-            id: transactionData.summary.transactionId,
-            paymentId: data.result.id,
-            payinTotal: transactionData.summary.total,
-          },
-        });
-      },
-    }
-  );
 
   useEffect(() => {
     if (transactionData) {
@@ -119,7 +90,8 @@ const Payment = () => {
         await getSummary({
           fetchPolicy: "cache-and-network",
         });
-        const { start, end, quantity, listingId } = router.query;
+        const { start, end, quantity, listingId, pricing_option } =
+          router.query;
         if (listingId && start && end) {
           await addToCart({
             variables: {
@@ -127,6 +99,7 @@ const Payment = () => {
               end,
               quantity: quantity ?? 1,
               listing_id: listingId,
+              pricing_option,
             },
           });
         }
@@ -135,11 +108,14 @@ const Payment = () => {
     [router, ref]
   );
   const onPaymentSuccess = (resources?: any) => {
-    createPayment({
+    confirmTransaction({
       variables: {
         amount: transactionData.summary.total,
         status: resources.status,
         reference: resources.reference,
+        transaction_id: transactionData.summary.transactionId,
+        id: transactionData.summary.transactionId,
+        payinTotal: transactionData.summary.total,
       },
     });
   };
@@ -324,9 +300,7 @@ const Payment = () => {
                       <PayButton
                         email={user?.email as string}
                         amount={+transactionSummary.total}
-                        loading={
-                          confirmTransactionLoading || createPaymentLoading
-                        }
+                        loading={confirmTransactionLoading}
                         onSuccess={onPaymentSuccess}
                         onClose={onClose}
                       />

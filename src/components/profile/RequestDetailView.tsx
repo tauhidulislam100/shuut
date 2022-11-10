@@ -1,9 +1,16 @@
 import { Avatar, Collapse, Spin } from "antd";
-import { format } from "date-fns";
+import {
+  differenceInCalendarDays,
+  differenceInCalendarMonths,
+  differenceInCalendarWeeks,
+  format,
+} from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { BsPlus, BsX } from "react-icons/bs";
+import { useGlobalState } from "../../hooks/useGlobalState";
+import { turnicate } from "../../utils/utils";
 
 const ShortListingInfo = ({
   booking,
@@ -29,7 +36,9 @@ const ShortListingInfo = ({
               className="w-[166px] h-[129px]"
             />
           </div>
-          <h5 className="text-primary-100 pl-4">{booking?.listing?.title}</h5>
+          <h5 className="text-primary-100 pl-4">
+            {turnicate(booking?.listing?.title, 30)}
+          </h5>
         </div>
         <div className="">
           <p className="text-primary-100/30">
@@ -49,7 +58,9 @@ const ShortListingInfo = ({
         </div>
       </div>
       <button className="bg-secondary text-white w-full hover:bg-primary py-2.5 text-sm font-sofia-pro mt-4">
-        Pending Availability Confirmation
+        {booking.state === "EXTEND"
+          ? "Pending Extension Confirmation"
+          : "Pending Availability Confirmation"}
       </button>
     </div>
   );
@@ -58,24 +69,69 @@ const ShortListingInfo = ({
 interface IProps {
   bookings: Record<string, any>[];
   activeItem?: Record<string, any>;
-  approve?: (bookingId: number) => void;
-  reject?: (bookingId: number) => void;
+  approve?: (
+    bookingId: number,
+    isExtension?: boolean,
+    extendTo?: string
+  ) => void;
+  reject?: (bookingId: number, isExtension?: boolean) => void;
   loadingState?: string;
+  activeFilter?: string;
 }
 
 const RequestDetailView = ({
   bookings = [],
   activeItem,
   loadingState,
+  activeFilter,
   reject,
   approve,
 }: IProps) => {
   const [selectedBooking, setSelectedBooking] = useState<
     Record<string, any> | undefined
   >(activeItem);
+  const { SERVICE_CHARGE, SERVICE_VAT } = useGlobalState();
+  const [extensionCost, setExtensionCost] = useState(0);
+
+  useEffect(() => {
+    if (selectedBooking?.state === "EXTEND") {
+      switch (selectedBooking?.pricing_option) {
+        case "weekly":
+          const weeks = differenceInCalendarWeeks(
+            new Date(selectedBooking.extend_to),
+            new Date(selectedBooking.end)
+          );
+          setExtensionCost(weeks * selectedBooking.listing.weekly_price);
+          break;
+        case "monthly":
+          const months = differenceInCalendarMonths(
+            new Date(selectedBooking.extend_to),
+            new Date(selectedBooking.end)
+          );
+          setExtensionCost(months * selectedBooking.listing.montly_price);
+          break;
+        case "daily":
+          const days = differenceInCalendarDays(
+            new Date(selectedBooking.extend_to),
+            new Date(selectedBooking.end)
+          );
+          console.log("days ", days);
+          setExtensionCost(days * selectedBooking?.listing?.daily_price);
+        default:
+          break;
+      }
+    }
+  }, [selectedBooking]);
+
   return (
     <div className="font-lota">
-      <h1 className="text-[32px] text-primary">Rentals</h1>
+      <h1 className="text-[32px] text-primary">
+        {activeFilter === "handover-today" ||
+        activeFilter === "handover-tommorow" ||
+        activeFilter === "rented"
+          ? "Approved"
+          : "Rentals"}
+      </h1>
       <div className="mt-5">
         <div className="grid grid-cols-2 gap-10 items-start">
           <div>
@@ -108,12 +164,12 @@ const RequestDetailView = ({
                   />
                 </div>
                 <h5 className="text-primary-100 pl-4">
-                  {selectedBooking?.listing?.title}
+                  {turnicate(selectedBooking?.listing?.title, 30)}
                 </h5>
               </div>
               <div className="">
                 <p className="text-primary-100">
-                  {format(new Date(selectedBooking?.start as string), "qo MMM")}{" "}
+                  {format(new Date(selectedBooking?.start as string), "do MMM")}{" "}
                   - {selectedBooking?.end}
                 </p>
                 <p>Location: </p>
@@ -147,7 +203,12 @@ const RequestDetailView = ({
 
                 <div className="flex items-center gap-10">
                   <button
-                    onClick={() => reject?.(selectedBooking?.id)}
+                    onClick={() =>
+                      reject?.(
+                        selectedBooking?.id,
+                        selectedBooking?.state === "EXTEND"
+                      )
+                    }
                     className="min-w-[155px] btn h-11 bg-[#EB001B] text-white purple-button"
                   >
                     {loadingState === "reject" ? (
@@ -157,7 +218,13 @@ const RequestDetailView = ({
                     )}
                   </button>
                   <button
-                    onClick={() => approve?.(selectedBooking?.id)}
+                    onClick={() =>
+                      approve?.(
+                        selectedBooking?.id,
+                        selectedBooking?.state === "EXTEND",
+                        selectedBooking?.extend_to
+                      )
+                    }
                     className="min-w-[155px] btn h-11 bg-secondary  hover:bg-primary text-white purple-button"
                   >
                     {loadingState === "approve" ? (
@@ -170,130 +237,194 @@ const RequestDetailView = ({
               </div>
             </div>
             <div className="border-b my-10"></div>
-            <div className="font-lota px-5 text-sm">
-              <div className="flex justify-between items-center">
+            {extensionCost ? (
+              <div className="font-lota px-5 text-sm">
                 <h1 className="text-primary font-semibold">
-                  Payment Information
+                  Transaction Summary
                 </h1>
-                <h2 className="text-primary-100/30 underline">Invoice</h2>
-              </div>
-              <div className="flex justify-between items-center mt-12">
-                <p className="text-[#677489]">Cost of Service</p>
-                <p className="text-[#111729]">₦{selectedBooking?.cost}</p>
-              </div>
-              <div className="flex justify-between items-center py-4">
-                <p className="text-[#677489]">Total Rental Fee</p>
-                <p className="text-[#111729]">
-                  ₦{selectedBooking?.service_charge}
-                </p>
-              </div>
-              <div className="flex justify-between items-center">
-                <p className="text-[#677489]">VAT</p>
-                <p className="text-[#111729]">₦{selectedBooking?.vat}</p>
-              </div>
-              <div className="border-b mt-5 mb-2.5"></div>
-              <div className="flex justify-between items-center">
-                <p className="text-[#111729] text-sm">Total</p>
-                <p className="text-secondary text-sm font-semibold">
-                  ₦
-                  {selectedBooking?.cost +
-                    selectedBooking?.vat +
-                    selectedBooking?.service_charge}
-                </p>
-              </div>
-            </div>
-            <div className="border-b mt-10"></div>
-            <h1 className="mt-10 uppercase font-lota font-semibold text-primary">
-              Faq
-            </h1>
-            <div className="active-state">
-              <Collapse
-                className="w-full faq-collapse"
-                bordered={false}
-                expandIconPosition="end"
-                expandIcon={(p) =>
-                  p.isActive ? (
-                    <span>
-                      <BsX />
-                    </span>
-                  ) : (
-                    <span>
-                      <BsPlus />
-                    </span>
-                  )
-                }
-              >
-                <Collapse.Panel key={"1"} header="How secured is my Equipment?">
-                  <p>
-                    We are currently in the process of identifying interested
-                    founding members. When at least 100 have made a verbal
-                    commitment, the process of negotiating with potential
-                    partner nations can begin. There is no financial obligation
-                    until the founding members have approved a negotiated deal.
+                <div className="flex justify-between items-end mt-10">
+                  <p className="text-[#677489]">
+                    {differenceInCalendarDays(
+                      new Date(selectedBooking?.extend_to),
+                      new Date(selectedBooking?.extend_from)
+                    )}{" "}
+                    Days of extension
                   </p>
-                </Collapse.Panel>
-                <Collapse.Panel
-                  key={"2"}
-                  header="Do renter pay for equipment transportation?"
-                >
-                  <p>
-                    We are currently in the process of identifying interested
-                    founding members. When at least 100 have made a verbal
-                    commitment, the process of negotiating with potential
-                    partner nations can begin. There is no financial obligation
-                    until the founding members have approved a negotiated deal.
+                  <p className="text-[#111729]">₦{extensionCost}</p>
+                </div>
+                <hr className="my-8" />
+                <div className="flex justify-between items-center">
+                  <h1 className="text-primary font-semibold">
+                    Payment Information
+                  </h1>
+                  <h2 className="text-primary-100/30 underline">Invoice</h2>
+                </div>
+                <div className="flex justify-between items-center mt-10">
+                  <p className="text-[#677489]">Cost of Service</p>
+                  <p className="text-[#111729]">₦{extensionCost}</p>
+                </div>
+                <div className="flex justify-between items-center py-4">
+                  <p className="text-[#677489]">Total Rental Fee</p>
+                  <p className="text-[#111729]">
+                    ₦{extensionCost * Number(SERVICE_CHARGE)}
                   </p>
-                </Collapse.Panel>
-                <Collapse.Panel
-                  key={"3"}
-                  header="How much money is needed for insurance ?"
-                >
-                  <p>
-                    We are currently in the process of identifying interested
-                    founding members. When at least 100 have made a verbal
-                    commitment, the process of negotiating with potential
-                    partner nations can begin. There is no financial obligation
-                    until the founding members have approved a negotiated deal.
+                </div>
+                <div className="flex justify-between items-center">
+                  <p className="text-[#677489]">VAT</p>
+                  <p className="text-[#111729]">
+                    ₦
+                    {extensionCost * Number(SERVICE_CHARGE) +
+                      extensionCost * Number(SERVICE_VAT)}
                   </p>
-                </Collapse.Panel>
-                <Collapse.Panel
-                  key={"4"}
-                  header="What services are available on SHUUT?  "
-                >
-                  <p>
-                    We are currently in the process of identifying interested
-                    founding members. When at least 100 have made a verbal
-                    commitment, the process of negotiating with potential
-                    partner nations can begin. There is no financial obligation
-                    until the founding members have approved a negotiated deal.
+                </div>
+                <div className="border-b mt-5 mb-2.5"></div>
+                <div className="flex justify-between items-center">
+                  <p className="text-[#111729] text-sm">Total</p>
+                  <p className="text-secondary text-sm font-semibold">
+                    ₦
+                    {extensionCost +
+                      extensionCost * Number(SERVICE_CHARGE) +
+                      extensionCost * Number(SERVICE_VAT)}
                   </p>
-                </Collapse.Panel>
-              </Collapse>
-            </div>
-            <h1 className="font-lota font-semibold text-primary">Support</h1>
-            <div className="border-b"></div>
-            <ul className="mt-10 space-y-2.5">
-              <li className="">
-                <Link href={`/listings/${selectedBooking?.listing?.slug}`}>
-                  <a className="">Go To Item</a>
-                </Link>
-              </li>
-              <li className="">
-                <Link href={"/contact-support"}>
-                  <a className="">Contact Support</a>
-                </Link>
-              </li>
-              <li className="">
-                <Link href={"/item"}>
-                  <a className="">Change Date</a>
-                </Link>
-              </li>
-              <li className="">
-                <Link href={"/item"}>
-                  <a className="text-[#EB001B]">Cancel</a>
-                </Link>
-              </li>
-            </ul>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div className="font-lota px-5 text-sm">
+                  <div className="flex justify-between items-center">
+                    <h1 className="text-primary font-semibold">
+                      Payment Information
+                    </h1>
+                    <h2 className="text-primary-100/30 underline">Invoice</h2>
+                  </div>
+                  <div className="flex justify-between items-center mt-12">
+                    <p className="text-[#677489]">Cost of Service</p>
+                    <p className="text-[#111729]">₦{selectedBooking?.cost}</p>
+                  </div>
+                  <div className="flex justify-between items-center py-4">
+                    <p className="text-[#677489]">Total Rental Fee</p>
+                    <p className="text-[#111729]">
+                      ₦{selectedBooking?.service_charge}
+                    </p>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <p className="text-[#677489]">VAT</p>
+                    <p className="text-[#111729]">₦{selectedBooking?.vat}</p>
+                  </div>
+                  <div className="border-b mt-5 mb-2.5"></div>
+                  <div className="flex justify-between items-center">
+                    <p className="text-[#111729] text-sm">Total</p>
+                    <p className="text-secondary text-sm font-semibold">
+                      ₦
+                      {selectedBooking?.cost +
+                        selectedBooking?.vat +
+                        selectedBooking?.service_charge}
+                    </p>
+                  </div>
+                </div>
+                <div className="border-b mt-10"></div>
+                <h1 className="mt-10 uppercase font-lota font-semibold text-primary">
+                  Faq
+                </h1>
+                <div className="active-state">
+                  <Collapse
+                    className="w-full faq-collapse"
+                    bordered={false}
+                    expandIconPosition="end"
+                    expandIcon={(p) =>
+                      p.isActive ? (
+                        <span>
+                          <BsX />
+                        </span>
+                      ) : (
+                        <span>
+                          <BsPlus />
+                        </span>
+                      )
+                    }
+                  >
+                    <Collapse.Panel
+                      key={"1"}
+                      header="How secured is my Equipment?"
+                    >
+                      <p>
+                        We are currently in the process of identifying
+                        interested founding members. When at least 100 have made
+                        a verbal commitment, the process of negotiating with
+                        potential partner nations can begin. There is no
+                        financial obligation until the founding members have
+                        approved a negotiated deal.
+                      </p>
+                    </Collapse.Panel>
+                    <Collapse.Panel
+                      key={"2"}
+                      header="Do renter pay for equipment transportation?"
+                    >
+                      <p>
+                        We are currently in the process of identifying
+                        interested founding members. When at least 100 have made
+                        a verbal commitment, the process of negotiating with
+                        potential partner nations can begin. There is no
+                        financial obligation until the founding members have
+                        approved a negotiated deal.
+                      </p>
+                    </Collapse.Panel>
+                    <Collapse.Panel
+                      key={"3"}
+                      header="How much money is needed for insurance ?"
+                    >
+                      <p>
+                        We are currently in the process of identifying
+                        interested founding members. When at least 100 have made
+                        a verbal commitment, the process of negotiating with
+                        potential partner nations can begin. There is no
+                        financial obligation until the founding members have
+                        approved a negotiated deal.
+                      </p>
+                    </Collapse.Panel>
+                    <Collapse.Panel
+                      key={"4"}
+                      header="What services are available on SHUUT?  "
+                    >
+                      <p>
+                        We are currently in the process of identifying
+                        interested founding members. When at least 100 have made
+                        a verbal commitment, the process of negotiating with
+                        potential partner nations can begin. There is no
+                        financial obligation until the founding members have
+                        approved a negotiated deal.
+                      </p>
+                    </Collapse.Panel>
+                  </Collapse>
+                </div>
+                <h1 className="font-lota font-semibold text-primary">
+                  Support
+                </h1>
+                <div className="border-b"></div>
+                <ul className="mt-10 space-y-2.5">
+                  <li className="">
+                    <Link href={`/listings/${selectedBooking?.listing?.slug}`}>
+                      <a className="">Go To Item</a>
+                    </Link>
+                  </li>
+                  <li className="">
+                    <Link href={"/contact-support"}>
+                      <a className="">Contact Support</a>
+                    </Link>
+                  </li>
+                  <li className="">
+                    <Link href={"/item"}>
+                      <a className="">Change Date</a>
+                    </Link>
+                  </li>
+                  <li className="">
+                    <Link href={"/item"}>
+                      <a className="text-[#EB001B]">Cancel</a>
+                    </Link>
+                  </li>
+                </ul>
+              </>
+            )}
           </div>
         </div>
       </div>

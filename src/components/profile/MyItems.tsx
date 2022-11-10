@@ -44,10 +44,10 @@ export const FilterMenu = ({
   </Radio.Group>
 );
 const BOOKING_REQUEST_QUERY = gql`
-  query GetBookings($state: String!, $userId: bigint!) {
+  query GetBookings($userId: bigint!) {
     booking(
       where: {
-        state: { _eq: $state }
+        _or: [{ state: { _eq: "PENDING" } }, { state: { _eq: "EXTEND" } }]
         _and: { listing: { user_id: { _eq: $userId } } }
       }
     ) {
@@ -59,6 +59,10 @@ const BOOKING_REQUEST_QUERY = gql`
       vat
       service_charge
       state
+      pricing_option
+      extend_to
+      extend_from
+      is_extension_paid
       transaction {
         id
         user {
@@ -74,7 +78,11 @@ const BOOKING_REQUEST_QUERY = gql`
         slug
         title
         daily_price
+        weekly_price
+        monthly_price
         location_name
+        availability_exceptions
+        quantity
         images {
           url
           id
@@ -108,7 +116,8 @@ const GET_MY_LISTINGS = gql`
 const GET_MY_UNAVAILABLE_ITEMS = gql`
   query ($startdate: date!, $enddate: date!, $user_id: Int!) {
     listing: get_unavailable_listing(
-      args: { startdate: $startdate, enddate: $enddate, user_id: $user_id }
+      args: { startdate: "2022-11-7", enddate: "2022-11-11" }
+      where: { user_id: { _eq: $user_id } }
     ) {
       id
       slug
@@ -128,11 +137,23 @@ const GET_MY_UNAVAILABLE_ITEMS = gql`
   }
 `;
 
-const UPDATE_BOOKING_STATE_MUTATION = gql`
+const APPROVE_BOOKING_REQUEST = gql`
   mutation UpdateBookingState($id: bigint!, $state: String!) {
     result: update_booking_by_pk(
       pk_columns: { id: $id }
       _set: { state: $state }
+    ) {
+      id
+      state
+    }
+  }
+`;
+
+const APPROVE_EXTEND_REQUEST = gql`
+  mutation UpdateBookingState($id: bigint!, $state: String!, $extendTo: date) {
+    result: update_booking_by_pk(
+      pk_columns: { id: $id }
+      _set: { state: $state, end: $extendTo }
     ) {
       id
       state
@@ -155,7 +176,7 @@ const MyItems = () => {
   ] = useLazyQuery(GET_MY_UNAVAILABLE_ITEMS, {
     fetchPolicy: "cache-and-network",
   });
-  const [updateBookingState, {}] = useMutation(UPDATE_BOOKING_STATE_MUTATION, {
+  const [approveBookingRequest, {}] = useMutation(APPROVE_BOOKING_REQUEST, {
     onError(error) {
       setInProgress("");
       setFilter("request");
@@ -175,6 +196,26 @@ const MyItems = () => {
       setFilter("request");
     },
   });
+  const [approveExtendRequest, {}] = useMutation(APPROVE_EXTEND_REQUEST, {
+    onError(error) {
+      setInProgress("");
+      setFilter("request");
+      notification.error({
+        message: error?.message,
+      });
+    },
+    onCompleted(data) {
+      notification.success({
+        message:
+          data.result?.state === "EXTENDED"
+            ? "Extend Request Approved"
+            : "Extend Request Declined",
+      });
+      setInProgress("");
+      setView("grid");
+      setFilter("request");
+    },
+  });
   const [filter, setFilter] = useState<FilterType>("my-items");
   const [view, setView] = useState<"grid" | "detail">("grid");
   const [selectedItem, setSelectedItem] = useState<Record<string, any>>();
@@ -188,7 +229,6 @@ const MyItems = () => {
             await getBookingRequest({
               variables: {
                 userId: user?.id,
-                state: "PENDING",
               },
               fetchPolicy: "cache-and-network",
             });
@@ -224,7 +264,6 @@ const MyItems = () => {
           getBookingRequest({
             variables: {
               userId: user?.id,
-              state: "PENDING",
             },
           }),
           getUnAvailableListing({
@@ -240,35 +279,57 @@ const MyItems = () => {
     [user?.id]
   );
 
-  const approveBooking = async (bookingId: number) => {
+  const approveBooking = async (
+    bookingId: number,
+    isExtension = false,
+    extendTo?: string
+  ) => {
     setInProgress("approve");
     setFilter("");
-    await updateBookingState({
-      variables: {
-        id: bookingId,
-        state: "ACCEPTED",
-      },
-    });
+    if (isExtension) {
+      console.log("extensionRequest: ", isExtension);
+      await approveExtendRequest({
+        variables: {
+          id: bookingId,
+          state: "EXTENDED",
+          extendTo: extendTo,
+        },
+      });
+    } else {
+      await approveBookingRequest({
+        variables: {
+          id: bookingId,
+          state: "ACCEPTED",
+        },
+      });
+    }
   };
 
-  const rejectBooking = async (bookingId: number) => {
+  const rejectBooking = async (bookingId: number, isExtension = false) => {
     setInProgress("reject");
     setFilter("");
-    await updateBookingState({
-      variables: {
-        id: bookingId,
-        state: "DECLINED",
-      },
-    });
+    if (isExtension) {
+      //if extension request is not accepted then we will go back to accepted state
+      await approveBookingRequest({
+        variables: {
+          id: bookingId,
+          state: "ACCEPTED",
+        },
+      });
+    } else {
+      await approveBookingRequest({
+        variables: {
+          id: bookingId,
+          state: "DECLINED",
+        },
+      });
+    }
   };
 
   const getStatus = (id: number) => {
     const inProgress =
       data?.booking?.listing?.map((item: any) => item.id) ?? [];
     const rented = unavailableData?.listing?.map((item: any) => item.id) ?? [];
-
-    console.log("InProgress ", inProgress);
-    console.log("rented ", rented);
 
     if (inProgress.includes(id)) {
       return "in progress";
@@ -395,6 +456,7 @@ const MyItems = () => {
         </div>
       ) : view === "detail" ? (
         <RequestDetailView
+          activeFilter={filter}
           loadingState={inProgress}
           reject={rejectBooking}
           approve={approveBooking}

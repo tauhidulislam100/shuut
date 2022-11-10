@@ -396,12 +396,19 @@ export const CHECK_AVAILABILITY_QUERY = gql`
 `;
 
 export const ADD_TO_CART = gql`
-  mutation ($listing_id: bigint!, $quantity: Int, $start: date!, $end: date!) {
+  mutation (
+    $listing_id: bigint!
+    $quantity: Int
+    $start: date!
+    $end: date!
+    $pricing_option: String!
+  ) {
     AddToCart(
       listing_id: $listing_id
       quantity: $quantity
       start: $start
       end: $end
+      pricing_option: $pricing_option
     ) {
       id
     }
@@ -475,25 +482,16 @@ export const GET_TRANSACTION_SUMMARY = gql`
   }
 `;
 
-export const CREATE_PAYMENT = gql`
-  mutation CreatePayment(
+export const CONFIRM_TRANSACTION = gql`
+  mutation (
+    $id: bigint!
     $amount: numeric!
     $status: String!
     $reference: String!
   ) {
-    result: insert_payment_one(
-      object: { amount: $amount, status: $status, reference: $reference }
-    ) {
-      id
-    }
-  }
-`;
-
-export const CONFIRM_TRANSACTION = gql`
-  mutation ($id: bigint!, $paymentId: bigint!, $payinTotal: numeric) {
     update_transaction(
       where: { id: { _eq: $id } }
-      _set: { ordered: true, paymentId: $paymentId, payinTotal: $payinTotal }
+      _set: { ordered: true, payinTotal: $amount }
     ) {
       affected_rows
     }
@@ -503,6 +501,17 @@ export const CONFIRM_TRANSACTION = gql`
       _set: { state: "PENDING" }
     ) {
       affected_rows
+    }
+
+    result: insert_payment_one(
+      object: {
+        amount: $amount
+        status: $status
+        reference: $reference
+        transaction_id: $id
+      }
+    ) {
+      id
     }
   }
 `;

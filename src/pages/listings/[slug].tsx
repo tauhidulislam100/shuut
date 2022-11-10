@@ -49,8 +49,9 @@ import useAsyncEffect from "use-async-effect";
 import { checkDateOverlaps, formatMoney, roundBy } from "../../utils/utils";
 import { Map, Marker } from "../../components/map/MapView";
 import { DateRange, DayClickEventHandler, Matcher } from "react-day-picker";
-import { addDays, differenceInDays, differenceInHours, format } from "date-fns";
+import { addDays, differenceInCalendarDays, format } from "date-fns";
 import { useAuth } from "../../hooks/useAuth";
+import { useGlobalState } from "../../hooks/useGlobalState";
 
 const { TabPane } = Tabs;
 
@@ -83,6 +84,7 @@ interface Billing {
 const ProductView = () => {
   const router = useRouter();
   const { isAuthenticated } = useAuth();
+  const { SERVICE_CHARGE } = useGlobalState();
   const [getListingBySlug, { data, loading }] = useLazyQuery(
     GetListingDetailsBySlug,
     {
@@ -222,24 +224,22 @@ const ProductView = () => {
 
   useEffect(() => {
     if (selectedDate?.from && selectedDate?.to && listing) {
-      const days = differenceInDays(selectedDate.to, selectedDate.from);
-      const charge = process.env
-        .NEXT_PUBLIC_SERIVCE_CHARGE as unknown as number;
+      const days = differenceInCalendarDays(selectedDate.to, selectedDate.from);
       let totalAmount = 0;
       let totalCharge = 0;
       let totalDiscount = 0;
       if (days < 7 && days >= 1) {
         totalAmount = listing.daily_price * days;
-        totalCharge = totalAmount * charge;
+        totalCharge = totalAmount * SERVICE_CHARGE;
         // totalAmount += totalCharge;
       } else if (days >= 7 && days < 30) {
         totalAmount = (listing.weekly_price / 7) * days;
-        totalCharge = totalAmount * charge;
+        totalCharge = totalAmount * SERVICE_CHARGE;
         totalDiscount = listing.daily_price * days - totalAmount;
         // totalAmount += totalCharge;
       } else if (days >= 30) {
         totalAmount = (listing.monthly_price / 30) * days;
-        totalCharge = totalAmount * charge;
+        totalCharge = totalAmount * SERVICE_CHARGE;
         totalDiscount = listing.daily_price * days - totalAmount;
         // totalAmount += totalCharge;
       }
@@ -299,6 +299,7 @@ const ProductView = () => {
         quantity: quantity,
         start: format(selectedDate?.from as Date, "yyyy-MM-ddd"),
         end: format(selectedDate?.to as Date, "yyyy-MM-ddd"),
+        pricing_option: priceOption,
       },
     });
   };
@@ -311,6 +312,7 @@ const ProductView = () => {
         end: format(selectedDate?.to as Date, "yyyy-MM-ddd"),
         listingId: listing?.id,
         quantity,
+        pricing_option: priceOption,
       },
     });
   };
@@ -333,7 +335,7 @@ const ProductView = () => {
       range.to &&
       (priceOption === "weekly" || priceOption === "monthly")
     ) {
-      const days = differenceInDays(range.to, range.from);
+      const days = differenceInCalendarDays(range.to, range.from);
       console.log("days: ", days);
       setSelectedDate({
         ...range,

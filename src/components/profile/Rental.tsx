@@ -49,11 +49,15 @@ export const FilterMenu = ({
   </Radio.Group>
 );
 
-const query = gql`
-  query GetBookings($state: String!, $customer: bigint!) {
+const GET_MY_BOOKINGS = gql`
+  query GetBookings(
+    $state: [booking_bool_exp!]
+    $customer: bigint!
+    $start: date
+  ) {
     booking(
       where: {
-        state: { _eq: $state }
+        _or: $state
         _and: { transaction: { customer: { _eq: $customer } } }
       }
     ) {
@@ -65,12 +69,21 @@ const query = gql`
       vat
       service_charge
       state
+      pricing_option
+      extend_to
+      extend_from
+      is_extension_paid
+      transaction_id
       listing {
         id
         slug
         title
         daily_price
+        weekly_price
+        monthly_price
         location_name
+        availability_exceptions
+        quantity
         images {
           url
           id
@@ -80,6 +93,20 @@ const query = gql`
           lastName
           id
           profile_photo
+        }
+        bookings(
+          where: {
+            _or: [{ start: { _gte: $start } }, { end: { _gte: $start } }]
+            _and: [
+              { state: { _neq: "PROPOSED" } }
+              { state: { _neq: "CANCELLED" } }
+              { state: { _neq: "DECLINED" } }
+            ]
+          }
+        ) {
+          start
+          end
+          quantity
         }
       }
     }
@@ -105,12 +132,20 @@ const queryHandOverListing = gql`
       vat
       service_charge
       state
+      pricing_option
+      extend_from
+      is_extension_paid
+      transaction_id
       listing {
         id
         slug
         title
         daily_price
+        weekly_price
+        monthly_price
         location_name
+        availability_exceptions
+        quantity
         images {
           url
           id
@@ -121,6 +156,20 @@ const queryHandOverListing = gql`
           id
           profile_photo
         }
+        bookings(
+          where: {
+            _or: [{ start: { _gte: $start } }, { end: { _gte: $start } }]
+            _and: [
+              { state: { _neq: "PROPOSED" } }
+              { state: { _neq: "CANCELLED" } }
+              { state: { _neq: "DECLINED" } }
+            ]
+          }
+        ) {
+          start
+          end
+          quantity
+        }
       }
     }
   }
@@ -128,7 +177,7 @@ const queryHandOverListing = gql`
 
 const Rental = () => {
   const { user } = useAuth();
-  const [getMyBookings, { loading, data }] = useLazyQuery(query, {
+  const [getMyBookings, { loading, data }] = useLazyQuery(GET_MY_BOOKINGS, {
     fetchPolicy: "cache-and-network",
   });
 
@@ -152,15 +201,17 @@ const Rental = () => {
       if (isMounted() && user) {
         switch (filter) {
           case "request":
+            let start = format(new Date(), "yyyy-MM-dd");
             await getMyBookings({
               variables: {
                 customer: user?.id,
-                state: "PENDING",
+                state: [{ state: { _eq: "PENDING" } }],
+                start: start,
               },
             });
             return;
           case "handover-today":
-            let start = format(addDays(new Date(), 1), "yyyy-MM-dd");
+            start = format(addDays(new Date(), 1), "yyyy-MM-dd");
             await getHandOverListing({
               variables: {
                 customer: user.id,
@@ -183,15 +234,21 @@ const Rental = () => {
             await await getMyBookings({
               variables: {
                 customer: user?.id,
-                state: "RETURNED",
+                state: [{ state: { _eq: "RETURNED" } }],
               },
             });
             return;
           case "rented":
+            start = format(new Date(), "yyyy-MM-dd");
             await await getMyBookings({
               variables: {
                 customer: user?.id,
-                state: "ACCEPTED",
+                state: [
+                  { state: { _eq: "ACCEPTED" } },
+                  { state: { _eq: "EXTEND" } },
+                  { state: { _eq: "EXTENDED" } },
+                ],
+                start,
               },
             });
             return;
@@ -376,7 +433,10 @@ const Rental = () => {
         </div>
       ) : view === "detail" ? (
         <RentalDetailView
+          activeFilter={filter}
           activeItem={selectedItem}
+          setFilter={setFilter}
+          resetView={() => setView("grid")}
           bookings={
             filter === "handover-today" || "handover-tomorrow"
               ? handOverItems?.booking
