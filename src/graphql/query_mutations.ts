@@ -201,8 +201,7 @@ export const CreateListingMutation = gql`
     $images: [String!]!
     $accept_insurance: Boolean!
     $accept_terms: Boolean!
-    $delivery_option: String!
-    $insurance_id: bigint!
+    $delivery_option: String
     $quantity: numeric!
     $description: String!
     $plusCode: String
@@ -215,6 +214,7 @@ export const CreateListingMutation = gql`
     $user_id: bigint!
     $categoryId: bigint!
     $availability_exceptions: Exception
+    $address_id: bigint!
   ) {
     listing: CreateListing(
       title: $title
@@ -224,7 +224,6 @@ export const CreateListingMutation = gql`
       accept_insurance: $accept_insurance
       accept_terms: $accept_terms
       delivery_option: $delivery_option
-      insurance_id: $insurance_id
       quantity: $quantity
       plusCode: $plusCode
       price: $price
@@ -236,6 +235,7 @@ export const CreateListingMutation = gql`
       user_id: $user_id
       categoryId: $categoryId
       availability_exceptions: $availability_exceptions
+      address_id: $address_id
     ) {
       id
       slug
@@ -488,10 +488,11 @@ export const CONFIRM_TRANSACTION = gql`
     $amount: numeric!
     $status: String!
     $reference: String!
+    $address: String!
   ) {
     update_transaction(
       where: { id: { _eq: $id } }
-      _set: { ordered: true, payinTotal: $amount }
+      _set: { ordered: true, payinTotal: $amount, address: $address }
     ) {
       affected_rows
     }
@@ -526,12 +527,6 @@ export const UPSERT_PROFILE = gql`
     $opening_hours: String
     $closing_hours: String
     $store_location: String
-    $city: String
-    $country: String
-    $house_no: String
-    $postcode: String
-    $state: String
-    $street: String
     $firstName: String
     $lastName: String
     $phone: String!
@@ -559,23 +554,6 @@ export const UPSERT_PROFILE = gql`
           opening_hours
           store_location
         ]
-      }
-    ) {
-      id
-    }
-    insert_address_one(
-      object: {
-        city: $city
-        country: $country
-        house_no: $house_no
-        state: $state
-        street: $street
-        postcode: $postcode
-        user_id: $userId
-      }
-      on_conflict: {
-        constraint: address_user_id_key
-        update_columns: [city, country, house_no, postcode, state, street]
       }
     ) {
       id
@@ -611,13 +589,16 @@ export const GET_USER_INFO_BY_ID = gql`
         store_location
         cover_photo
       }
-      address {
+      addresses {
+        id
+        first_name
+        last_name
+        is_default
         city
-        country
-        house_no
-        postcode
         state
-        street
+        delivery_address
+        country
+        phone
       }
     }
   }
@@ -638,6 +619,90 @@ export const UPDATE_SETTING = gql`
         paused: $paused
       }
     ) {
+      affected_rows
+    }
+  }
+`;
+
+export const GET_MY_ADDRESSES = gql`
+  query GetMyAddresses($userId: Int!) {
+    address(where: { user_id: { _eq: $userId } }) {
+      id
+      user_id
+      first_name
+      last_name
+      phone
+      city
+      state
+      delivery_address
+      is_default
+      country
+    }
+  }
+`;
+
+export const CREATE_ADDRESS = gql`
+  mutation createAddress(
+    $first_name: String
+    $last_name: String
+    $city: String!
+    $state: String!
+    $phone: jsonb
+    $delivery_address: String!
+    $is_default: Boolean!
+    $country: String
+    $user_id: Int!
+  ) {
+    insert_address_one(
+      object: {
+        first_name: $first_name
+        last_name: $last_name
+        city: $city
+        state: $state
+        phone: $phone
+        delivery_address: $delivery_address
+        is_default: $is_default
+        user_id: $user_id
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+export const UPDTAE_ADDRESS = gql`
+  mutation updateAddress(
+    $first_name: String
+    $last_name: String
+    $city: String!
+    $state: String!
+    $phone: jsonb
+    $delivery_address: String!
+    $is_default: Boolean
+    $country: String
+    $id: Int!
+  ) {
+    update_address(
+      where: { id: { _eq: $id } }
+      _set: {
+        first_name: $first_name
+        last_name: $last_name
+        city: $city
+        state: $state
+        phone: $phone
+        delivery_address: $delivery_address
+        country: $country
+        is_default: $is_default
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const DELETE_ADDRESS = gql`
+  mutation DeleteAddress($id: Int!) {
+    delete_address(where: { id: { _eq: $id } }) {
       affected_rows
     }
   }

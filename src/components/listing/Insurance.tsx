@@ -1,8 +1,6 @@
 import React from "react";
-import { Checkbox, Radio, Space, Spin } from "antd";
+import { Checkbox, Spin } from "antd";
 import Image from "next/image";
-import { useQuery } from "@apollo/client";
-import { GetAllInsuranceQuery } from "../../graphql/query_mutations";
 
 const Insurance = ({
   onSubmit,
@@ -19,8 +17,6 @@ const Insurance = ({
   isInvalid?: boolean;
   loading?: boolean;
 }) => {
-  const { data: insuranceData } = useQuery(GetAllInsuranceQuery);
-
   return (
     <div className="mt-20">
       <div className="flex justify-between items-center">
@@ -38,31 +34,6 @@ const Insurance = ({
           />
         </div>
       </div>
-      <Radio.Group className="w-full mt-10" value={data?.insurance_id}>
-        <Space direction="vertical" size={40} className="w-full">
-          {insuranceData?.insurance?.map((insurance: Record<string, any>) => (
-            <Radio
-              key={insurance.id}
-              value={insurance.id}
-              className="w-full border px-7 py-4 rounded-[5px]"
-              checked={data.insurance_id === insurance.id}
-              onChange={(e) =>
-                onChange?.(
-                  "insurance_id",
-                  e.target.checked ? insurance.id : null
-                )
-              }
-            >
-              <div className="text-sm text-[#263238] pl-3">
-                <h2 className="font-sofia-pro">{insurance.policy_name}</h2>
-              </div>
-            </Radio>
-          ))}
-        </Space>
-      </Radio.Group>
-      {isInvalid && !data?.insurance_id ? (
-        <div className="my-1 text-red-500">please choose one of the policy</div>
-      ) : null}
       <div className="mt-10 h-96 bg-[#FBFBFB] p-10">
         <h2 className="text-2xl font-lota">Insurance</h2>
       </div>

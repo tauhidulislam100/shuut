@@ -13,7 +13,6 @@ import {
   CreateListingMutation,
   GetAllCategoryQuery,
 } from "../../graphql/query_mutations";
-import { Wrapper } from "@googlemaps/react-wrapper";
 import { notification } from "antd";
 import { useRouter } from "next/router";
 import { useAuth } from "../../hooks/useAuth";
@@ -39,10 +38,10 @@ const NewListing = () => {
     is_always_available: false,
     delivery_option: "",
     images: [],
-    insurance_id: null,
     accept_insurance: false,
     accept_terms: false,
     user_id: user?.id,
+    address_id: null,
   });
   const [createListing, { loading }] = useMutation(CreateListingMutation, {
     onCompleted: (data) => {
@@ -72,7 +71,7 @@ const NewListing = () => {
     }
 
     if (nextStep == 2) {
-      if (!listingForm.delivery_option || !listingForm.accept_terms) {
+      if (!listingForm.address_id || !listingForm.accept_terms) {
         setIsInvalidForm(true);
         return;
       }
@@ -89,7 +88,7 @@ const NewListing = () => {
 
   const handleOnSubmit = async () => {
     setIsInvalidForm(false);
-    if (!listingForm.accept_insurance || !listingForm.insurance_id) {
+    if (!listingForm.accept_insurance) {
       setIsInvalidForm(true);
       return;
     }

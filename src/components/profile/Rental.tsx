@@ -436,7 +436,10 @@ const Rental = () => {
           activeFilter={filter}
           activeItem={selectedItem}
           setFilter={setFilter}
-          resetView={() => setView("grid")}
+          resetView={() => {
+            setView("grid");
+            setFilter("rented");
+          }}
           bookings={
             filter === "handover-today" || "handover-tomorrow"
               ? handOverItems?.booking

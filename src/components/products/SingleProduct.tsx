@@ -20,6 +20,7 @@ type productProps = {
 
 type propsType = {
   data: productProps;
+  action?: React.ReactNode;
   onMouseOver?: () => void;
   onMouseLeave?: () => void;
   onClick?: () => void;
@@ -27,6 +28,7 @@ type propsType = {
 
 const SingleProduct = ({
   data: { title, images, daily_price, location_name, user, slug, state },
+  action,
   onMouseOver,
   onMouseLeave,
   onClick,
@@ -63,9 +65,12 @@ const SingleProduct = ({
       <p className="text-xs font-noraml font-sofia-pro text-opacity-50 text-primary-100">
         {turnicate(title)}
       </p>
-      <div className="flex items-center text-base text-primary font-sofia-pro font-medium">
-        <Niger />
-        <span className="ml-1">{formatMoney(daily_price)}/day</span>
+      <div className="flex items-center text-base text-primary font-sofia-pro font-medium justify-between">
+        <div className="flex items-center">
+          <Niger />
+          <span className="ml-1">{formatMoney(daily_price)}/day</span>
+        </div>
+        {action}
       </div>
       <div className="flex items-center justify-between">
         <p className="text-xs font-noraml font-sofia-pro text-opacity-50 text-primary-100 mt-2">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Rental from "./Rental";
-import Calendar from "./Calendar";
+import { Calendar } from "./Calendar";
 import MyItems from "./MyItems";
 import { useRouter } from "next/router";
 

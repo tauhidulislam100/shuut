@@ -8,13 +8,17 @@ const { TextArea } = Input;
 
 const EditProfile = ({
   data,
+  address,
   loading,
   onChange,
+  onChangeAddress,
   onSave,
 }: {
   data: Record<string, any>;
+  address: Record<string, any>;
   loading?: boolean;
   onChange?: (name: string, value: string) => void;
+  onChangeAddress?: (name: string, value: string) => void;
   onSave?: () => void;
 }) => {
   return (
@@ -58,42 +62,39 @@ const EditProfile = ({
           </Form.Item>
           <Divider />
           <h2 className="text-left text-2xl">Address</h2>
-          <Row gutter={87}>
-            <Col span={24} md={12}>
-              <Form.Item label="House No.">
-                <Input
-                  value={data?.house_no}
-                  onChange={(e) => onChange?.("house_no", e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-            <Col span={24} md={12}>
-              <Form.Item label="Street">
-                <Input
-                  value={data?.street}
-                  onChange={(e) => onChange?.("street", e.target.value)}
-                />
-              </Form.Item>
-            </Col>
-          </Row>
+          <Form.Item label="State">
+            <Input
+              value={address?.state}
+              onChange={(e) => onChangeAddress?.("state", e.target.value)}
+            />
+          </Form.Item>
           <Row gutter={87}>
             <Col span={24} md={12}>
               <Form.Item label="City">
                 <Input
-                  value={data?.city}
-                  onChange={(e) => onChange?.("city", e.target.value)}
+                  value={address?.city}
+                  onChange={(e) => onChangeAddress?.("city", e.target.value)}
                 />
               </Form.Item>
             </Col>
             <Col span={24} md={12}>
               <Form.Item label="Country">
                 <Input
-                  value={data?.country}
-                  onChange={(e) => onChange?.("country", e.target.value)}
+                  value={address?.country}
+                  onChange={(e) => onChangeAddress?.("country", e.target.value)}
                 />
               </Form.Item>
             </Col>
           </Row>
+          <Form.Item label="Delivery Address">
+            <TextArea
+              rows={3}
+              value={address?.delivery_address}
+              onChange={(e) =>
+                onChangeAddress?.("delivery_address", e.target.value)
+              }
+            />
+          </Form.Item>
           <Form.Item label="Phone Number">
             <Input
               value={data?.phone}

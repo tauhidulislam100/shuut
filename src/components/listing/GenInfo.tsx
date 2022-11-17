@@ -23,7 +23,7 @@ const GeneralInfo = ({
   data,
   isInvalid,
 }: IProps) => {
-  let autocomplete: google.maps.places.Autocomplete;
+  const autocomplete = useRef<google.maps.places.Autocomplete | null>(null);
   const locationRef = useRef<HTMLInputElement>(null);
   const [locationValue, setLocationValue] = useState<string>(
     data.location?.name
@@ -37,8 +37,6 @@ const GeneralInfo = ({
   const [fileList, setFileList] = useState<string[]>(data.images ?? []);
 
   const onDialogClose = async (info: FileUpload | FilesUpload | null) => {
-    // setFileList(newFileList);
-    // console.log(info?.files());
     const files = [];
     if ((info as any)?.files) {
       for (const file of (info as any)?.files()) {
@@ -55,12 +53,15 @@ const GeneralInfo = ({
   };
 
   useEffect(() => {
-    if (!autocomplete && locationRef.current) {
-      autocomplete = new google.maps.places.Autocomplete(locationRef.current, {
-        fields: ["formatted_address", "geometry", "name", "vicinity"],
-      });
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
+    if (!autocomplete.current && locationRef.current) {
+      autocomplete.current = new google.maps.places.Autocomplete(
+        locationRef.current,
+        {
+          fields: ["formatted_address", "geometry", "name", "vicinity"],
+        }
+      );
+      autocomplete.current.addListener("place_changed", () => {
+        const place = autocomplete.current?.getPlace()!;
         onChange?.("location", {
           name: `${place.name},${place.formatted_address?.split(",")[1]}`,
           ...place.geometry?.location?.toJSON(),
@@ -113,7 +114,11 @@ const GeneralInfo = ({
             className="border rounded-lg cursor-pointer flex justify-center items-center text-primary overflow-hidden h-[131px]"
           >
             {fileList?.[0] ? (
-              <img src={fileList?.[0]} className="max-w-full object-cover" />
+              <img
+                src={fileList?.[0]}
+                className="max-w-full object-cover"
+                alt="prev0"
+              />
             ) : (
               <FaCloudUploadAlt className="text-3xl" />
             )}
@@ -137,7 +142,11 @@ const GeneralInfo = ({
             className="border rounded-lg cursor-pointer flex justify-center items-center text-primary overflow-hidden h-[131px]"
           >
             {fileList?.[1] ? (
-              <img src={fileList?.[1]} className="max-w-full object-cover" />
+              <img
+                src={fileList?.[1]}
+                className="max-w-full object-cover"
+                alt="prev1"
+              />
             ) : (
               <FaCloudUploadAlt className="text-3xl" />
             )}
@@ -147,7 +156,11 @@ const GeneralInfo = ({
             className="border rounded-lg cursor-pointer flex justify-center items-center text-primary overflow-hidden h-[131px]"
           >
             {fileList?.[2] ? (
-              <img src={fileList?.[2]} className="max-w-full object-cover" />
+              <img
+                src={fileList?.[2]}
+                className="max-w-full object-cover"
+                alt="prev2"
+              />
             ) : (
               <FaCloudUploadAlt className="text-3xl" />
             )}
@@ -157,7 +170,11 @@ const GeneralInfo = ({
             className="border rounded-lg cursor-pointer flex justify-center items-center text-primary overflow-hidden h-[131px]"
           >
             {fileList?.[3] ? (
-              <img src={fileList?.[3]} className="max-w-full object-cover" />
+              <img
+                src={fileList?.[3]}
+                className="max-w-full object-cover"
+                alt="prev3"
+              />
             ) : (
               <FaCloudUploadAlt className="text-3xl" />
             )}
@@ -286,7 +303,7 @@ const GeneralInfo = ({
           </Form.Item>
         </Col>
       </Row>
-      {pricing.daily_price ? (
+      {/* {pricing.daily_price ? (
         (pricing.daily_price as number) * 7 < +pricing.weekly_price ? (
           <div className="text-red-500 mb-4">
             Weekly price cannot be higher than daily per day
@@ -296,7 +313,7 @@ const GeneralInfo = ({
             Monthly price cannot be higher than weekly per day
           </div>
         ) : null
-      ) : null}
+      ) : null} */}
       <Row gutter={65}>
         <Col span={12}>
           <Form.Item label="Quantity">

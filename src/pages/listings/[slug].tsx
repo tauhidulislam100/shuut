@@ -211,11 +211,20 @@ const ProductView = () => {
       }
       // console.log("overlapsed: ", overlapsed);
 
-      if (l.availability_exceptions) {
-        blockedDays.push({
-          from: new Date(l.availability_exceptions.from),
-          to: new Date(l.availability_exceptions.to),
-        });
+      if (l?.availability_exceptions) {
+        if (Array.isArray(l?.availability_exceptions)) {
+          for (let item of l?.availability_exceptions) {
+            blockedDays.push({
+              from: new Date(item.from),
+              to: new Date(item.to),
+            });
+          }
+        } else {
+          blockedDays.push({
+            from: new Date(l?.availability_exceptions.from),
+            to: new Date(l?.availability_exceptions.to),
+          });
+        }
       }
 
       setDisabledDays([...blockedDays, ...overlapsed]);
@@ -250,7 +259,7 @@ const ProductView = () => {
         totalDiscount,
       });
     }
-  }, [selectedDate, listing]);
+  }, [selectedDate, listing, SERVICE_CHARGE]);
 
   const onCheckAvailability = async () => {
     setShowBookingInfoCard(false);
@@ -565,11 +574,15 @@ const ProductView = () => {
                             <div className="flex justify-between">
                               <h4 className="">
                                 {priceOption === "weekly"
-                                  ? listing?.weekly_price /
-                                    (billing?.totalDays as number)
+                                  ? (
+                                      listing?.weekly_price /
+                                      (billing?.totalDays as number)
+                                    )?.toFixed(2)
                                   : priceOption === "monthly"
-                                  ? listing?.monthly_price /
-                                    (billing?.totalDays as number)
+                                  ? (
+                                      listing?.monthly_price /
+                                      (billing?.totalDays as number)
+                                    )?.toFixed(2)
                                   : listing?.daily_price}
                                 <span className="mx-1">x</span>
                                 {billing?.totalDays} days
@@ -579,7 +592,7 @@ const ProductView = () => {
                             <div className="flex justify-between">
                               <h4 className="">Service Fee</h4>
                               <h5 className="">
-                                ₦{billing.totalServiceCharge}
+                                ₦{billing.totalServiceCharge?.toFixed(2)}
                               </h5>
                             </div>
                             {billing &&
@@ -609,8 +622,10 @@ const ProductView = () => {
                               <h4 className="">Total</h4>
                               <h5 className="">
                                 ₦
-                                {(billing.totalAmount as number) +
-                                  (billing.totalServiceCharge as number)}
+                                {(
+                                  (billing.totalAmount as number) +
+                                  (billing.totalServiceCharge as number)
+                                )?.toFixed(2)}
                               </h5>
                             </div>
                             <div className="flex items-center text-xs font-sofia-pro font-normal text-[#0A2429E5] my-3">

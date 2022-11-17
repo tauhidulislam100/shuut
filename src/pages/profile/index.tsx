@@ -9,24 +9,17 @@ import {
   EditProfile,
 } from "../../components";
 import { BsArrowLeftCircle } from "react-icons/bs";
-import Image from "next/image";
 import { Avatar, notification, Tabs } from "antd";
 import AuthGuard from "../../components/auth-guard/AuthGuard";
 import { useAuth } from "../../hooks/useAuth";
 import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
+  CREATE_ADDRESS,
   GET_USER_INFO_BY_ID,
+  UPDTAE_ADDRESS,
   UPSERT_PROFILE,
 } from "../../graphql/query_mutations";
-import {
-  FileInfo,
-  FilesUpload,
-  FileUpload,
-  Widget,
-  WidgetAPI,
-} from "@uploadcare/react-widget";
-import { BiEditAlt } from "react-icons/bi";
-import { FcAddImage } from "react-icons/fc";
+import { Widget, WidgetAPI } from "@uploadcare/react-widget";
 import { RiImageEditFill } from "react-icons/ri";
 
 const { TabPane } = Tabs;
@@ -44,17 +37,12 @@ const Profile = () => {
     opening_hours: "",
     closing_hours: "",
     store_location: "",
-    city: "",
-    country: "",
-    house_no: "",
-    postcode: "",
-    state: "",
-    street: "",
     firstName: "",
     lastName: "",
     phone: "",
     profile_photo: null,
   });
+  const [address, setAddress] = useState<Record<string, any>>({});
   const { data: profileData } = useQuery(GET_USER_INFO_BY_ID, {
     variables: {
       id: user?.id,
@@ -75,25 +63,59 @@ const Profile = () => {
       });
     },
   });
+  const [createAddress, { loading: createAddressLoading }] = useMutation(
+    CREATE_ADDRESS,
+    {
+      onCompleted() {},
+      onError(error) {
+        notification.error({
+          message: error?.message,
+        });
+      },
+    }
+  );
+  const [updateAddress, { loading: updateLoading }] = useMutation(
+    UPDTAE_ADDRESS,
+    {
+      onCompleted() {},
+      onError(error) {
+        notification.error({
+          message: error?.message,
+        });
+      },
+    }
+  );
 
   useEffect(() => {
     if (profileData) {
-      const { profile, address, firstName, lastName, profile_photo, phone } =
+      const { profile, addresses, firstName, lastName, profile_photo, phone } =
         profileData.userInfo;
       setEditProfileForm((prev) => ({
         ...prev,
         ...profile,
-        ...address,
         firstName,
         lastName,
         profile_photo,
         phone,
       }));
+
+      if (addresses?.find((a: Record<string, any>) => a.is_default)) {
+        setAddress(addresses?.find((a: Record<string, any>) => a.is_default));
+      } else {
+        setAddress(addresses?.[0]);
+      }
     }
   }, [profileData]);
 
   const handleOnChangeInput = (name: string, value: string) => {
     setEditProfileForm((p) => ({
+      ...p,
+      [name]: value,
+    }));
+  };
+
+  const onChangeAddressInput = (name: string, value: string) => {
+    setAddress((p) => ({
       ...p,
       [name]: value,
     }));
@@ -107,6 +129,39 @@ const Profile = () => {
         return null;
     }
   }, [activeTab]);
+
+  const onSave = async () => {
+    const { id, ...rest } = address;
+
+    if (id) {
+      await Promise.all([
+        updateAddress({
+          variables: {
+            ...rest,
+            id: id,
+            is_default: true,
+          },
+        }),
+        upsertProfile({
+          variables: { ...editProfileForm, userId: user?.id },
+        }),
+      ]);
+    } else {
+      await Promise.all([
+        createAddress({
+          variables: {
+            first_name: editProfileForm.firstName,
+            last_name: editProfileForm.lastName,
+            ...rest,
+            is_default: true,
+          },
+        }),
+        upsertProfile({
+          variables: { ...editProfileForm, userId: user?.id },
+        }),
+      ]);
+    }
+  };
 
   return (
     <AuthGuard>
@@ -191,14 +246,12 @@ const Profile = () => {
           >
             <TabPane key={"1"} tab="Edit Profile">
               <EditProfile
-                onSave={() =>
-                  upsertProfile({
-                    variables: { ...editProfileForm, userId: user?.id },
-                  })
-                }
+                onSave={onSave}
                 data={editProfileForm}
                 onChange={handleOnChangeInput}
-                loading={loading}
+                onChangeAddress={onChangeAddressInput}
+                loading={loading || updateLoading || createAddressLoading}
+                address={address}
               />
             </TabPane>
             <TabPane key={"2"} tab="See Activities">

@@ -211,7 +211,6 @@ const RentalDetailView = ({
       const overlapsed: Record<string, any>[] = Object.values(filterRedBooking);
       for (let i = 0; i < overlapsed.length - 1; i += 1) {
         for (let j = i + 1; j < overlapsed.length; j += 1) {
-          console.log(overlapsed[i]);
           if (
             checkDateOverlaps(
               overlapsed[i].from,
@@ -230,11 +229,23 @@ const RentalDetailView = ({
           delete overlapsed[k];
         }
       }
-      if (selectedBooking.listing.availability_exceptions) {
-        blockedDays.push({
-          from: new Date(selectedBooking.listing.availability_exceptions.from),
-          to: new Date(selectedBooking.listing.availability_exceptions.to),
-        });
+
+      if (selectedBooking?.listing.availability_exceptions) {
+        if (Array.isArray(selectedBooking?.listing.availability_exceptions)) {
+          for (let item of selectedBooking?.listing.availability_exceptions) {
+            blockedDays.push({
+              from: new Date(item.from),
+              to: new Date(item.to),
+            });
+          }
+        } else {
+          blockedDays.push({
+            from: new Date(
+              selectedBooking?.listing.availability_exceptions.from
+            ),
+            to: new Date(selectedBooking?.listing.availability_exceptions.to),
+          });
+        }
       }
 
       setDisabledDays([...blockedDays, ...overlapsed]);
@@ -307,7 +318,6 @@ const RentalDetailView = ({
       (selectedBooking?.state === "EXTENDED" &&
         !selectedBooking?.is_extension_paid)
     ) {
-      console.log("extension: ", selectedBooking?.is_extension_paid);
       setSelectedDate({
         from: new Date(selectedBooking.extend_from),
         to: new Date(selectedBooking.extend_to),
@@ -457,26 +467,32 @@ const RentalDetailView = ({
                     </div>
                     <div className="flex justify-between items-center mt-12">
                       <p className="text-[#677489]">Cost of Service</p>
-                      <p className="text-[#111729]">₦{selectedBooking?.cost}</p>
+                      <p className="text-[#111729]">
+                        ₦{selectedBooking?.cost?.toFixed(2)}
+                      </p>
                     </div>
                     <div className="flex justify-between items-center py-4">
                       <p className="text-[#677489]">Total Rental Fee</p>
                       <p className="text-[#111729]">
-                        ₦{selectedBooking?.service_charge}
+                        ₦{selectedBooking?.service_charge?.toFixed(2)}
                       </p>
                     </div>
                     <div className="flex justify-between items-center">
                       <p className="text-[#677489]">VAT</p>
-                      <p className="text-[#111729]">₦{selectedBooking?.vat}</p>
+                      <p className="text-[#111729]">
+                        ₦{selectedBooking?.vat?.toFixed(2)}
+                      </p>
                     </div>
                     <div className="border-b mt-5 mb-2.5"></div>
                     <div className="flex justify-between items-center">
                       <p className="text-[#111729] text-sm">Total</p>
                       <p className="text-secondary text-sm font-semibold">
                         ₦
-                        {selectedBooking?.cost +
+                        {(
+                          selectedBooking?.cost +
                           selectedBooking?.vat +
-                          selectedBooking?.service_charge}
+                          selectedBooking?.service_charge
+                        )?.toFixed(2)}
                       </p>
                     </div>
                   </div>
@@ -598,7 +614,9 @@ const RentalDetailView = ({
                       )}{" "}
                       Days of extension
                     </p>
-                    <p className="text-[#111729]">₦{extensionCost}</p>
+                    <p className="text-[#111729]">
+                      ₦{extensionCost?.toFixed(2)}
+                    </p>
                   </div>
                   <hr className="my-8" />
                   <div className="flex justify-between items-center">
@@ -614,15 +632,17 @@ const RentalDetailView = ({
                   <div className="flex justify-between items-center py-4">
                     <p className="text-[#677489]">Total Rental Fee</p>
                     <p className="text-[#111729]">
-                      ₦{extensionCost * Number(SERVICE_CHARGE)}
+                      ₦{(extensionCost * Number(SERVICE_CHARGE))?.toFixed(2)}
                     </p>
                   </div>
                   <div className="flex justify-between items-center">
                     <p className="text-[#677489]">VAT</p>
                     <p className="text-[#111729]">
                       ₦
-                      {extensionCost * Number(SERVICE_CHARGE) +
-                        extensionCost * Number(SERVICE_VAT)}
+                      {(
+                        extensionCost * Number(SERVICE_CHARGE) +
+                        extensionCost * Number(SERVICE_VAT)
+                      )?.toFixed(2)}
                     </p>
                   </div>
                   <div className="border-b mt-5 mb-2.5"></div>
@@ -630,9 +650,11 @@ const RentalDetailView = ({
                     <p className="text-[#111729] text-sm">Total</p>
                     <p className="text-secondary text-sm font-semibold">
                       ₦
-                      {extensionCost +
+                      {(
+                        extensionCost +
                         extensionCost * Number(SERVICE_CHARGE) +
-                        extensionCost * Number(SERVICE_VAT)}
+                        extensionCost * Number(SERVICE_VAT)
+                      )?.toFixed(2)}
                     </p>
                   </div>
                 </div>
