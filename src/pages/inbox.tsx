@@ -61,7 +61,7 @@ const InboxListItem = ({
         selected ? "bg-[#090F4730]" : ""
       }`}
     >
-      <Avatar size={50} src={sender?.profile_photo} className="bg-[#090F47]">
+      <Avatar size={50} src={sender?.profile_photo} className="!bg-[#090F47]">
         {`${sender?.firstName?.charAt(0)}${sender?.lastName?.charAt(
           0
         )}`.toUpperCase()}
@@ -331,7 +331,7 @@ const Message = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex max-h-[68vh] min-h-[68vh]">
+              <div className="flex max-h-[68vh] min-h-[67vh]">
                 <div className="sm:w-2/5 pr-4 overflow-y-auto custom-scrollbar">
                   {inboxes?.map((inbox) => (
                     <div
@@ -384,7 +384,7 @@ const Message = () => {
                                     <Avatar
                                       size={50}
                                       src={message?.sender?.profile_photo}
-                                      className="bg-[#090F47]"
+                                      className="!bg-[#090F47]"
                                     >
                                       {`${message?.sender?.firstName?.charAt(
                                         0
@@ -422,7 +422,7 @@ const Message = () => {
                                     <Avatar
                                       size={50}
                                       src={message?.sender?.profile_photo}
-                                      className="bg-[#090F47]"
+                                      className="!bg-[#090F47]"
                                     >
                                       {`${message?.sender?.firstName?.charAt(
                                         0
