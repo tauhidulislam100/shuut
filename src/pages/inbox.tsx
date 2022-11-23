@@ -297,7 +297,7 @@ const Message = () => {
             </div>
           ) : null}
           {inboxes?.length ? (
-            <div className="border-b  rounded">
+            <div className="rounded">
               {/* bg-[#FDFCFC] */}
               <div className="sm:flex items-end border-b py-2">
                 <div className="w-2/5">
@@ -326,7 +326,7 @@ const Message = () => {
                     />
                     <RiDeleteBinFill
                       onClick={onDeleteInboxes}
-                      className="w-full text-xl cursor-pointer hover:text-red-500"
+                      className="w-full text-xl cursor-pointer text-red-500"
                     />
                   </div>
                 </div>
@@ -455,7 +455,7 @@ const Message = () => {
                       )) ?? (
                         <div className="text-center">You are now connected</div>
                       )}
-                      <div className="border-t bg-white flex justify-end pb-5 pr-5 mt-auto">
+                      <div className="border border-l-0 border-[#E6E6E6] bg-white flex justify-end pb-5 pr-5 mt-auto rounded-t-md">
                         <div className="w-full pl-10 flex items-end gap-5 mt-9">
                           <textarea
                             onChange={(e) => setMsgText(e.target.value)}
