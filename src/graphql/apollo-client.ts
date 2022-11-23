@@ -37,7 +37,7 @@ const wsLink =
   typeof window !== "undefined"
     ? new GraphQLWsLink(
         createClient({
-          url: `ws://${process.env.NEXT_PUBLIC_HASURA_ENDPOINT}`,
+          url: `wss://${process.env.NEXT_PUBLIC_HASURA_ENDPOINT}`,
           connectionParams() {
             return { headers: getHeaders() };
           },
