@@ -91,7 +91,7 @@ const InboxListItem = ({
           </p>
         </div>
         <p
-          className={`hidden sm:block text-sm font-sofia-pro  ${
+          className={`hidden sm:block text-sm font-sofia-pro mb-0  ${
             selected ? "text-[#090F47]" : "text-[#0A2429] text-opacity-50"
           }`}
         >
@@ -394,7 +394,7 @@ const Message = () => {
                                     </Avatar>
                                     <div className="ml-4">
                                       <div className="border rounded-md bg-white">
-                                        <p className="px-6 py-3 text-primary">
+                                        <p className="px-6 py-3 mb-0 text-primary">
                                           {message?.content}
                                         </p>
                                       </div>
@@ -432,7 +432,7 @@ const Message = () => {
                                     </Avatar>
                                     <div className="mr-4">
                                       <div className="border rounded-md bg-primary">
-                                        <p className="px-6 py-3 text-white">
+                                        <p className="px-6 py-3 mb-0 text-white">
                                           {message?.content}
                                         </p>
                                       </div>
