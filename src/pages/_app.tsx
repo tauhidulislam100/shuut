@@ -17,15 +17,14 @@ function MyApp({ Component, pageProps }: AppProps) {
         apiKey={process.env.NEXT_PUBLIC_GOOGLE_MAP_API_KEY!}
         libraries={["places"]}
         render={(status) => {
-          console.log("render Status: ", status);
           return <h2>{status}</h2>;
         }}
       >
-        <GlobalStateProvider>
-          <AuthProvider>
+        <AuthProvider>
+          <GlobalStateProvider>
             <Component {...pageProps} />
-          </AuthProvider>
-        </GlobalStateProvider>
+          </GlobalStateProvider>
+        </AuthProvider>
       </Wrapper>
     </ApolloProvider>
   );

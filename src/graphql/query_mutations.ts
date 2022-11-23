@@ -707,3 +707,110 @@ export const DELETE_ADDRESS = gql`
     }
   }
 `;
+
+export const GET_MY_INBOX = gql`
+  subscription MyInbox($userId: bigint!) {
+    inbox(
+      where: { _or: [{ from: { _eq: $userId } }, { to: { _eq: $userId } }] }
+      order_by: [
+        { created_at: desc }
+        { messages_aggregate: { variance: { id: asc } } }
+      ]
+    ) {
+      id
+      from: user {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+      to: userByTo {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+      messages(order_by: { created_at: asc }) {
+        id
+        inbox_id
+        content
+        created_at
+        receiver_has_read
+        sender: user {
+          id
+          firstName
+          lastName
+          profile_photo
+        }
+      }
+    }
+  }
+`;
+
+export const SEND_MESSAGE = gql`
+  mutation SendMessage($sender: bigint!, $inboxId: bigint!, $message: String!) {
+    insert_messages_one(
+      object: { sender: $sender, inbox_id: $inboxId, content: $message }
+    ) {
+      id
+    }
+  }
+`;
+
+export const CREATE_INBOX = gql`
+  mutation CreateInbox($from: bigint!, $to: bigint!) {
+    inbox: insert_inbox_one(object: { from: $from, to: $to }) {
+      id
+      from: user {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+      to: userByTo {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+      messages(order_by: { created_at: asc }) {
+        id
+        inbox_id
+        content
+        created_at
+        receiver_has_read
+        sender: user {
+          id
+          firstName
+          lastName
+          profile_photo
+        }
+      }
+    }
+  }
+`;
+
+export const DELETE_INBOXES = gql`
+  mutation DeleteInboxes($inboxes: [bigint!]!) {
+    delete_inbox(where: { id: { _in: $inboxes } }) {
+      affected_rows
+    }
+  }
+`;
+
+export const MARK_MESSAGE_AS_READ = gql`
+  mutation MarkMessageAsRead($inboxId: bigint!, $userId: bigint!) {
+    update_messages(
+      where: {
+        inbox_id: { _eq: $inboxId }
+        _and: [
+          { sender: { _neq: $userId } }
+          { receiver_has_read: { _eq: false } }
+        ]
+      }
+      _set: { receiver_has_read: true }
+    ) {
+      affected_rows
+    }
+  }
+`;

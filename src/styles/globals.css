@@ -238,6 +238,7 @@
 @layer base {
     html {
         font-family: 'Lota Grotesque';
+        scroll-behavior: smooth;
     }
 }
 
@@ -635,4 +636,69 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 
 .setting-switch.ant-switch-checked {
     background-color: #32A071;
+}
+
+/***linear progress loader***/
+.bar {
+    background-color: #4436ac9f;
+    min-width: 300px;
+    min-height: 5px;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar::after {
+    content: "";
+    min-height: 5px;
+    position: absolute;
+    background: #4436AC;
+    transform: translateX(-100%);
+    animation: animate 3s infinite;
+}
+
+.bar::before {
+    content: "";
+    min-height: 5px;
+    position: absolute;
+    background: #4436AC;
+    transform: translateX(-100%);
+    animation: animate 3s ease-out infinite;
+    animation-delay: 1s;
+    z-index: 5;
+}
+
+@keyframes animate {
+    0% {
+        transform: translateX(-100%);
+        min-width: 10px;
+    }
+
+    100% {
+        transform: translateX(300%);
+        min-width: 400px;
+    }
+}
+
+
+/* width */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+.custom-scrollbar::-webkit-scrollbar-track {
+    /* box-shadow: inset 0 0 5px rgba(196, 196, 196, 0.2); */
+    border-radius: 4px;
+}
+
+/* Handle */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(196, 196, 196, 0.2);
+    border-radius: 4px;
+}
+
+/* Handle on hover */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(196, 196, 196, 0.2);
 }

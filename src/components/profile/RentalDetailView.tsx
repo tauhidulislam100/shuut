@@ -8,6 +8,7 @@ import {
   format,
 } from "date-fns";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { DateRange, Matcher } from "react-day-picker";
 import { BsPlus, BsX } from "react-icons/bs";
@@ -141,6 +142,7 @@ const RentalDetailView = ({
   setFilter,
   resetView,
 }: IProps) => {
+  const router = useRouter();
   const { SERVICE_CHARGE, SERVICE_VAT } = useGlobalState();
   const { user } = useAuth();
   const [selectedBooking, setSelectedBooking] = useState<
@@ -353,6 +355,16 @@ const RentalDetailView = ({
       },
     });
   };
+
+  const goToMessage = () => {
+    router.push(
+      {
+        pathname: "/inbox",
+        query: { userId: selectedBooking?.listing?.user?.id },
+      },
+      "inbox"
+    );
+  };
   return (
     <div className="font-lota">
       <h1 className="text-[32px] text-primary">
@@ -423,7 +435,7 @@ const RentalDetailView = ({
                 </div>
                 <div className="">
                   <button
-                    onClick={() => console.log("button")}
+                    onClick={goToMessage}
                     className="min-w-[155px] btn h-11 border border-secondary text-secondary"
                   >
                     Message {selectedBooking?.listing?.user?.firstName}
