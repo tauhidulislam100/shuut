@@ -708,14 +708,24 @@ export const DELETE_ADDRESS = gql`
   }
 `;
 
-export const GET_MY_INBOX = gql`
-  subscription MyInbox($userId: bigint!) {
+export const GET_MY_INBOXES = gql`
+  query MyInbox($userId: bigint!, $offset: Int!, $limit: Int!) {
+    inbox_aggregate(
+      where: { _or: [{ from: { _eq: $userId } }, { to: { _eq: $userId } }] }
+    ) {
+      aggregate {
+        total: count
+      }
+    }
+
     inbox(
       where: { _or: [{ from: { _eq: $userId } }, { to: { _eq: $userId } }] }
       order_by: [
         { created_at: desc }
         { messages_aggregate: { variance: { id: asc } } }
       ]
+      offset: $offset
+      limit: $limit
     ) {
       id
       from: user {
@@ -730,18 +740,113 @@ export const GET_MY_INBOX = gql`
         lastName
         profile_photo
       }
-      messages(order_by: { created_at: asc }) {
+      messages(order_by: { created_at: desc }, limit: 10) {
         id
         inbox_id
         content
         created_at
         receiver_has_read
+        # month
         sender: user {
           id
           firstName
           lastName
           profile_photo
         }
+      }
+    }
+  }
+`;
+
+export const MY_INBOXES_SUBSCRIPTION_STREAM = gql`
+  subscription MyInboxStream($userId: bigint!, $createdAt: timestamptz) {
+    inbox_stream(
+      batch_size: 10
+      cursor: { initial_value: { created_at: $createdAt } }
+      where: { _or: [{ from: { _eq: $userId } }, { to: { _eq: $userId } }] }
+    ) {
+      id
+      from: user {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+      to: userByTo {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+      messages(order_by: { created_at: desc }, limit: 10) {
+        id
+        inbox_id
+        content
+        created_at
+        receiver_has_read
+        # month
+        sender: user {
+          id
+          firstName
+          lastName
+          profile_photo
+        }
+      }
+    }
+  }
+`;
+
+export const MY_MESSAGES = gql`
+  query MyMessages($limit: Int!, $offset: Int!, $inbox_id: bigint!) {
+    my_messages: messages(
+      where: { inbox_id: { _eq: $inbox_id } }
+      order_by: { created_at: desc }
+      limit: $limit
+      offset: $offset
+    ) {
+      id
+      inbox_id
+      content
+      created_at
+      receiver_has_read
+      sender: user {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+    }
+
+    my_messages_info: messages_aggregate(
+      where: { inbox_id: { _eq: $inbox_id } }
+    ) {
+      aggregate {
+        total: count
+      }
+    }
+  }
+`;
+
+export const MY_MESSAGES_SUBSCRIPTION = gql`
+  subscription MyMessagesStream($userId: bigint!) {
+    messages(
+      where: {
+        inbox: { _or: [{ from: { _eq: $userId } }, { to: { _eq: $userId } }] }
+      }
+      order_by: { created_at: desc }
+      limit: 10
+    ) {
+      id
+      inbox_id
+      content
+      created_at
+      receiver_has_read
+      # month
+      sender: user {
+        id
+        firstName
+        lastName
+        profile_photo
       }
     }
   }

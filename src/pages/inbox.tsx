@@ -1,9 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
-import Image from "next/image";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { groupBy } from "lodash";
-import { Footer, NavBar } from "../components";
+import { NavBar } from "../components";
 import { Avatar, Button, Input, notification } from "antd";
 import { useRouter } from "next/router";
 import AuthGuard from "../components/auth-guard/AuthGuard";
@@ -15,122 +14,19 @@ import { useMutation } from "@apollo/client";
 import {
   CREATE_INBOX,
   DELETE_INBOXES,
-  MARK_MESSAGE_AS_READ,
   SEND_MESSAGE,
 } from "../graphql/query_mutations";
 import useAsyncEffect from "use-async-effect";
-import { IUser } from "../contexts/AuthProvider";
-
-const EmptyInbox = ({ onClick }: { onClick?: () => void }) => (
-  <div className="min-h-[74.5vh]">
-    <div className="mt-20">
-      <h1 className="text-primary text-[32px] font-semibold">Message</h1>
-    </div>
-    <div className="py-10 flex justify-center items-center">
-      <Image
-        src={"/images/no_message.png"}
-        alt="Profile Image"
-        width={571}
-        height={365}
-      />
-    </div>
-    <div className="flex justify-center mt-[60px]">
-      <button
-        onClick={onClick}
-        className=" bg-secondary hover:bg-primary  h-[48px] w-[193px] text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg"
-      >
-        Go Home
-      </button>
-    </div>
-  </div>
-);
-
-const InboxListItem = ({
-  selected,
-  inbox,
-  user,
-}: {
-  selected?: boolean;
-  inbox?: InboxType;
-  user: IUser | null;
-}) => {
-  const sender = getSender(inbox, user);
-  return (
-    <div
-      className={`flex items-start cursor-pointer p-2 rounded-[4px] ${
-        selected ? "bg-[#090F4730]" : ""
-      }`}
-    >
-      <Avatar size={50} src={sender?.profile_photo} className="!bg-[#090F47]">
-        {`${sender?.firstName?.charAt(0)}${sender?.lastName?.charAt(
-          0
-        )}`.toUpperCase()}
-      </Avatar>
-      <div className="ml-4 w-[calc(100%-66px)]">
-        <div className="flex justify-between">
-          <h1
-            className={`font-bold font-sofia-pro text-base ${
-              selected ? "text-[#090F47]" : "text-[#0C0D0C]"
-            }`}
-          >
-            {sender?.firstName} {sender?.lastName}
-          </h1>
-          <p
-            className={`hidden sm:block text-xs font-sofia-pro  ${
-              selected ? "text-[#090F47]" : "text-[#0A242980]"
-            }`}
-          >
-            {format(
-              inbox?.messages?.[inbox?.messages?.length - 1]?.created_at
-                ? new Date(
-                    inbox?.messages?.[inbox?.messages?.length - 1]?.created_at
-                  )
-                : new Date(),
-              "MMMM yyyy"
-            )}
-          </p>
-        </div>
-        <p
-          className={`hidden sm:block text-sm font-sofia-pro mb-0  ${
-            selected ? "text-[#090F47]" : "text-[#0A2429] text-opacity-50"
-          }`}
-        >
-          {inbox?.messages?.[inbox?.messages?.length - 1]?.content ??
-            "You can now send message to each other"}
-        </p>
-      </div>
-      {inbox?.messages?.filter(
-        (m) => !m.receiver_has_read && m.sender?.id !== user?.id
-      )?.length ? (
-        <span className="w-7 h-7 rounded-full bg-primary text-white grid place-items-center font-bold font-sofia-pro text-base absolute right-3 top-8">
-          {
-            inbox?.messages?.filter(
-              (m) => !m.receiver_has_read && m.sender?.id !== user?.id
-            )?.length
-          }
-        </span>
-      ) : null}
-    </div>
-  );
-};
-
-const getSender = (
-  inbox?: InboxType,
-  currentUser?: Record<string, any> | null
-) => {
-  if (inbox?.from?.id !== currentUser?.id) {
-    return inbox?.from;
-  }
-
-  return inbox?.to;
-};
+import { EmptyInbox, InboxSidebar, MessageBox } from "../components/inbox";
+import { getSender } from "../utils/utils";
 
 const Message = () => {
   const router = useRouter();
   const trackUserRef = useRef<number>();
 
   const { user } = useAuth();
-  const { inboxes } = useGlobalState();
+  const { inboxes, updateSelectedInbox, removeInboxes, markMessageAsRead } =
+    useGlobalState();
   const [selectedInbox, setSelectedInbox] = useState<InboxType>();
   const [messages, setMessages] = useState<Record<string, IMessage[]>>({});
   const [msgText, setMsgText] = useState<string>();
@@ -160,12 +56,6 @@ const Message = () => {
     },
   });
 
-  const [markMessageAsRead] = useMutation(MARK_MESSAGE_AS_READ, {
-    onError(error) {
-      console.log(error?.message);
-    },
-  });
-
   const [deleteInboxes] = useMutation(DELETE_INBOXES, {
     onCompleted() {
       notification.success({
@@ -187,16 +77,8 @@ const Message = () => {
       inboxes.find((inb) => inb.id === selectedInbox?.id)
     ) {
       const msg = inboxes.find((inb) => inb.id === selectedInbox?.id)?.messages;
-      console.log(
-        "groupBy ",
-        groupBy(msg, (k) => k.created_at.substring(0, 7))
-      );
-
       setMessages({ ...groupBy(msg, (k) => k.created_at.substring(0, 7)) });
     }
-
-    updateScroll();
-    await onMarkMessageAsRead();
   }, [inboxes, selectedInbox]);
 
   useAsyncEffect(async () => {
@@ -221,41 +103,47 @@ const Message = () => {
     }
   }, [router?.query?.userId]);
 
+  useEffect(() => {
+    updateSelectedInbox?.(selectedInbox);
+  }, [selectedInbox, updateSelectedInbox]);
+
   const onSendMessage = async () => {
+    if (!msgText?.trim().length) return;
+    const text = msgText;
+
     const k = format(new Date(), "yyyy-MM");
     if (messages[k]) {
       messages[k].push({
-        content: msgText,
+        content: text,
         id: Date.now(),
         sender: user,
+        month: format(new Date(), "yyyy-MM"),
       } as any);
     } else {
-      messages[k] = [{ content: msgText, id: Date.now(), sender: user } as any];
+      messages[k] = [
+        {
+          content: text,
+          id: Date.now(),
+          sender: user,
+          month: format(new Date(), "yyyy-MM"),
+        } as any,
+      ];
     }
     setMessages({ ...messages });
+    setMsgText("");
     updateScroll();
     await sendMessage({
       variables: {
         sender: user?.id,
         inboxId: selectedInbox?.id,
-        message: msgText,
-      },
-    });
-    setMsgText("");
-  };
-
-  const onMarkMessageAsRead = async () => {
-    if (!selectedInbox || !user) return;
-    await markMessageAsRead({
-      variables: {
-        inboxId: selectedInbox.id,
-        userId: user.id,
+        message: text,
       },
     });
   };
 
   const onDeleteInboxes = async () => {
     if (!canSelectInboxes) return;
+    removeInboxes?.(selectedInboxes);
     await deleteInboxes({
       variables: {
         inboxes: selectedInboxes,
@@ -264,12 +152,23 @@ const Message = () => {
     setCanSelectInboxes(false);
   };
 
-  function updateScroll() {
+  function updateScroll(n?: number) {
     var element = document.getElementById("message-container");
     if (element) {
-      element.scrollTop = element.scrollHeight;
+      element.scrollTo({
+        behavior: "smooth",
+        top: n ? n : element.scrollHeight + 10,
+      });
     }
   }
+
+  const handleEnter = async (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      await onSendMessage();
+      updateScroll();
+    }
+  };
 
   return (
     <AuthGuard>
@@ -331,133 +230,32 @@ const Message = () => {
                   </div>
                 </div>
               </div>
-              <div className="flex max-h-[68vh] min-h-[67vh]">
-                <div className="sm:w-2/5 pr-4 overflow-y-auto custom-scrollbar">
-                  {inboxes?.map((inbox) => (
-                    <div
-                      className="mt-4 relative"
-                      key={inbox.id}
-                      onClick={() => {
-                        if (canSelectInboxes) {
-                          setSelectedInboxes((p) => {
-                            if (!p.includes(inbox.id)) {
-                              return [...p, inbox.id];
-                            } else {
-                              return [...p.filter((item) => item !== inbox.id)];
-                            }
-                            return [...p];
-                          });
-                        } else {
-                          setSelectedInbox(inbox);
-                        }
-                      }}
-                    >
-                      <InboxListItem
-                        inbox={inbox}
-                        user={user}
-                        selected={
-                          selectedInbox?.id === inbox.id ||
-                          selectedInboxes.includes(inbox.id)
-                        }
-                      />
-                    </div>
-                  ))}
-                </div>
+              <div className="flex max-h-[68vh] min-h-[66vh]">
+                <InboxSidebar
+                  canSelectMulitple={canSelectInboxes}
+                  selectedInboxes={selectedInboxes}
+                  selectedInbox={selectedInbox}
+                  updateSelectedInbox={(inb) => {
+                    setSelectedInbox(inb);
+                    markMessageAsRead?.(inb);
+                  }}
+                  updateMultipleSelection={setSelectedInboxes}
+                />
                 <div className="flex-1 border-l pt-5 flex flex-col">
                   {selectedInbox ? (
                     <>
-                      {Object.keys(messages)?.map((key) => (
-                        <div
-                          key={key}
-                          className="overflow-y-auto mb-4 custom-scrollbar"
-                          id="message-container"
-                        >
-                          <div className="px-5">
-                            <h4 className="mb-5 text-xs font-sofia-pro text-[#0A242980] text-center">
-                              {format(new Date(key), "MMMM, yyyy")}
-                            </h4>
-                            {messages[key]?.map((message) => {
-                              return message?.sender?.id === user?.id ? (
-                                <div className="w-full mt-4" key={message?.id}>
-                                  {/* message left */}
-                                  <div className="sm:w-4/5 flex">
-                                    <Avatar
-                                      size={50}
-                                      src={message?.sender?.profile_photo}
-                                      className="!bg-[#090F47]"
-                                    >
-                                      {`${message?.sender?.firstName?.charAt(
-                                        0
-                                      )}${message?.sender?.lastName?.charAt(
-                                        0
-                                      )}`.toUpperCase()}
-                                    </Avatar>
-                                    <div className="ml-4">
-                                      <div className="border rounded-md bg-white">
-                                        <p className="px-6 py-3 mb-0 text-primary">
-                                          {message?.content}
-                                        </p>
-                                      </div>
-                                      <div className="mt-4 space-x-2 flex items-center gap-3 font-medium text-sm font-sofia-pro">
-                                        {message?.receiver_has_read ? (
-                                          <span className="text-[#C4C4C4]">
-                                            Read
-                                          </span>
-                                        ) : null}
-                                        <span className="inline-block w-3 h-3 rounded-full bg-slate-400"></span>
-                                        <span className="text-[#FF0200]">
-                                          Flag
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              ) : (
-                                <div
-                                  className="flex justify-end mt-4"
-                                  key={message?.id}
-                                >
-                                  {/* message right */}
-                                  <div className="sm:w-4/5 flex flex-row-reverse">
-                                    <Avatar
-                                      size={50}
-                                      src={message?.sender?.profile_photo}
-                                      className="!bg-[#090F47]"
-                                    >
-                                      {`${message?.sender?.firstName?.charAt(
-                                        0
-                                      )}${message?.sender?.lastName?.charAt(
-                                        0
-                                      )}`.toUpperCase()}
-                                    </Avatar>
-                                    <div className="mr-4">
-                                      <div className="border rounded-md bg-primary">
-                                        <p className="px-6 py-3 mb-0 text-white">
-                                          {message?.content}
-                                        </p>
-                                      </div>
-                                      <div className="w-full mt-4 space-x-2 flex justify-end items-center gap-3 font-medium text-sm font-sofia-pro">
-                                        <span className="text-[#C4C4C4]">
-                                          Read
-                                        </span>
-                                        <span className="w-3 h-3 rounded-full bg-slate-400"></span>
-                                        <span className="text-[#FF0200]">
-                                          Flag
-                                        </span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              );
-                            })}
-                          </div>
-                        </div>
-                      )) ?? (
-                        <div className="text-center">You are now connected</div>
-                      )}
+                      <MessageBox
+                        messages={messages}
+                        updateScrollPosition={updateScroll}
+                        selectedInbox={selectedInbox}
+                      />
                       <div className="border border-l-0 border-[#E6E6E6] bg-white flex justify-end pb-5 pr-5 mt-auto rounded-t-md">
                         <div className="w-full pl-10 flex items-end gap-5 mt-9">
                           <textarea
+                            onKeyDown={handleEnter}
+                            onFocus={() => {
+                              markMessageAsRead?.();
+                            }}
                             onChange={(e) => setMsgText(e.target.value)}
                             value={msgText}
                             rows={2.5}

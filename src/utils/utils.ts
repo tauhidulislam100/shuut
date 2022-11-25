@@ -1,3 +1,17 @@
+import { get } from "js-cookie";
+import _, {
+  chain,
+  isString,
+  merge,
+  defaultsDeep,
+  mapValues,
+  keyBy,
+  isArray,
+  isEmpty,
+  each,
+} from "lodash";
+import { InboxType } from "../contexts/GlobalStateProvider";
+
 export function parseJwt(token: string) {
   var base64Url = token.split(".")[1];
   var base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
@@ -63,4 +77,45 @@ export function roundBy(n = 1, _r = 7) {
   } else {
     return Math.round(Math.floor(n / _r)) * _r + _r;
   }
+}
+
+export const getSender = (
+  inbox?: InboxType,
+  currentUser?: Record<string, any> | null
+) => {
+  if (inbox?.from?.id !== currentUser?.id) {
+    return inbox?.from;
+  }
+
+  return inbox?.to;
+};
+
+export function mergeUnionByKey(...args: any) {
+  // const config = chain(args)
+  //   .filter(isString)
+  //   .value()
+
+  const key = "id";
+
+  // const strategy = get(config, '[1]') === 'override' ? merge : defaultsDeep
+  const strategy = merge;
+
+  if (!isString(key)) throw new Error("missing key");
+
+  const datasets = chain(args).reject(isEmpty).filter(isArray).value();
+
+  const datasetsIndex = mapValues(datasets, (dataset: any) =>
+    keyBy(dataset, key)
+  );
+
+  const uniqKeys = chain(datasets).flatten().map(key).uniq().value();
+
+  return chain(uniqKeys)
+    .map((val) => {
+      const data = {};
+      each(datasetsIndex, (dataset) => strategy(data, dataset[val]));
+      return data;
+    })
+    .filter(key)
+    .value();
 }
