@@ -9,9 +9,8 @@ import {
   MY_MESSAGES_SUBSCRIPTION,
 } from "../graphql/query_mutations";
 import { useAuth } from "../hooks/useAuth";
-import { groupBy, mergeWith, sortBy, unionBy } from "lodash";
+import { groupBy, sortBy, unionBy } from "lodash";
 import { format } from "date-fns";
-import { IUser } from "./AuthProvider";
 import { mergeUnionByKey } from "../utils/utils";
 import { notification } from "antd";
 
@@ -41,6 +40,7 @@ export interface InboxType {
   from: IMessageUser;
   to: IMessageUser;
   messages: IMessage[];
+  created_at: string;
 }
 
 export type StateType = {
@@ -303,12 +303,24 @@ const GlobalStateProvider = ({ children }: IProps) => {
           ] as IMessage[],
         };
       }
+
       inboxes[index] = {
         ...inboxes[index],
         messages: [...sortBy(inboxes[index].messages, (m) => m.created_at)],
       };
     }
-    return [...inboxes];
+    return [
+      // ...sortBy(inboxes, (inb) => {
+      //   const r = inb?.messages?.length
+      //     ? Date.parse(inb.messages[inb.messages.length - 1].created_at) >
+      //       Date.parse(inb.created_at)
+      //       ? inb.messages[inb.messages.length - 1].created_at
+      //       : inb.created_at
+      //     : inb.created_at;
+      //   return Date.parse(r);
+      // }),
+      ...inboxes,
+    ];
   }
 
   function removeInboxes(inboxIds: number[]) {

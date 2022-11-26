@@ -728,6 +728,7 @@ export const GET_MY_INBOXES = gql`
       limit: $limit
     ) {
       id
+      created_at
       from: user {
         id
         firstName
@@ -766,6 +767,7 @@ export const MY_INBOXES_SUBSCRIPTION_STREAM = gql`
       where: { _or: [{ from: { _eq: $userId } }, { to: { _eq: $userId } }] }
     ) {
       id
+      created_at
       from: user {
         id
         firstName
