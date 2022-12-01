@@ -702,3 +702,19 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
     background: rgba(196, 196, 196, 0.2);
 }
+
+.choose-country {
+    width: 100%;
+}
+
+.choose-country .ant-select-selector {
+    background: #FCFCFD !important;
+    border-radius: 5px !important;
+    height: 48px !important;
+    border-color: #DFDFE6 !important;
+}
+
+.choose-country .ant-select-selector .ant-select-selection-item,
+.choose-country .ant-select-selector .ant-select-selection-placeholder {
+    line-height: 48px !important;
+}

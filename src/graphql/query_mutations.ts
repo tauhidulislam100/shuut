@@ -445,6 +445,151 @@ export const GET_CART_ITEMS = gql`
   }
 `;
 
+export const GET_USER_LISTINGS = gql`
+  query GetUserListings($userId: bigint!) {
+    listing(where: { user_id: { _eq: $userId } }) {
+      id
+      slug
+      title
+      daily_price
+      location_name
+      images {
+        url
+        id
+      }
+      user {
+        firstName
+        lastName
+        id
+      }
+    }
+  }
+`;
+
+export const GET_LENDER_DETAILS = gql`
+  query GetLenderDetails($userId: Int!) {
+    user: user_by_pk(id: $userId) {
+      id
+      firstName
+      lastName
+      email
+      phone
+      profile_photo
+      profile {
+        id
+        business_name
+        store_location
+        description
+        opening_hours
+        closing_hours
+        cover_photo
+      }
+      addresses(where: { is_default: { _eq: true } }) {
+        delivery_address
+      }
+    }
+  }
+`;
+
+export const GET_USER_REVIEWS = gql`
+  query GetUserReviews($userId: bigint!) {
+    reviews(
+      where: {
+        deleted: { _eq: false }
+        _or: [
+          { lender_id: { _eq: $userId } }
+          {
+            _and: [
+              { borrower_id: { _eq: $userId } }
+              { parent_id: { _is_null: false } }
+            ]
+          }
+        ]
+      }
+      distinct_on: borrower_id
+    ) {
+      id
+      content
+      rating
+      created_at
+      parent_id
+      lender_id
+      borrower_id
+      borrower {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+      lender {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+      replies {
+        id
+        content
+        rating
+        created_at
+      }
+    }
+    reviews_avg: reviews_aggregate(
+      where: {
+        deleted: { _eq: false }
+        _or: [
+          { lender_id: { _eq: $userId } }
+          {
+            _and: [
+              { borrower_id: { _eq: $userId } }
+              { parent_id: { _is_null: false } }
+            ]
+          }
+        ]
+      }
+      distinct_on: borrower_id
+    ) {
+      aggregate {
+        avg {
+          rating
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_REVIEW = gql`
+  mutation CreateReview(
+    $lenderId: bigint
+    $borrowerId: bigint
+    $rating: numeric!
+    $content: String!
+    $parentId: bigint
+  ) {
+    review: insert_reviews_one(
+      object: {
+        rating: $rating
+        content: $content
+        lender_id: $lenderId
+        borrower_id: $borrowerId
+        parent_id: $parentId
+      }
+      on_conflict: { constraint: reviews_borrower_id_lender_id_parent_id_key }
+    ) {
+      id
+      content
+      rating
+      created_at
+      borrower {
+        id
+        firstName
+        lastName
+        profile_photo
+      }
+    }
+  }
+`;
+
 export const DELETE_CART_ITEM = gql`
   mutation ($id: bigint!) {
     delete_booking_by_pk(id: $id) {
@@ -918,6 +1063,66 @@ export const MARK_MESSAGE_AS_READ = gql`
       _set: { receiver_has_read: true }
     ) {
       affected_rows
+    }
+  }
+`;
+
+export const DELETE_ACCOUNT = gql`
+  mutation DeleteAccount($email: String!, $password: String!) {
+    DeleteAccount(password: $password, email: $email) {
+      status
+      message
+    }
+  }
+`;
+
+export const UPDATE_FAVORITE = gql`
+  mutation AddFavorites(
+    $userId: bigint!
+    $listingId: bigint!
+    $isFavorite: Boolean
+  ) {
+    favorite: insert_favorite_one(
+      object: {
+        user_id: $userId
+        listing_id: $listingId
+        is_favorite: $isFavorite
+      }
+      on_conflict: {
+        constraint: favorite_listing_id_user_id_key
+        update_columns: [is_favorite]
+      }
+    ) {
+      id
+      is_favorite
+      listing_id
+    }
+  }
+`;
+
+export const GET_FAVORITES = gql`
+  query GetFavorites($userId: bigint!) {
+    favorite(
+      where: { user_id: { _eq: $userId }, _and: { is_favorite: { _eq: true } } }
+    ) {
+      user_id
+      is_favorite
+      listing {
+        id
+        slug
+        title
+        daily_price
+        location_name
+        images {
+          url
+          id
+        }
+        user {
+          firstName
+          lastName
+          id
+        }
+      }
     }
   }
 `;

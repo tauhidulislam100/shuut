@@ -2,6 +2,7 @@ import { useLazyQuery, useMutation, useSubscription } from "@apollo/client";
 import React, { useEffect, useState } from "react";
 import useAsyncEffect from "use-async-effect";
 import {
+  GET_FAVORITES,
   GET_MY_INBOXES,
   MARK_MESSAGE_AS_READ,
   MY_INBOXES_SUBSCRIPTION_STREAM,
@@ -49,11 +50,13 @@ export type StateType = {
   inboxes: InboxType[];
   inboxesLoading: boolean;
   messagesLoading: boolean;
+  favorites: Record<string, any>[];
   fetchMoreInboxes?: () => Promise<void>;
   fetchMoreMessages?: () => Promise<void>;
   updateSelectedInbox?: (inbx?: InboxType) => void;
   removeInboxes?: (ids: number[]) => void;
   markMessageAsRead?: (inbx?: InboxType) => Promise<void>;
+  updateFavorites?: () => Promise<void>;
 };
 
 const initalState: StateType = {
@@ -62,22 +65,23 @@ const initalState: StateType = {
   inboxes: [],
   inboxesLoading: false,
   messagesLoading: false,
+  favorites: [],
 };
 
 const SERVICE_CHARGE = Number(process.env.NEXT_PUBLIC_SERVICE_CHARGE);
 const SERVICE_VAT = Number(process.env.NEXT_PUBLIC_SERVICE_VAT);
 
-export const GlobalContext = React.createContext(initalState);
-
 let inboxPageSize = 10;
 let inboxPage = 0;
 let messagePageSize = 10;
-
 // inboxId:currentPage
 const messagePagination: Record<number, number> = {};
 
+export const GlobalContext = React.createContext(initalState);
+
 const GlobalStateProvider = ({ children }: IProps) => {
   const { user } = useAuth();
+  const [favorites, setFavorites] = useState<Record<string, any>[]>([]);
   const [selectedInbox, setSelectedInbox] = useState<InboxType>();
   let [inboxes, setInboxes] = useState<InboxType[]>([]);
   const [latestInboxes, setLatestInboxes] = useState<InboxType[]>([]);
@@ -85,6 +89,14 @@ const GlobalStateProvider = ({ children }: IProps) => {
     Record<number, IMessage[]>
   >({});
 
+  const [getFavorites, { refetch: reFetchFavorites }] = useLazyQuery(
+    GET_FAVORITES,
+    {
+      onCompleted(data) {
+        setFavorites(data.favorite);
+      },
+    }
+  );
   const [markMessageAsRead] = useMutation(MARK_MESSAGE_AS_READ, {
     onError(error) {
       console.log(error?.message);
@@ -127,9 +139,11 @@ const GlobalStateProvider = ({ children }: IProps) => {
       userId: user?.id,
     },
     onError(error) {
-      notification.error({
-        message: error.message,
-      });
+      if (user) {
+        notification.error({
+          message: error.message,
+        });
+      }
     },
   });
 
@@ -141,6 +155,11 @@ const GlobalStateProvider = ({ children }: IProps) => {
             userId: user.id,
             limit: inboxPageSize,
             offset: 0,
+          },
+        });
+        await getFavorites({
+          variables: {
+            userId: user?.id,
           },
         });
       }
@@ -262,8 +281,6 @@ const GlobalStateProvider = ({ children }: IProps) => {
       inbox_id: selectedInbox.id,
     };
 
-    console.log("variables ", variables);
-
     await fetchMoreMessages({
       variables: {
         ...variables,
@@ -339,6 +356,12 @@ const GlobalStateProvider = ({ children }: IProps) => {
     });
   };
 
+  const updateFavorites = async () => {
+    await reFetchFavorites({
+      userId: user?.id,
+    });
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -347,11 +370,13 @@ const GlobalStateProvider = ({ children }: IProps) => {
         inboxes: inboxes,
         inboxesLoading,
         messagesLoading,
+        favorites,
         fetchMoreInboxes: onFetchMoreInboxes,
         fetchMoreMessages: onFetchMoreMessages,
         updateSelectedInbox: setSelectedInbox,
         removeInboxes: removeInboxes,
         markMessageAsRead: onMarkMessageAsRead,
+        updateFavorites: updateFavorites,
       }}
     >
       {children}

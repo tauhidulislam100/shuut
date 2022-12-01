@@ -7,16 +7,8 @@ import React, { useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import useAsyncEffect from "use-async-effect";
 import { Footer, NavBar, SingleProduct } from "../../../components";
-import {
-  hiwBeforeRental,
-  listItemCat,
-  topCities,
-  tripodInLagos,
-} from "../../../data";
-import {
-  GetCategoryWithImages,
-  GetListingByCategory,
-} from "../../../graphql/query_mutations";
+import { hiwBeforeRental, listItemCat, topCities } from "../../../data";
+import { GetListingByCategory } from "../../../graphql/query_mutations";
 import { defaultRadius } from "../search";
 
 const Category = () => {

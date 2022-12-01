@@ -52,6 +52,7 @@ import { DateRange, DayClickEventHandler, Matcher } from "react-day-picker";
 import { addDays, differenceInCalendarDays, format } from "date-fns";
 import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../hooks/useGlobalState";
+import Link from "next/link";
 
 const { TabPane } = Tabs;
 
@@ -756,43 +757,6 @@ const ProductView = () => {
                           </div>
                         </div>
                       )}
-
-                      {/* <button className="absolute top-3 right-3 rounded-full w-6 h-6 inline-grid place-items-center border border-[#F4F4F4]">
-                      <IoIosClose />
-                    </button> */}
-                      {/* <Tabs
-                        className="price-tabs"
-                        onChange={(k) => {
-                          if (!cookie.get("__pop__")) {
-                            setVisibleHelpPopup(true);
-                          }
-                        }}
-                      >
-                        <TabPane key="1" tab="Monthly Price">
-                          <PricingTab
-                            title={listing?.title}
-                            price={listing?.monthly_price}
-                            pricingType="month"
-                            onClick={() => setAvailability(true)}
-                          />
-                        </TabPane>
-                        <TabPane key="2" tab="Weekly Price">
-                          <PricingTab
-                            title={listing?.title}
-                            price={listing?.weekly_price}
-                            pricingType="week"
-                            onClick={() => setAvailability(true)}
-                          />
-                        </TabPane>
-                        <TabPane key="3" tab="Daily Price">
-                          <PricingTab
-                            title={listing?.title}
-                            price={listing?.daily_price}
-                            pricingType="day"
-                            onClick={() => setAvailability(true)}
-                          />
-                        </TabPane>
-                      </Tabs> */}
                     </Popover>
                     {/** this part will be enable later when availability check implemented, please do not remove this commented code if you want to modify you can */}
 
@@ -819,9 +783,13 @@ const ProductView = () => {
                       <Avatar size={68} />
                       <div className="ml-4 w-[75%]">
                         <div className="flex items-center justify-between">
-                          <h4 className="text-xl text-primary-100 font-lota">
-                            {listing?.user?.firstName}
-                          </h4>
+                          <Link href={`/profile/${listing?.user?.id}`}>
+                            <a>
+                              <h4 className="text-xl text-primary-100 font-lota">
+                                {listing?.user?.firstName}
+                              </h4>
+                            </a>
+                          </Link>
                           <div className="flex items-center">
                             <RattingBar
                               ratting={4.5}

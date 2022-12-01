@@ -11,6 +11,7 @@ import loadingAnimation from "../lottie/loading.json";
 import Lottie from "lottie-react";
 import { addDays, format } from "date-fns";
 import RequestDetailView from "./RequestDetailView";
+import { GET_USER_LISTINGS } from "../../graphql/query_mutations";
 
 type FilterType = "request" | "unavailable" | "my-items" | "";
 
@@ -92,27 +93,6 @@ const BOOKING_REQUEST_QUERY = gql`
   }
 `;
 
-const GET_MY_LISTINGS = gql`
-  query GetMyListings($userId: bigint!) {
-    listing(where: { user_id: { _eq: $userId } }) {
-      id
-      slug
-      title
-      daily_price
-      location_name
-      images {
-        url
-        id
-      }
-      user {
-        firstName
-        lastName
-        id
-      }
-    }
-  }
-`;
-
 const GET_MY_UNAVAILABLE_ITEMS = gql`
   query ($startdate: date!, $enddate: date!, $user_id: Int!) {
     listing: get_unavailable_listing(
@@ -167,7 +147,7 @@ const MyItems = () => {
     BOOKING_REQUEST_QUERY
   );
   const [getMyListings, { loading: myItemLoading, data: myListings }] =
-    useLazyQuery(GET_MY_LISTINGS, {
+    useLazyQuery(GET_USER_LISTINGS, {
       fetchPolicy: "cache-and-network",
     });
   const [
