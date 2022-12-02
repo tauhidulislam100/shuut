@@ -15,7 +15,7 @@ const KYC = () => {
   const [step, setStep] = useState(0);
 
   const nextHandler = () => {
-    if (step >= 5) return setStep(0);
+    if (step >= 4) return setStep(0);
     setStep((prevState) => prevState + 1);
   };
 
@@ -27,11 +27,11 @@ const KYC = () => {
         return <IdForm handleNext={nextHandler} />;
       case 2:
         return <TakePhoto handleNext={nextHandler} />;
+      // case 3:
+      //   return <UploadPassport handleNext={nextHandler} />;
       case 3:
-        return <UploadPassport handleNext={nextHandler} />;
-      case 4:
         return <CheckPhoto handleNext={nextHandler} />;
-      case 5:
+      case 4:
         return <LastStep handleNext={nextHandler} />;
       default:
         return null;
