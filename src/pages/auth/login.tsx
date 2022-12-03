@@ -131,7 +131,7 @@ const Login = () => {
           <div className="px-2 text-center mt-10 mb-20 uppercase text-[#525252]">
             -or-
           </div>
-          <Form size="large" className="login-form sm:w-[65%] !mx-auto">
+          <div className="login-form sm:w-[65%] !mx-auto">
             <Form.Item>
               <Input
                 onChange={onChange}
@@ -185,7 +185,7 @@ const Login = () => {
                 <a className="text-secondary">Sign Up</a>
               </Link>
             </p>
-          </Form>
+          </div>
         </div>
       </div>
       <Footer />

@@ -124,7 +124,7 @@ const Signup = () => {
           <div className="px-2 text-center mt-10 mb-20 uppercase text-[#A1A1A1]">
             - or -
           </div>
-          <Form size="large" className="login-form sm:w-[70%] mx-auto">
+          <div className="login-form sm:w-[70%] mx-auto">
             <Form.Item
               validateStatus={
                 submited && !signupForm.firstName
@@ -216,7 +216,7 @@ const Signup = () => {
                 <a className="text-secondary">Log In</a>
               </Link>
             </p>
-          </Form>
+          </div>
         </div>
       </div>
       <Footer />
