@@ -1,4 +1,4 @@
-import "antd/dist/antd.css";
+// import "antd/dist/antd.css";
 import "react-phone-input-2/lib/style.css";
 import "react-day-picker/dist/style.css";
 import "../styles/globals.css";

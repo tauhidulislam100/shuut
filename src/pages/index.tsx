@@ -12,86 +12,6 @@ import { GetCategoryWithImages } from "../graphql/query_mutations";
 import Link from "next/link";
 import { useMediaQuery } from "react-responsive";
 
-// convert this array into a list of objects key will be image and title
-const gears = [
-  {
-    image: "camera-gear-1.png",
-    name: "Cameras",
-  },
-  {
-    image: "drone-gear-1.png",
-    name: "Drones",
-  },
-  {
-    image: "lighting-gear-1.png",
-    name: "Lightings",
-  },
-  {
-    image: "accessories-1.png",
-    name: "Cameras Accesories",
-  },
-  {
-    image: "tripod-support-1.png",
-    name: "Tripod Support",
-  },
-  {
-    image: "electronics-1.png",
-    name: "Electricals",
-  },
-  {
-    image: "audio-1.png",
-    name: "Audio",
-  },
-  {
-    image: "vr-1.png",
-    name: "VR (oculus)",
-  },
-];
-
-const slideItems = [
-  {
-    name: "Floyd Miles",
-    comment: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. 
-    Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat `,
-    review: 3,
-  },
-  {
-    name: "Ronald Richards",
-    comment: `ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.`,
-    review: 3.5,
-  },
-  {
-    name: "Savannah Nguyen",
-    comment: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. 
-    Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.`,
-    review: 3.5,
-  },
-  {
-    name: "Savannah Nguyen",
-    comment: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. 
-    Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.`,
-    review: 4,
-  },
-  {
-    name: "Savannah Nguyen",
-    comment: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. 
-    Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.`,
-    review: 4.5,
-  },
-  {
-    name: "Savannah Nguyen",
-    comment: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. 
-    Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.`,
-    review: 5,
-  },
-  {
-    name: "Savannah Nguyen",
-    comment: `Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. 
-    Exercitation veniam consequat sunt nostrud amet. Amet minim mollit non deserunt ullamco est sit aliqua dolor do amet sint. Velit officia consequat duis enim velit mollit. Exercitation veniam consequat sunt nostrud amet.`,
-    review: 3.2,
-  },
-];
-
 const Home: NextPage = () => {
   const router = useRouter();
   const { loading, data } = useQuery(GetCategoryWithImages, {
@@ -161,18 +81,6 @@ const Home: NextPage = () => {
               In Partnership With
             </p>
             <div className="flex items-center gap-6 mt-4">
-              {/* <img
-                src="/images/logos/leadway.png"
-                className="max-w-full object-cover w-[82px] h-[32px]"
-              />
-              <img
-                src="/images/logos/people.png"
-                className="max-w-full object-cover w-[111px] h-[35px]"
-              />
-              <img
-                src="/images/logos/wapic.png"
-                className="max-w-full object-cover w-[94px] h-[29px]"
-              /> */}
               <img
                 alt="axa mansard"
                 src="/images/logos/axamansard.png"
@@ -253,19 +161,6 @@ const Home: NextPage = () => {
               ))}
             </div>
           )}
-          {/* <div className="space-y-8 sm:space-y-0 sm:grid sm:grid-cols-2 grid-cols-4 gap-4 mt-12 md:pl-4 gap-y-8 pb-16">
-            {gears.map((gear) => (
-              <div className="bg-white rounded-[5px] p-4" key={gear.name}>
-                <img
-                  src={`/images/gears/${gear.image}`}
-                  className="object-cover hover:scale-105 w-full rounded-[5px] h-[219px] transition-all"
-                />
-                <p className="mt-4 text-[15px] text-primary-100 font-medium">
-                  {gear.name}
-                </p>
-              </div>
-            ))}
-          </div> */}
 
           <div className="pt-16 pl-4 md:grid grid-cols-2 2xl:gap-x-40 items-center">
             <div className="relative w-full">
@@ -313,7 +208,7 @@ const Home: NextPage = () => {
             </h3>
             <div className="md:w-[80%]">
               <Collapse
-                className="w-full bg-white faq-collapse font-lota font-semibold text-sm xs:text-base sm:text-2xl"
+                className="faq-collapse w-full bg-white font-lota font-semibold text-sm xs:text-base sm:text-2xl"
                 bordered={false}
                 expandIconPosition="end"
                 expandIcon={(p) =>
