@@ -78,12 +78,9 @@ const Signup = () => {
 
   return (
     <div className="bg-white">
+      <NavBar />
       <div className="container">
-        <NavBar />
-      </div>
-
-      <div className="container">
-        <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
+        {/* <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
           <input
             placeholder="Search..."
             className="min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light bg-transparent"
@@ -94,28 +91,28 @@ const Signup = () => {
           <span className="absolute top-4 left-4 text-lg text-[#263238]">
             <IoIosSearch />
           </span>
-        </div>
+        </div> */}
         <div className="mt-28">
           <h1 className="font-lota text-center font-semibold text-[26px] text-[#525252]">
             Welcome to SHUUT
           </h1>
-          <div className="flex flex-wrap justify-center items-center gap-5 mt-12">
+          <div className="flex justify-center items-center flex-wrap gap-5 mt-12">
             <button
               onClick={() => onOAuthLogin("google")}
-              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
+              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-white border border-[#E8E8E8] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
             >
               <FcGoogle className="mr-2 text-3xl" /> Continue with Google
             </button>
             <button
               onClick={() => onOAuthLogin("apple")}
-              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
+              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-white border border-[#E8E8E8] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
             >
               <FaApple className="mr-2 text-black text-3xl" /> Continue with
               Apple
             </button>
             <button
               onClick={() => onOAuthLogin("facebook")}
-              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
+              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-white border border-[#E8E8E8] rounded-md text-[#A1A1A1] h-12 items-center xs:text-lg text-base"
             >
               <FaFacebook className="mr-2 text-[#3b5998] text-3xl" /> Continue
               with Facebook
@@ -124,7 +121,7 @@ const Signup = () => {
           <div className="px-2 text-center mt-10 mb-20 uppercase text-[#A1A1A1]">
             - or -
           </div>
-          <div className="login-form sm:w-[70%] mx-auto">
+          <div className="login-form sm:w-[50%] mx-auto">
             <Form.Item
               validateStatus={
                 submited && !signupForm.firstName
@@ -139,7 +136,7 @@ const Signup = () => {
                 value={signupForm.firstName}
                 name="firstName"
                 placeholder="First Name"
-                className=""
+                className="bottom_bordered_input"
               />
             </Form.Item>
             <Form.Item
@@ -156,7 +153,7 @@ const Signup = () => {
                 value={signupForm.lastName}
                 placeholder="Last Name"
                 name="lastName"
-                className=""
+                className="bottom_bordered_input"
               />
             </Form.Item>
             <Form.Item
@@ -173,7 +170,7 @@ const Signup = () => {
                 value={signupForm.email}
                 placeholder="Email Address"
                 name="email"
-                className=""
+                className="bottom_bordered_input"
               />
             </Form.Item>
             <Form.Item
@@ -190,7 +187,7 @@ const Signup = () => {
                 value={signupForm.password}
                 placeholder="Password"
                 name="password"
-                className=""
+                className="bottom_bordered_input"
               />
             </Form.Item>
             <Form.Item className="font-sofia-pro" valuePropName="checked">
@@ -204,7 +201,7 @@ const Signup = () => {
               <Button
                 loading={signupLoading}
                 onClick={onFormSubmit}
-                className="min-w-[275px] btn px-6 py-5 text-xl bg-secondary text-white"
+                className="min-w-[275px] btn px-6 py-[18px] text-xl bg-secondary text-white"
               >
                 Create My Account
               </Button>
@@ -219,7 +216,7 @@ const Signup = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer className="bg-[#F4F3FA]" />
       {incompleteQuery ? (
         <SocialIncompletSignup
           query={incompleteQuery}

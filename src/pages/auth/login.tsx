@@ -86,9 +86,7 @@ const Login = () => {
 
   return (
     <div className="bg-white">
-      <div className="container">
-        <NavBar />
-      </div>
+      <NavBar />
       <div className="container">
         {/* <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
           <input
@@ -109,20 +107,20 @@ const Login = () => {
           <div className="flex justify-center items-center flex-wrap gap-5 mt-12">
             <button
               onClick={() => onOAuthLogin("google")}
-              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
+              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-white border border-[#E8E8E8] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
             >
               <FcGoogle className="mr-2 text-3xl" /> Continue with Google
             </button>
             <button
               onClick={() => onOAuthLogin("apple")}
-              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
+              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-white border border-[#E8E8E8] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
             >
               <FaApple className="mr-2 text-black text-3xl" /> Continue with
               Apple
             </button>
             <button
               onClick={() => onOAuthLogin("facebook")}
-              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#A1A1A1] h-12 items-center text-lg"
+              className="w-full sm:w-auto sm:min-w-[193px] px-4 flex justify-center font-sofia-pro bg-white border border-[#E8E8E8] rounded-md text-[#A1A1A1] h-12 items-center xs:text-lg text-base"
             >
               <FaFacebook className="mr-2 text-[#3b5998] text-3xl" /> Continue
               with Facebook
@@ -131,14 +129,14 @@ const Login = () => {
           <div className="px-2 text-center mt-10 mb-20 uppercase text-[#525252]">
             -or-
           </div>
-          <div className="login-form sm:w-[65%] !mx-auto">
+          <div className="login-form sm:w-[45%] !mx-auto">
             <Form.Item>
               <Input
                 onChange={onChange}
                 name="email"
                 value={signInForm.email}
                 placeholder="Email"
-                className=""
+                className="bottom_bordered_input"
               />
             </Form.Item>
             <Form.Item>
@@ -147,7 +145,7 @@ const Login = () => {
                 name="password"
                 value={signInForm.password}
                 placeholder="Password"
-                className=""
+                className="bottom_bordered_input"
               />
             </Form.Item>
             <p className="font-sofia-pro text-[#263238] text-right mb-10">
@@ -174,7 +172,7 @@ const Login = () => {
               <Button
                 onClick={onSignIn}
                 loading={loading}
-                className="btn w-[275px] px-6 py-5 text-xl bg-secondary text-white"
+                className="btn w-[275px] px-6 py-[18px]  text-xl bg-secondary text-white"
               >
                 Log In
               </Button>
@@ -188,7 +186,7 @@ const Login = () => {
           </div>
         </div>
       </div>
-      <Footer />
+      <Footer className="bg-[#F4F3FA]" />
       {incompleteQuery ? (
         <SocialIncompletSignup
           query={incompleteQuery}
