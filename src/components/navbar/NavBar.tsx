@@ -30,63 +30,68 @@ interface IMenuProps {
   onLogout?: () => void;
 }
 const Menu = ({ onLogout }: IMenuProps) => (
-  <ul className="shadow-md border rounded-[5px] text-primary text-[10px] font-lota bg-white">
-    <li className="p-2 border-b hover:text-secondary">
-      <Link href={"/inbox"}>
-        <a>Inbox</a>
-      </Link>
-    </li>
-    <li className="p-2 border-b hover:text-secondary">
-      <Link href={"/profile?tab=rentals"}>
-        <a>Rentals</a>
-      </Link>
-    </li>
-    <li className="p-2 border-b hover:text-secondary">
-      <Link href={"/favorites"}>
-        <a>Favorites</a>
-      </Link>
-    </li>
-    <li className="p-2 border-b hover:text-secondary">
-      <Link href={"/profile"}>
-        <a>Profile</a>
-      </Link>
-    </li>
-    <li className="p-2 border-b hover:text-secondary">
-      <Link href={"/profile?tab=my-items"}>
-        <a>My Items</a>
-      </Link>
-    </li>
-    <li className="p-2 text-[#EB001B]">
-      <button onClick={onLogout}>Log Out</button>
-    </li>
-  </ul>
+  <>
+    <div id="triangle-up" className="absolute  top-2 right-0"></div>
+    <ul className="shadow-md border rounded-[5px]  bg-white mt-5 min-w-[185px]">
+      <li className="p-2 border-b hover:text-secondary">
+        <Link href={"/inbox"}>
+          <a className="text-primary text-[14px] font-lota font-normal">
+            Inbox
+          </a>
+        </Link>
+      </li>
+      <li className="p-2 border-b hover:text-secondary">
+        <Link href={"/profile?tab=rentals"}>
+          <a className="text-primary text-[14px] font-lota font-normal">
+            Rentals
+          </a>
+        </Link>
+      </li>
+      <li className="p-2 border-b hover:text-secondary">
+        <Link href={"/favorites"}>
+          <a className="text-primary text-[14px] font-lota font-normal">
+            Favorites
+          </a>
+        </Link>
+      </li>
+      <li className="p-2 border-b hover:text-secondary">
+        <Link href={"/profile"}>
+          <a className="text-primary text-[14px] font-lota font-normal">
+            Profile
+          </a>
+        </Link>
+      </li>
+      <li className="p-2 border-b hover:text-secondary">
+        <Link href={"/profile?tab=my-items"}>
+          <a className="text-primary text-[14px] font-lota font-normal">
+            My Items
+          </a>
+        </Link>
+      </li>
+      <li className="p-2 text-[#EB001B]">
+        <button onClick={onLogout}>Log Out</button>
+      </li>
+    </ul>
+  </>
 );
 
 const AuthLessMenu = () => (
-  <ul className="shadow-md border rounded-[5px] text-primary text-[10px] font-lota bg-white">
-    <li className="p-2 border-b hover:text-secondary">
-      <Link href={"/listgear"}>
-        <a>List Item</a>
-      </Link>
-    </li>
+  <ul className="shadow-md border rounded-[5px]  bg-white mt-5 min-w-[185px]">
     <li className="p-2 border-b hover:text-secondary">
       <Link href={"/faqs"}>
-        <a>Faqs</a>
-      </Link>
-    </li>
-    <li className="p-2 border-b hover:text-secondary">
-      <Link href={"/cart"}>
-        <a>Cart</a>
+        <a className="text-primary text-[14px] font-lota font-normal">Faqs</a>
       </Link>
     </li>
     <li className="p-2 border-b hover:text-secondary">
       <Link href={"/auth/login"}>
-        <a>Login</a>
+        <a className="text-primary text-[14px] font-lota font-normal">Login</a>
       </Link>
     </li>
     <li className="p-2 border-b hover:text-secondary">
       <Link href={"/auth/signup"}>
-        <a>Sign Up</a>
+        <a className="text-primary text-[14px] font-lota font-normal">
+          Sign Up
+        </a>
       </Link>
     </li>
   </ul>
@@ -120,10 +125,10 @@ function NavBar() {
         <nav className="w-full flex justify-between items-center py-5">
           <div className="text-primary text-2xl font-semibold">
             <Link href={"/"}>
-              <a className="hover:text-primary">
+              <a className="hover:text-primary block xs:w-auto w-20">
                 <img
                   src="/images/logos/shuut-logo.png"
-                  className="object-cover max-w-full h-10"
+                  className="object-cover max-w-full sm:h-10"
                   alt="shuut"
                 />
               </a>
@@ -137,32 +142,35 @@ function NavBar() {
               <NavLinkItem label="Cart" href="/cart" />
             </div>
             {isAuthenticated ? (
-              <div className="ml-32">
+              <>
+                <div className="md:ml-32 hidden sm:block bg-[#FAFCFF] border border-[#D0CFD8] border-opacity-10 py-2 px-4 rounded-[10px] bg-opacity-40">
+                  <Dropdown
+                    overlay={<Menu onLogout={() => setVisibleModal(true)} />}
+                    trigger={["click"]}
+                  >
+                    <div className="flex items-center font-semibold font-lota cursor-pointer">
+                      <div className="">
+                        <Avatar size={40}>
+                          <span className="uppercase font-bold text-primary">
+                            {user?.firstName.charAt(0).toUpperCase()}
+                          </span>
+                        </Avatar>
+                      </div>
+                      <h1 className="px-5">
+                        {user?.firstName} {user?.lastName}
+                      </h1>
+                      <MdOutlineKeyboardArrowDown className="text-xl" />
+                    </div>
+                  </Dropdown>
+                </div>
                 <Dropdown
                   overlay={<Menu onLogout={() => setVisibleModal(true)} />}
                   trigger={["click"]}
+                  className="md:hidden"
                 >
-                  <div className="flex items-center font-semibold font-lota cursor-pointer">
-                    <div className="">
-                      <Avatar size={40}>
-                        <span className="uppercase font-bold text-primary">
-                          {user?.firstName.charAt(0).toUpperCase()}
-                        </span>
-                      </Avatar>
-                      {/* <Image
-                    src={"/images/profile.png"}
-                    alt="Jon Doe"
-                    width={40}
-                    height={40}
-                  /> */}
-                    </div>
-                    <h1 className="px-5">
-                      {user?.firstName} {user?.lastName}
-                    </h1>
-                    <MdOutlineKeyboardArrowDown className="text-xl" />
-                  </div>
+                  <RiMenu3Fill className="text-2xl" />
                 </Dropdown>
-              </div>
+              </>
             ) : (
               <>
                 <div className="hidden md:flex items-center gap-10">

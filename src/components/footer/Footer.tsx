@@ -2,16 +2,16 @@ import React from "react";
 import { BsMessenger, BsTwitter } from "react-icons/bs";
 import { TiInfinity, TiSocialLinkedin } from "react-icons/ti";
 
-const Footer = () => {
+const Footer = ({ className = "" }: { className?: string }) => {
   return (
-    <footer>
+    <footer className={className}>
       <div className="container py-20">
-        <div className="space-y-10 text-center sm:text-left sm:space-y-0 sm:grid sm:grid-cols-3 lg:grid-cols-6 gap-4">
-          <div className="col-span-2">
+        <div className="space-y-10 text-center sm:text-left sm:space-y-0 grid sm:grid-cols-3  mdMax:place-items-center lg:grid-cols-6 grid-cols-1 gap-4">
+          <div className="lg:col-span-2 mdMax:self-start">
             <h3 className="text-[21px] text-body-200 font-black mb-[18px]">
               SHUUT
             </h3>
-            <p className="text-base text-body-200 font-normal sm:max-w-[172px]">
+            <p className="text-base text-body-200 font-normal mdMax:max-w-[172px]">
               Ecommerce platform for camera rentals.
             </p>
             <div className="flex items-center justify-center sm:justify-start gap-4 mt-7">
@@ -41,7 +41,7 @@ const Footer = () => {
               </a>
             </div>
           </div>
-          <div className="col-span-1">
+          <div className="lg:col-span-1">
             <h3 className="text-2xl text-primary-100 font-semibold mb-[18px]">
               Company
             </h3>
@@ -80,7 +80,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div className="col-span-1">
+          <div className="lg:col-span-1">
             <h3 className="text-2xl text-primary-100 font-semibold mb-[18px]">
               Top Cities
             </h3>
@@ -119,7 +119,7 @@ const Footer = () => {
               </li>
             </ul>
           </div>
-          <div className="col-span-2">
+          <div className="lg:col-span-2 sm:col-span-full">
             <h3 className="text-2xl text-primary-100 font-semibold mb-[18px]">
               Join Our Newsletter
             </h3>

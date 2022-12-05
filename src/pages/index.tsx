@@ -142,7 +142,7 @@ const Home: NextPage = () => {
           {loading ? (
             <Spin size="large" />
           ) : (
-            <div className="space-y-8 sm:space-y-0 sm:grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 md:pl-4 gap-y-8 pb-16">
+            <div className="space-y-8 sm:space-y-0 sm:grid grid-cols-2 lg:grid-cols-4 sm:grid-cols-3 gap-4 mt-12 md:pl-4 gap-y-8 pb-16">
               {data?.category?.map((category: Record<string, any>) => (
                 <div
                   onClick={() => goToCategory(category.slug, category.name)}
@@ -208,7 +208,7 @@ const Home: NextPage = () => {
             </h3>
             <div className="md:w-[80%]">
               <Collapse
-                className="faq-collapse w-full bg-white font-lota font-semibold text-sm xs:text-base sm:text-2xl"
+                className="faq-collapse !font-lota !font-semibold !text-sm xs:text-base sm:text-2xl"
                 bordered={false}
                 expandIconPosition="end"
                 expandIcon={(p) =>
@@ -224,7 +224,7 @@ const Home: NextPage = () => {
                 }
               >
                 <Collapse.Panel key={"1"} header="How secured is my Equipment?">
-                  <p className="font-medium text-sm sm:text-xl">
+                  <p className="font-normal text-sm sm:text-xl">
                     We are currently in the process of identifying interested
                     founding members. When at least 100 have made a verbal
                     commitment, the process of negotiating with potential
@@ -236,7 +236,7 @@ const Home: NextPage = () => {
                   key={"2"}
                   header="Do renter pay for equipment transportation?"
                 >
-                  <p className="font-medium text-sm sm:text-xl">
+                  <p className="font-normal text-sm sm:text-xl">
                     We are currently in the process of identifying interested
                     founding members. When at least 100 have made a verbal
                     commitment, the process of negotiating with potential
@@ -248,7 +248,7 @@ const Home: NextPage = () => {
                   key={"3"}
                   header="How much money is needed for insurance ?"
                 >
-                  <p className="font-medium text-sm sm:text-xl">
+                  <p className="font-normal text-sm sm:text-xl">
                     We are currently in the process of identifying interested
                     founding members. When at least 100 have made a verbal
                     commitment, the process of negotiating with potential
@@ -260,7 +260,7 @@ const Home: NextPage = () => {
                   key={"4"}
                   header="What services are available on SHUUT?  "
                 >
-                  <p className="font-medium text-sm sm:text-xl">
+                  <p className="font-normal text-sm sm:text-xl">
                     We are currently in the process of identifying interested
                     founding members. When at least 100 have made a verbal
                     commitment, the process of negotiating with potential
