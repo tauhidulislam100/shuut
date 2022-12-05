@@ -1,0 +1,780 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+    .btn {
+        @apply min-w-[193px] font-sofia-pro font-semibold rounded-md;
+    }
+}
+
+@font-face {
+    font-family: 'Lota Grotesque Extra Light It';
+    src: url('./fonts/LotaGrotesque-ExtraLightIt.woff2') format('woff2'),
+        url('./fonts/LotaGrotesque-ExtraLightIt.woff') format('woff');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lota Grotesque Light It';
+    src: url('./fonts/LotaGrotesque-LightIt.woff2') format('woff2'),
+        url('./fonts/LotaGrotesque-LightIt.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lota Grotesque';
+    src: url('./fonts/LotaGrotesque-Light.woff2') format('woff2'),
+        url('./fonts/LotaGrotesque-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lota Grotesque';
+    src: url('./fonts/LotaGrotesque-Regular.woff2') format('woff2'),
+        url('./fonts/LotaGrotesque-Regular.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lota Grotesque It';
+    src: url('./fonts/LotaGrotesque-RegularIt.woff2') format('woff2'),
+        url('./fonts/LotaGrotesque-RegularIt.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lota Grotesque';
+    src: url('./fonts/LotaGrotesque-Thin.woff2') format('woff2'),
+        url('./fonts/LotaGrotesque-Thin.woff') format('woff');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lota Grotesque Semi Bold It';
+    src: url('./fonts/LotaGrotesque-SemiBoldIt.woff2') format('woff2'),
+        url('./fonts/LotaGrotesque-SemiBoldIt.woff') format('woff');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lota Grotesque Thin It';
+    src: url('./fonts/LotaGrotesque-ThinIt.woff2') format('woff2'),
+        url('./fonts/LotaGrotesque-ThinIt.woff') format('woff');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Lota Grotesque Semi';
+    src: url('./fonts/LotaGrotesque-SemiBold.woff2') format('woff2'),
+        url('./fonts/LotaGrotesque-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-BlackItalic.woff2') format('woff2'),
+        url('./fonts/SofiaPro-BlackItalic.woff') format('woff');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-Bold.woff2') format('woff2'),
+        url('./fonts/SofiaPro-Bold.woff') format('woff');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-BoldItalic.woff2') format('woff2'),
+        url('./fonts/SofiaPro-BoldItalic.woff') format('woff');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-Black.woff2') format('woff2'),
+        url('./fonts/SofiaPro-Black.woff') format('woff');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-ExtraLightItalic.woff2') format('woff2'),
+        url('./fonts/SofiaPro-ExtraLightItalic.woff') format('woff');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-Light.woff2') format('woff2'),
+        url('./fonts/SofiaPro-Light.woff') format('woff');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-ExtraLight.woff2') format('woff2'),
+        url('./fonts/SofiaPro-ExtraLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-Medium.woff2') format('woff2'),
+        url('./fonts/SofiaPro-Medium.woff') format('woff');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-LightItalic.woff2') format('woff2'),
+        url('./fonts/SofiaPro-LightItalic.woff') format('woff');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro.woff2') format('woff2'),
+        url('./fonts/SofiaPro.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-MediumItalic.woff2') format('woff2'),
+        url('./fonts/SofiaPro-MediumItalic.woff') format('woff');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-Italic.woff2') format('woff2'),
+        url('./fonts/SofiaPro-Italic.woff') format('woff');
+    font-weight: normal;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-SemiBold.woff2') format('woff2'),
+        url('./fonts/SofiaPro-SemiBold.woff') format('woff');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-SemiBoldItalic.woff2') format('woff2'),
+        url('./fonts/SofiaPro-SemiBoldItalic.woff') format('woff');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-UltraLight.woff2') format('woff2'),
+        url('./fonts/SofiaPro-UltraLight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Sofia Pro';
+    src: url('./fonts/SofiaPro-UltraLightItalic.woff2') format('woff2'),
+        url('./fonts/SofiaPro-UltraLightItalic.woff') format('woff');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
+
+@layer base {
+    html {
+        font-family: 'Lota Grotesque';
+        scroll-behavior: smooth;
+    }
+}
+
+@layer base {
+    body {
+        font-family: 'Lota Grotesque';
+    }
+}
+
+.rdp {
+    --rdp-cell-size: 40px;
+    --rdp-accent-color: #4436AC;
+    --rdp-background-color: #e7edff;
+    /* Switch to dark colors for dark themes */
+    --rdp-accent-color-dark: #3003e1;
+    --rdp-background-color-dark: #180270;
+    /* Outline border for focused elements */
+    --rdp-outline: 2px solid var(--rdp-accent-color);
+    /* Outline border for focused and selected elements */
+    --rdp-outline-selected: 2px solid rgba(0, 0, 0, 0.75);
+}
+
+button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
+    text-decoration: line-through;
+}
+
+.rdp-day_selected {
+    background: #4436AC;
+    color: #fff;
+}
+
+.rdp-caption .rdp-caption-label,
+.rdp-caption .rdp-nav {
+    font-size: 16px;
+    font-family: 'Open Sans';
+    font-weight: 700;
+}
+
+.rdp-head {
+    font-size: 16px;
+    font-family: 'Open Sans';
+    color: #8E8C9A;
+    font-weight: 600;
+}
+
+.faq-collapse.ant-collapse-borderless {
+    background-color: #fff;
+    width: 100%;
+}
+
+.faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header {
+    padding: 30px 0px;
+    font-size: 24px;
+    font-weight: 600;
+}
+
+
+
+.faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
+    width: 40px;
+    height: 40px;
+    color: #0A2429;
+    background-color: #F4F4F4;
+    font-size: 20px;
+    border-radius: 50%;
+    display: inline-grid;
+    place-items: center;
+}
+
+.faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-content-box {
+    padding-inline: 0px;
+    font-size: 22px;
+    color: #0A2429;
+}
+
+.faq-collapse.ant-collapse-borderless>.ant-collapse-item {
+    border-bottom: 1px solid #D0CFD8;
+}
+
+.faq-collapse.ant-collapse-borderless>.ant-collapse-item:last-child {
+    border-bottom: 1px solid #D0CFD8;
+}
+
+.active-state .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-header-text {
+    font-size: 14px;
+    font-weight: 400;
+    font-family: 'Lota Grotesque', sans-serif;
+}
+
+.active-state .faq-collapse .ant-collapse-item .ant-collapse-content-box {
+    font-size: 10px;
+}
+
+.active-state .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
+    width: 18px;
+    height: 18px;
+    font-size: 12px;
+}
+
+.active-state .faq-collapse.ant-collapse-borderless>.ant-collapse-item,
+.faq-collapse.ant-collapse-borderless>.ant-collapse-item:last-child {
+    border-bottom: none;
+}
+
+.price-tabs .ant-tabs-tab-btn,
+.profile-tabs .ant-tabs-tab-btn {
+    color: rgba(10, 36, 41, 0.5);
+    font-family: 'Sofia Pro';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.price-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn,
+.profile-tabs .ant-tabs-tab.ant-tabs-tab-active .ant-tabs-tab-btn {
+    color: #090F47;
+}
+
+.price-tabs .ant-tabs-ink-bar,
+.profile-tabs .ant-tabs-ink-bar {
+    background-color: #090F47;
+}
+
+.price-tabs.ant-tabs-top>.ant-tabs-nav::before,
+.profile-tabs.ant-tabs-top>.ant-tabs-nav::before {
+    border-color: #EFEFEF;
+}
+
+.profile-tabs .ant-tabs-nav-list {
+    width: 100%;
+    justify-content: space-between;
+}
+
+.profile-tabs .ant-tabs-tab:nth-child(5) {
+    margin-left: 0;
+    margin-right: 50px;
+}
+
+.home-carousel .slick-list {
+    /* margin: 0 -10px; */
+    padding-left: 0px !important;
+}
+
+
+.home-carousel .slick-slide>div {
+    padding: 0 10px;
+}
+
+.product-carousel .slick-list {
+    margin: -16px 0px;
+    padding-top: 0px !important;
+}
+
+.product-carousel .slick-slide>div {
+    padding: 16px 0px;
+}
+
+.social-bg-gradient {
+    background: linear-gradient(180deg, #4436AC 0%, #090F47 100%);
+}
+
+.title-with-line {
+    position: relative;
+    background: url(/images/title-line.svg);
+    background-repeat: no-repeat;
+    background-position: bottom;
+}
+
+.react-tel-input .form-control {
+    width: 400px;
+    height: 45px;
+    padding-left: 70px;
+}
+
+.react-tel-input .flag-dropdown {
+    background: white;
+    padding: 0 10px;
+}
+
+.flag-dropdown .selected-flag {
+    background: white;
+}
+
+.react-otp-input input::placeholder {
+    padding-top: 10px;
+}
+
+.home-carousel .slick-track {
+    display: flex !important;
+}
+
+.home-carousel .slick-slide {
+    height: inherit !important;
+}
+
+.home-carousel .slick-slide>div {
+    height: 100% !important;
+}
+
+.purple-button .ant-spin-dot-item {
+    background-color: #fff;
+}
+
+.marker-label {
+    padding-bottom: 10px;
+    font-weight: 500;
+    font-size: 12px !important;
+}
+
+.uploadcare--button_primary {
+    background: #157cfc;
+    border-color: #157cfc;
+    color: #fff;
+}
+
+.custom-auto-complete .ant-select-selector {
+    height: 54px !important;
+    border-radius: 8px !important;
+    background: #FCFCFD !important;
+    /* Color/Light/Light 3 */
+
+    border: 1px solid #DFDFE6 !important;
+}
+
+.custom-auto-complete .ant-select-selection-placeholder {
+    line-height: 54px !important;
+    font-family: 'Inter';
+    font-style: italic;
+    font-weight: 400 !important;
+    font-size: 16px !important;
+    color: #23262F !important;
+    padding-left: 16px !important;
+}
+
+.custom-auto-complete .ant-select-selection-search-input {
+    height: 54px !important;
+    padding-left: 16px !important;
+
+}
+
+.ant-popover.price-popover .ant-popover-inner-content,
+.ant-popover.price-popover .ant-popover-inner {
+    background: linear-gradient(140.52deg, #4436AC 23.8%, #090F47 77.41%);
+    border-radius: 6.64564px;
+}
+
+.ant-popover.price-popover .ant-popover-arrow-content {
+    --antd-arrow-background-color: #0A2429;
+}
+
+.ant-input {
+    border-radius: 5px !important;
+    padding: 15px 30px !important;
+    border: 1px solid #DFDFE6;
+    font-family: 'Inter', sans-serif !important;
+    font-style: Italic !important;
+    color: #23262F !important;
+}
+
+.ant-input:hover {
+    border-color: #4436AC !important;
+}
+
+.ant-input:focus {
+    border-color: #4436AC !important;
+    outline: 0 !important;
+    -webkit-box-shadow: 0 0 0 2px rgba(87, 168, 233, .2) !important;
+    box-shadow: 0 0 0 2px rgba(87, 168, 233, .2) !important;
+}
+
+.ant-form-item-label {
+    font-size: 18px !important;
+    font-family: 'Lota Grotesque' !important;
+    line-height: 50px !important;
+    color: #1B1C20 !important;
+}
+
+
+.ant-checkbox-wrapper.ant-checkbox-wrapper-in-form-item input[type="checkbox"],
+.ant-checkbox-inner {
+    width: 24px;
+    height: 24px;
+}
+
+.ant-checkbox-inner {
+    border-radius: 4px;
+}
+
+.ant-checkbox-inner::after {
+    top: 46%;
+    left: 33.5%;
+    width: 5.71428571px;
+    height: 12.143px;
+}
+
+.ant-checkbox-checked::after {
+    border-color: #4436AC;
+    border-radius: 4px;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner::after {
+    border-color: #4436AC;
+}
+
+.ant-checkbox-checked .ant-checkbox-inner,
+.ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.ant-checkbox:hover .ant-checkbox-inner,
+.ant-checkbox-input:focus+.ant-checkbox-inner {
+    background-color: transparent;
+    border-color: #4436AC;
+    color: #4436AC;
+    border-radius: 4px;
+}
+
+.checkbox-label .ant-checkbox {
+    top: 0;
+}
+
+.ant-checkbox-wrapper.checkbox-label {
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+}
+
+/* Radio customization */
+
+.ant-radio-inner::after {
+    background-color: #4436AC;
+}
+
+.ant-radio:hover .ant-radio-inner,
+.ant-radio:focus .ant-radio-inner {
+    border-color: #4436AC;
+}
+
+.ant-radio-checked .ant-radio-inner,
+.ant-radio-checked .ant-radio-inner:hover,
+.ant-radio-checked .ant-radio-inner:focus {
+    border-color: #4436AC;
+}
+
+.ant-radio-checked::after {
+    border: 2px solid #4436AC;
+}
+
+.ant-radio-inner:after {
+    background: #4436AC !important;
+}
+
+.ant-radio-checked .ant-radio-inner,
+.ant-radio:hover .ant-radio-inner,
+.ant-radio-input:focus .ant-radio-inner {
+    border-color: #4436AC !important;
+    outline-color: #4436AC !important;
+}
+
+
+
+
+.ant-modal-content {
+    border-radius: 20px;
+}
+
+.ant-form.login-form .ant-input,
+.ant-form.login-form .ant-input-password {
+    border: none;
+    border-radius: 0;
+    border-bottom: 1px solid #E8E8E8;
+}
+
+.ant-form-item-label>label {
+    font-size: 18px;
+    font-family: 'Lota Grotesque', sans-serif;
+}
+
+.ant-form.login-form .ant-input-password .ant-input {
+    border: none;
+}
+
+.ant-select-auto-complete.search-auto-complete .ant-select-selector,
+.ant-select-auto-complete.search-auto-complete .ant-select-selector:focus {
+    border: none;
+    padding-left: 40px;
+}
+
+.ant-select-auto-complete.search.auto-complete .ant-select-selection-search-input {
+    padding-left: 40px;
+}
+
+.setting-switch {
+    background-color: rgb(148 163 184);
+}
+
+.setting-switch.ant-switch-checked {
+    background-color: #32A071;
+}
+
+/***linear progress loader***/
+.bar {
+    background-color: #4436ac9f;
+    min-width: 300px;
+    min-height: 5px;
+    border-radius: 5px;
+    position: relative;
+    overflow: hidden;
+}
+
+.bar::after {
+    content: "";
+    min-height: 5px;
+    position: absolute;
+    background: #4436AC;
+    transform: translateX(-100%);
+    animation: animate 3s infinite;
+}
+
+.bar::before {
+    content: "";
+    min-height: 5px;
+    position: absolute;
+    background: #4436AC;
+    transform: translateX(-100%);
+    animation: animate 3s ease-out infinite;
+    animation-delay: 1s;
+    z-index: 5;
+}
+
+@keyframes animate {
+    0% {
+        transform: translateX(-100%);
+        min-width: 10px;
+    }
+
+    100% {
+        transform: translateX(300%);
+        min-width: 400px;
+    }
+}
+
+
+/* width */
+.custom-scrollbar::-webkit-scrollbar {
+    width: 8px;
+}
+
+/* Track */
+.custom-scrollbar::-webkit-scrollbar-track {
+    /* box-shadow: inset 0 0 5px rgba(196, 196, 196, 0.2); */
+    border-radius: 4px;
+}
+
+/* Handle */
+.custom-scrollbar::-webkit-scrollbar-thumb {
+    background: rgba(196, 196, 196, 0.2);
+    border-radius: 4px;
+}
+
+/* Handle on hover */
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+    background: rgba(196, 196, 196, 0.2);
+}
+
+.choose-country {
+    width: 100%;
+}
+
+.choose-country .ant-select-selector {
+    background: #FCFCFD !important;
+    border-radius: 5px !important;
+    height: 48px !important;
+    border-color: #DFDFE6 !important;
+}
+
+.choose-country .ant-select-selector .ant-select-selection-item,
+.choose-country .ant-select-selector .ant-select-selection-placeholder {
+    line-height: 48px !important;
+}
+
+#triangle-up {
+    width: 0;
+    height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-bottom: 13px solid #4436AC;
+    /* box-shadow: 0px 2.94194px 2.94194px rgba(0, 0, 0, 0.25); */
+    border-radius: 2px;
+}
+
+.ant-input.bottom_bordered_input,
+.ant-input-affix-wrapper.bottom_bordered_input {
+    border: 0;
+    border-bottom: 1px solid #E8E8E8;
+    border-radius: 0 !important;
+    height: 48px;
+    padding: 0 !important;
+}
+
+.ant-input.bottom_bordered_input,
+.ant-input-affix-wrapper.bottom_bordered_input {
+    box-shadow: none !important;
+    border-color: #E8E8E8 !important;
+}
+
+.ant-input-affix-wrapper.bottom_bordered_input input {
+    padding: 0 !important;
+}
+
+/**
+    resting autofil color
+**/
+input:-webkit-autofill,
+input:-webkit-autofill:focus {
+    transition: background-color 600000s 0s, color 600000s 0s;
+}
+
+input[data-autocompleted] {
+    background-color: transparent !important;
+}
+
+@media screen and (max-width: 440px) {
+    .faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header {
+        font-size: 12px;
+        font-weight: 600;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    .faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header {
+        font-size: 10px;
+        font-weight: 500;
+        padding: 20px 0;
+    }
+
+    .faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
+        width: 30px;
+        height: 30px;
+    }
+}
