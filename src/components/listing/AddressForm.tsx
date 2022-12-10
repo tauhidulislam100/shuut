@@ -136,7 +136,9 @@ const AddressForm = ({
     const addr =
       myAddress?.address?.find((item: any) => item?.is_default) ??
       myAddress?.address?.[0];
-    setDefaultAddress({ ...addr });
+    if (addr) {
+      setDefaultAddress({ ...addr });
+    }
   }, [myAddress]);
 
   useEffect(() => {
@@ -280,6 +282,7 @@ const AddressForm = ({
     });
   };
 
+  console.log("default Delevary Address ", defaultAddress);
   return (
     <>
       <div className="border border-[#DFDFE6] rounded-[10px] bg-[#FCFCFD] p-6">

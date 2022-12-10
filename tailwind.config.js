@@ -43,7 +43,10 @@ module.exports = {
       },
       container: {
         center: true,
-        padding: "2rem",
+        padding: {
+          DEFAULT: "1rem",
+          sm: "2rem",
+        },
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
