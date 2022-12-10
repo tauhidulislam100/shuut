@@ -117,7 +117,7 @@ export const SearchListingQuery = gql`
     $enddate: String
     $lat: float8
     $lng: float8
-    $distance_in_meters: float8
+    $distance_in_meters: Float!
     $sortby: String
   ) {
     listings: SearchListing(
@@ -825,7 +825,7 @@ export const UPDTAE_ADDRESS = gql`
     $delivery_address: String!
     $is_default: Boolean
     $country: String
-    $id: Int!
+    $id: bigint!
   ) {
     update_address(
       where: { id: { _eq: $id } }

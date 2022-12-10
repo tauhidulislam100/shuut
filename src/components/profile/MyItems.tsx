@@ -96,7 +96,7 @@ const BOOKING_REQUEST_QUERY = gql`
 const GET_MY_UNAVAILABLE_ITEMS = gql`
   query ($startdate: date!, $enddate: date!, $user_id: Int!) {
     listing: get_unavailable_listing(
-      args: { startdate: "2022-11-7", enddate: "2022-11-11" }
+      args: { startdate: $startdate, enddate: $enddate }
       where: { user_id: { _eq: $user_id } }
     ) {
       id
