@@ -492,7 +492,7 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 
 .ant-input {
     border-radius: 5px !important;
-    padding: 15px 30px !important;
+    padding: 12px 30px !important;
     border: 1px solid #DFDFE6;
     font-family: 'Inter', sans-serif !important;
     font-style: Italic !important;
@@ -513,7 +513,7 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 .ant-form-item-label {
     font-size: 18px !important;
     font-family: 'Lota Grotesque' !important;
-    line-height: 50px !important;
+    line-height: 50px;
     color: #1B1C20 !important;
 }
 
@@ -702,19 +702,27 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     background: rgba(196, 196, 196, 0.2);
 }
 
-.choose-country {
+.choose-country,
+.choose-gender {
     width: 100%;
 }
 
-.choose-country .ant-select-selector {
+.choose-country .ant-select-selector,
+.choose-gender .ant-select-selector {
     background: #FCFCFD !important;
     border-radius: 5px !important;
     height: 48px !important;
     border-color: #DFDFE6 !important;
 }
 
+.choose-gender .ant-select-selector {
+    background: #fff !important;
+}
+
 .choose-country .ant-select-selector .ant-select-selection-item,
-.choose-country .ant-select-selector .ant-select-selection-placeholder {
+.choose-country .ant-select-selector .ant-select-selection-placeholder,
+.choose-gender .ant-select-selector .ant-select-selection-item,
+.choose-gender .ant-select-selector .ant-select-selection-placeholder {
     line-height: 48px !important;
 }
 
@@ -745,6 +753,22 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 
 .ant-input-affix-wrapper.bottom_bordered_input input {
     padding: 0 !important;
+}
+
+.kyc-option.ant-radio-wrapper {
+    width: 100%;
+}
+
+.kyc-info .ant-form-item-label {
+    line-height: 0;
+}
+
+.ant-carousel .product-carousel .slick-dots-bottom {
+    bottom: 35px;
+}
+
+.ant-carousel .product-carousel .slick-dots li button {
+    height: 5px;
 }
 
 /**

@@ -45,7 +45,11 @@ const NewListing = () => {
   });
   const [createListing, { loading }] = useMutation(CreateListingMutation, {
     onCompleted: (data) => {
-      router.push(`/listings/${data.listing.slug}`);
+      if (user?.verified) {
+        router.push(`/listings/${data.listing.slug}`);
+      } else {
+        router.push(`/kyc`);
+      }
     },
     onError: (error) => {
       notification.error({
