@@ -158,9 +158,19 @@ const Payment = () => {
               loop={false}
               style={{ height: 350 }}
             />
-            <Link href={"/profile?tab=rentals"}>
-              <a className="text-secondary font-medium text-base">Go Rentals</a>
-            </Link>
+            {user?.verified ? (
+              <Link href={"/profile?tab=rentals"}>
+                <a className="text-secondary font-medium text-base">
+                  Go Rentals
+                </a>
+              </Link>
+            ) : (
+              <Link href={"/kyc"}>
+                <a className="text-secondary font-medium text-base">
+                  Verify Your Account
+                </a>
+              </Link>
+            )}
           </div>
         ) : (
           <div className="grid grid-cols-6 gap-6 mt-20">

@@ -64,16 +64,19 @@ export const SIGNUP_MUTATION = gql`
 export const GET_ME_QUERY = gql`
   query {
     currentUser: GetMe {
-      id
-      firstName
-      lastName
-      email
-      isActive
-      emailVerified
-      phoneVerified
-      allowNotification
-      showRating
-      paused
+      user {
+        id
+        firstName
+        lastName
+        email
+        isActive
+        emailVerified
+        phoneVerified
+        allowNotification
+        showRating
+        paused
+        verified
+      }
     }
   }
 `;
@@ -1123,6 +1126,37 @@ export const GET_FAVORITES = gql`
           id
         }
       }
+    }
+  }
+`;
+
+export const VERIFY_USER_KYC = gql`
+  mutation KycVerificationUser(
+    $documentType: String
+    $verificationType: String!
+    $countryCode: String!
+    $searchParameter: String!
+    $firstName: String
+    $lastName: String
+    $dob: String
+    $gender: String
+    $selfie: String
+    $selfieToDatabaseMatch: Boolean
+  ) {
+    KycVerification(
+      documentType: $documentType
+      verificationType: $verificationType
+      countryCode: $countryCode
+      searchParameter: $searchParameter
+      firstName: $firstName
+      lastName: $lastName
+      dob: $dob
+      gender: $gender
+      selfie: $selfie
+      selfieToDatabaseMatch: $selfieToDatabaseMatch
+    ) {
+      status
+      message
     }
   }
 `;
