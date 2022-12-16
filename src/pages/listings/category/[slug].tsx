@@ -16,9 +16,6 @@ const Category = () => {
   const [searchText, setSearchText] = useState<string>();
   const [getListingByCategory, { data, loading, client }] =
     useLazyQuery(GetListingByCategory);
-  // const cachedCategories = client.readQuery({
-  //   query: GetCategoryWithImages,
-  // });
 
   useAsyncEffect(
     async (isMounted) => {
@@ -63,29 +60,15 @@ const Category = () => {
               The easiest way to rent camera gear, rent from local trusted
               creatives in your community.
             </p>
-
-            {/* <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
-              <input
-                placeholder="All Gears"
-                className="sm:min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
-              />
-              <button className="px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg">
-                Find Gear
-              </button>
-              <span className="absolute top-4 left-4 text-lg text-[#263238]">
-                <IoIosSearch />
-              </span>
-            </div> */}
-
-            <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
+            <div className="flex items-center xs:w-[430px] w-full max-w-full border border-body-light rounded-lg p-[2px] relative">
               <input
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="All Gears"
-                className="min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
+                className="min-w-max xs:px-10 px-8 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
               />
               <button
                 onClick={handleSearch}
-                className="px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg"
+                className="xs:px-7 px-5 h-12 bg-secondary text-white min-w-max rounded-r-lg"
               >
                 Search
               </button>

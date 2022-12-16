@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DatePicker } from "../../components";
-import { AutoComplete, Checkbox, Col, Form, Input, InputRef, Row } from "antd";
+import { AutoComplete, Checkbox, Col, Form, Input, Row, Grid } from "antd";
 import {
   FilesUpload,
   FileUpload,
@@ -8,6 +8,8 @@ import {
   WidgetAPI,
 } from "@uploadcare/react-widget";
 import { FaCloudUploadAlt } from "react-icons/fa";
+
+const { useBreakpoint } = Grid;
 interface IProps {
   categories: Record<string, any>[];
   data: Record<string, any>;
@@ -23,6 +25,8 @@ const GeneralInfo = ({
   data,
   isInvalid,
 }: IProps) => {
+  const screen = useBreakpoint();
+
   const autocomplete = useRef<google.maps.places.Autocomplete | null>(null);
   const locationRef = useRef<HTMLInputElement>(null);
   const [locationValue, setLocationValue] = useState<string>(
@@ -103,12 +107,10 @@ const GeneralInfo = ({
     }
   };
 
-  console.log("data ", data);
-
   return (
     <Form className="mt-10" labelCol={{ span: 24 }} wrapperCol={{ span: 24 }}>
       <Form.Item label="Add Photos">
-        <div className="grid grid-cols-4 gap-10">
+        <div className="grid md:grid-cols-4 grid-cols-2 md:gap-10 gap-4">
           <div
             onClick={() => widgetRef?.current?.openDialog("")}
             className="border rounded-lg cursor-pointer flex justify-center items-center text-primary overflow-hidden h-[131px]"
@@ -194,11 +196,7 @@ const GeneralInfo = ({
           <div className="text-red-500">listing title is required</div>
         ) : null}
       </Form.Item>
-      {/* <Form.Item
-        label="Category"
-        className=""
-      > */}
-      {/* <Input placeholder="Enter" /> */}
+
       <div className="mb-5">
         <AutoComplete
           placeholder="Select Category..."
@@ -229,7 +227,7 @@ const GeneralInfo = ({
         />
       </Form.Item>
       <Row gutter={65}>
-        <Col span={12}>
+        <Col span={screen.md ? 12 : 24}>
           <Form.Item label="Location">
             {/* <Input placeholder="Enter" ref={locationRef} /> */}
             <input
@@ -243,7 +241,7 @@ const GeneralInfo = ({
             ) : null}
           </Form.Item>
         </Col>
-        <Col span={12}>
+        <Col span={screen.md ? 12 : 24}>
           <Form.Item label="Item Value">
             <Input
               placeholder="Enter"
@@ -260,7 +258,7 @@ const GeneralInfo = ({
         Rent Price Per:
       </h2>
       <Row gutter={65}>
-        <Col span={8}>
+        <Col span={screen.md ? 8 : 24}>
           <Form.Item label="Day">
             <Input
               name="daily_price"
@@ -274,7 +272,7 @@ const GeneralInfo = ({
             ) : null}
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col span={screen.md ? 8 : 24}>
           <Form.Item label="Weeks">
             <Input
               name="weekly_price"
@@ -289,7 +287,7 @@ const GeneralInfo = ({
             ) : null}
           </Form.Item>
         </Col>
-        <Col span={8}>
+        <Col span={screen.md ? 8 : 24}>
           <Form.Item label="Months">
             <Input
               name="monthly_price"
@@ -315,7 +313,7 @@ const GeneralInfo = ({
         ) : null
       ) : null} */}
       <Row gutter={65}>
-        <Col span={12}>
+        <Col span={screen.md ? 12 : 24}>
           <Form.Item label="Quantity">
             <Input
               placeholder="Enter"
@@ -327,7 +325,7 @@ const GeneralInfo = ({
             ) : null}
           </Form.Item>
         </Col>
-        <Col span={12}>
+        <Col span={screen.md ? 12 : 24}>
           <Form.Item label="Minimum Rental Days">
             <Input
               placeholder="Enter"
@@ -354,7 +352,7 @@ const GeneralInfo = ({
       <Form.Item>
         <Checkbox
           name="is_always_available"
-          className="checkbox-label ml-40"
+          className="checkbox-label md:ml-40"
           checked={data.is_always_available}
           onChange={(e) => onChange?.("is_always_available", e.target.checked)}
         >

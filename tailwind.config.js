@@ -10,6 +10,9 @@ module.exports = {
   theme: {
     screens: {
       xs: "480px",
+      xxs: {
+        max: "360px",
+      },
       ...defaultTheme.screens,
       mdMax: {
         max: "1023px",
