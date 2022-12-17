@@ -27,13 +27,13 @@ const ShortListingInfo = ({
       <div className="border-b p-5">
         <h3 className="text-primary font-semibold">Action Required</h3>
       </div>
-      <div className="flex justify-between items-start p-5">
-        <div className="flex items-start">
+      <div className="flex justify-between md:flex-row flex-col items-center p-5">
+        <div className="flex items-center md:flex-row flex-col">
           <div className="relative">
             <img
               src={booking?.listing?.images?.[0]?.url}
               alt={booking?.listing?.title}
-              className="w-[166px] h-[129px]"
+              className="md:w-[166px] md:h-[129px]"
             />
           </div>
           <h5 className="text-primary-100 pl-4">
@@ -133,7 +133,7 @@ const RequestDetailView = ({
           : "Rentals"}
       </h1>
       <div className="mt-5">
-        <div className="grid grid-cols-2 gap-10 items-start">
+        <div className="grid lg:grid-cols-2 grid-cols-1 gap-10 items-start">
           <div>
             <ShortListingInfo
               key={activeItem?.id}
@@ -154,20 +154,20 @@ const RequestDetailView = ({
           </div>
 
           <div className="bg-[#F8F8F8] rounded-[5px] border p-5">
-            <div className="flex justify-between items-start">
-              <div className="flex items-start">
-                <div className="relative">
+            <div className="flex justify-between md:flex-row flex-col md:items-center">
+              <div className="flex md:flex-row flex-col md:items-center">
+                <div className="relative md:mb-0 mb-4">
                   <img
                     alt={selectedBooking?.listing?.title}
                     src={selectedBooking?.listing?.images?.[0]?.url}
-                    className="w-[166px] h-[129px] object-cover"
+                    className="md:w-[166px] md:h-[129px] object-cover"
                   />
                 </div>
-                <h5 className="text-primary-100 pl-4">
+                <h5 className="text-primary-100 md:pl-4 mb-4 md:mb-0 text-base font-medium">
                   {turnicate(selectedBooking?.listing?.title, 30)}
                 </h5>
               </div>
-              <div className="">
+              <div className="text-base font-normal">
                 <p className="text-primary-100">
                   {format(new Date(selectedBooking?.start as string), "do MMM")}{" "}
                   - {selectedBooking?.end}
@@ -183,7 +183,7 @@ const RequestDetailView = ({
               {selectedBooking?.transaction?.user?.firstName}{" "}
               {selectedBooking?.transaction?.user?.lastName}
             </h2>
-            <div className="mt-8 flex justify-between items-start">
+            <div className="md:mt-8 mt-4 flex md:flex-row flex-col justify-between items-start">
               <div className="flex items-center gap-2.5">
                 <div className="relative">
                   <Avatar
@@ -193,7 +193,7 @@ const RequestDetailView = ({
                 </div>
                 <h4 className="text-primary-100/30">Answers fast</h4>
               </div>
-              <div className="flex flex-col items-end gap-y-10">
+              <div className="flex flex-col md:w-auto md:mt-0 mt-5 w-full md:items-end md:gap-y-10 gap-y-5">
                 <button
                   onClick={() => console.log("button")}
                   className="min-w-[155px] btn h-11 bg-transparent border border-secondary text-secondary hover:bg-primary hover:text-white"
@@ -201,7 +201,7 @@ const RequestDetailView = ({
                   Message {selectedBooking?.transaction?.user?.firstName}
                 </button>
 
-                <div className="flex items-center gap-10">
+                <div className="flex items-center md:flex-row flex-col gap-5">
                   <button
                     onClick={() =>
                       reject?.(
@@ -209,7 +209,7 @@ const RequestDetailView = ({
                         selectedBooking?.state === "EXTEND"
                       )
                     }
-                    className="min-w-[155px] btn h-11 bg-[#EB001B] text-white purple-button"
+                    className="xl:min-w-[155px] min-w-[145px] md:w-auto w-full btn h-11 bg-[#EB001B] text-white purple-button"
                   >
                     {loadingState === "reject" ? (
                       <Spin size="small" />
@@ -225,7 +225,7 @@ const RequestDetailView = ({
                         selectedBooking?.extend_to
                       )
                     }
-                    className="min-w-[155px] btn h-11 bg-secondary  hover:bg-primary text-white purple-button"
+                    className="xl:min-w-[155px] min-w-[145px] md:w-auto w-full btn h-11 bg-secondary  hover:bg-primary text-white purple-button"
                   >
                     {loadingState === "approve" ? (
                       <Spin size="small" />

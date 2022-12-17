@@ -17,6 +17,9 @@ module.exports = {
       mdMax: {
         max: "1023px",
       },
+      lgMax: {
+        max: "1279px",
+      },
     },
     extend: {
       colors: {

@@ -485,7 +485,7 @@ const ProductView = () => {
                   </div>
                   <div className="xl:col-span-1 w-full">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium text-primary-100 font-sofia-pro md:text-xl sm:text-lg text-base hidden md:block">
+                      <h3 className="font-medium text-primary-100 font-sofia-pro xl:text-xl lg:text-lg text-base hidden md:block">
                         {listing?.title}
                       </h3>
                       <div className="inline-flex items-center bg-white rounded-md px-2 w-20 justify-between ml-auto">
@@ -662,7 +662,7 @@ const ProductView = () => {
                         </div>
                       ) : (
                         <div className="bg-white rounded-md lg:p-6 p-2 mb-4 relative min-h-[255px]">
-                          <h3 className="font-medium md:text-xl sm:text-lg text-base">
+                          <h3 className="font-medium xl:text-xl lg:text-lg text-base">
                             {listing?.title}
                           </h3>
                           <div className="grid grid-cols-3 sm:gap-4 gap-2 mt-5">
