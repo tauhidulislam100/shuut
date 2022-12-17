@@ -1,10 +1,12 @@
 const OutlinedButton = ({
   children,
   isActive = false,
+  className = "",
   onClick,
 }: {
   children: React.ReactNode;
   isActive?: boolean;
+  className?: string;
   onClick?: () => void;
 }) => {
   return (
@@ -14,7 +16,7 @@ const OutlinedButton = ({
         isActive
           ? "text-secondary border-secondary"
           : "border-[#D0CFD84D] text-primary"
-      }`}
+      } ${className}`}
     >
       {children}
     </button>

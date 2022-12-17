@@ -173,8 +173,8 @@ const Payment = () => {
             )}
           </div>
         ) : (
-          <div className="grid grid-cols-6 gap-6 mt-20">
-            <div className="col-span-4">
+          <div className="grid lg:grid-cols-6 grid-cols-1 gap-6 mt-20">
+            <div className="2xl:col-span-4 lg:col-span-3 lg:order-1 order-2">
               {loading ? (
                 <div className="flex items-center justify-center">
                   <Spin size="large" />
@@ -189,7 +189,7 @@ const Payment = () => {
                     }}
                   />
                   {selectedAddress && transactionSummary ? (
-                    <div className="mt-6 flex justify-end gap-5">
+                    <div className="mt-6 flex justify-end xs:gap-5 gap-3">
                       <button
                         onClick={() => router.push("/listings/search")}
                         className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
@@ -208,7 +208,7 @@ const Payment = () => {
                 </>
               )}
             </div>
-            <div className="col-span-2">
+            <div className="2xl:col-span-2 lg:col-span-3 lg:order-2 order-1">
               {error ? (
                 <div className="w-[60%] mx-auto bg-red-100 rounded-md block text-red-500 font-medium text-sm p-4 mt-2">
                   {error.message}
@@ -222,17 +222,11 @@ const Payment = () => {
               {transactionSummary ? (
                 <>
                   <div className="">
-                    {/* <h1 className="text-lg sm:text-[32px] font-semibold text-primary font-lota">
-                        Transaction Summary
-                      </h1> */}
-                    <div className="bg-[#FCFCFD] border bg-[] p-4 border-[#DFDFE6] rounded-[5px]">
+                    <div className="bg-[#FCFCFD] border bg-[] p-4 sm:px-4 px-2 border-[#DFDFE6] rounded-[5px]">
                       <div className="flex justify-between items-center">
                         <h3 className="font-lota font-semibold text-lg sm:text-xl text-primary">
                           Orders
                         </h3>
-                        {/* <h4 className="font-lota text-lg sm:text-2xl text-primary">
-                            ₦{transactionSummary?.total}
-                          </h4> */}
                       </div>
                       {transactionSummary?.items?.map(
                         (transactionItem: Record<string, any>) => (
@@ -242,7 +236,7 @@ const Payment = () => {
                                 (listing: Record<string, any>) => (
                                   <div
                                     key={listing.listingId}
-                                    className="p-5 border-b flex justify-between items-center text-lg sm:text-xl md:text-2xl"
+                                    className="p-5 sm:px-5 px-2 border-b flex justify-between items-center text-lg sm:text-xl md:text-2xl"
                                   >
                                     <div className="flex">
                                       <div className="relative rounded-sm">
@@ -260,10 +254,10 @@ const Payment = () => {
                                         </div>
                                       </div>
                                       <div className="pl-2 font-lota">
-                                        <h4 className="text-primary-100 sm:pt-3 font-normal text-2xl">
+                                        <h4 className="text-primary-100 sm:pt-3 font-normal text-2xl xxs:text-base">
                                           {turnicate(listing.title, 8)}
                                         </h4>
-                                        <p className="text-[#677489] mt-3 text-2xl font-normal">
+                                        <p className="text-[#677489] mt-3 text-2xl xxs:text-base font-normal">
                                           Duration:{" "}
                                           <span className="text-primary-100">
                                             {differenceInCalendarDays(
@@ -276,7 +270,7 @@ const Payment = () => {
                                       </div>
                                     </div>
                                     <div className="ml-auto">
-                                      <h4 className="font-lota text-2xl text-primary">
+                                      <h4 className="font-lota text-2xl text-primary xxs:text-base">
                                         ₦{listing.price}
                                       </h4>
                                     </div>
@@ -319,36 +313,7 @@ const Payment = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="font-lota">
-                    {/* <div className="border mt-7 p-10 rounded-[5px] bg-[#FCFCFD]">
-                        <h3 className="font-lota font-semibold text-lg sm:text-xl mb-10">
-                    Payment Methods
-                  </h3>
-                  <Form wrapperCol={{ span: 24 }} labelCol={{ span: 24 }}>
-                    <Form.Item label="Card holder name">
-                      <Input placeholder="John Doe" />
-                    </Form.Item>
-                    <Form.Item label="Billing address">
-                      <Input placeholder="Nigeria" />
-                    </Form.Item>
-                    <Row gutter={200}>
-                      <Col span={24} md={12}>
-                        <Form.Item label="Zip code">
-                          <Input placeholder="Ex. 73923" />
-                        </Form.Item>
-                      </Col>
-                      <Col span={24} md={12}>
-                        <Form.Item label="City">
-                          <Input placeholder="Ex. Victoria Islan" />
-                        </Form.Item>
-                      </Col>
-                    </Row>
-                    <Form.Item className="flex">
-                      <Checkbox>Billing address is same as shipping</Checkbox>
-                    </Form.Item>
-                  </Form>
-                      </div> */}
-                  </div>
+                  <div className="font-lota"></div>
                 </>
               ) : !loading ? (
                 <div className="h-[50vh] w-full flex flex-col items-center justify-center">

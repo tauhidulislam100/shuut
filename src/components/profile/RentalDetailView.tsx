@@ -33,16 +33,16 @@ const ShortListingInfo = ({
       <div className="border-b p-5">
         <h3 className="text-primary font-semibold">Action Required</h3>
       </div>
-      <div className="flex justify-between items-start p-5">
-        <div className="flex items-start">
+      <div className="flex justify-between xs:flex-row flex-col items-center xs:p-5">
+        <div className="flex items-center xs:flex-row flex-col">
           <div className="relative">
             <img
               src={booking?.listing?.images?.[0]?.url}
               alt={booking?.listing?.title}
-              className="w-[166px] h-[129px]"
+              className="xs:w-[166px] xs:h-[129px] w-full"
             />
           </div>
-          <h5 className="text-primary-100 pl-4">
+          <h5 className="text-primary-100 pl-4 text-base font-medium font-sofia-pro">
             {turnicate(booking?.listing?.title, 30)}
           </h5>
         </div>
@@ -53,7 +53,7 @@ const ShortListingInfo = ({
           </p>
         </div>
       </div>
-      <div className="flex justify-end px-5">
+      <div className="flex xs:justify-end xs:mt-0 mt-3 px-5">
         <div className="flex items-center gap-2.5">
           <div className="relative">
             <Avatar size={50} src={booking?.listing?.user?.profile_photo} />
@@ -371,7 +371,7 @@ const RentalDetailView = ({
         {isRented ? "Approved" : "Rentals"}
       </h1>
       <div className="mt-5">
-        <div className="grid grid-cols-2 gap-10 items-start">
+        <div className="grid lg:grid-cols-2 grid-cols-1 gap-10 items-start">
           <div>
             <ShortListingInfo
               key={activeItem?.id}
@@ -391,22 +391,22 @@ const RentalDetailView = ({
               ))}
           </div>
           <div>
-            <div className="bg-[#F8F8F8] rounded-[5px] border p-5">
-              <div className="flex justify-between items-center">
-                <div className="flex items-center">
+            <div className="bg-[#F8F8F8] rounded-[5px] border p-5 xs:px-5 px-2">
+              <div className="flex justify-between  items-center xs:flex-row flex-col">
+                <div className="flex items-center xs:flex-row flex-col mb-3 xs:mb-0">
                   <div className="relative">
                     <img
                       alt={selectedBooking?.listing?.title}
                       src={selectedBooking?.listing?.images?.[0]?.url}
-                      className="w-[166px] h-[129px] object-cover"
+                      className="xs:w-[166px] xs:h-[129px]  w-full object-cover"
                     />
                   </div>
-                  <h5 className="text-primary-100 pl-4">
+                  <h5 className="text-primary-100 mt-3 xs:pl-2 xs:mt-0 font-medium text-base font-sofia-pro">
                     {turnicate(selectedBooking?.listing?.title, 30)}
                   </h5>
                 </div>
                 <div className="">
-                  <p className="text-primary-100">
+                  <p className="text-primary-100 font-normal text-base font-sofia-pro">
                     {format(
                       new Date(selectedBooking?.start as string),
                       "do MMM"
@@ -419,7 +419,7 @@ const RentalDetailView = ({
                   </p>
                 </div>
               </div>
-              <h2 className="mt-9 font-sofia-pro font-medium text-primary-100">
+              <h2 className="mt-9 font-sofia-pro font-medium text-base text-primary-100">
                 Owned by {selectedBooking?.listing?.user?.firstName}{" "}
                 {selectedBooking?.listing?.user?.lastName}
               </h2>
@@ -436,7 +436,7 @@ const RentalDetailView = ({
                 <div className="">
                   <button
                     onClick={goToMessage}
-                    className="min-w-[155px] btn h-11 border border-secondary text-secondary"
+                    className="min-w-[155px] xxs:min-w-[140px] btn h-11 border border-secondary text-secondary"
                   >
                     Message {selectedBooking?.listing?.user?.firstName}
                   </button>
@@ -470,7 +470,7 @@ const RentalDetailView = ({
                 ) : null
               ) : (
                 <>
-                  <div className="font-lota px-5 text-sm">
+                  <div className="font-lota xs:px-5 px-2 text-sm">
                     <div className="flex justify-between items-center">
                       <h1 className="text-primary font-semibold">
                         Payment Information

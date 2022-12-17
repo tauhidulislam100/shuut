@@ -321,12 +321,12 @@ const MyItems = () => {
   };
   return (
     <>
-      <div className="mt-[60px] w-full md:flex justify-between">
-        <div className="">
+      <div className="mt-[60px] w-full lg:flex justify-between">
+        <div className="mdMax:flex mdMax:justify-center">
           <div className="flex items-center md:w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
             <input
               placeholder="Search..."
-              className="min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light bg-transparent"
+              className="xs:min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light bg-transparent"
             />
             <button className="px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg">
               Find Gear
@@ -337,10 +337,10 @@ const MyItems = () => {
           </div>
         </div>
         {view === "grid" ? (
-          <div className="mt-5 md:mt-0 flex items-center gap-5">
+          <div className="mt-5 lg:mt-0 flex items-center xs:justify-center xxs:overflow-x-auto gap-5">
             <button
               onClick={() => setFilter("request")}
-              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
+              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota xxs:min-w-max ${
                 filter === "request"
                   ? "border-secondary text-secondary"
                   : "border-[#D0CFD84D]"
@@ -368,24 +368,24 @@ const MyItems = () => {
             </div>
           </div>
         ) : (
-          <div>
+          <div className="flex">
             <button
               onClick={() => setView("grid")}
-              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota border-[#D0CFD84D]`}
+              className={`px-7 ml-auto md:mt-0 mt-4 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota border-[#D0CFD84D]`}
             >
               List View
             </button>
           </div>
         )}
       </div>
-      <div className="w-full mt-[60px] flex justify-end">
+      <div className="w-full lg:mt-[60px] mt-5 flex justify-end xxs:hidden">
         <button className="bg-secondary text-white font-lota rounded-md px-8 py-2.5 flex items-center">
           <AiOutlineCloudDownload className="mr-2 text-lg" />
           Download
         </button>
       </div>
       {view === "grid" ? (
-        <div className="">
+        <div className="xxs:mt-4">
           <h1 className="text-2xl text-primary mb-4">
             {filter === "request"
               ? "New Request"
@@ -402,7 +402,7 @@ const MyItems = () => {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-5 gap-4">
+            <div className="grid 2xl:grid-cols-5 xl:grid-cols-4 lg:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4">
               {filter === "request" &&
                 data?.booking?.map((booking: Record<string, any>) => (
                   <SingleProduct

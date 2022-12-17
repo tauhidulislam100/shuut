@@ -231,7 +231,7 @@ const Profile = () => {
             </button>
             <button
               onClick={() => profileRef?.current?.openDialog("")}
-              className="w-10 h-10 rounded-full bg-gray-300 text-xl text-black grid place-items-center absolute -bottom-10 right-[44%]"
+              className="w-10 h-10 rounded-full bg-gray-300 text-xl text-black grid place-items-center absolute -bottom-10 xl:right-[44%] md:right-[40%] right-[32%]"
             >
               <RiImageEditFill />
             </button>
@@ -240,9 +240,10 @@ const Profile = () => {
             Videographer by day, night watcher by night
           </h3>
           <Tabs
-            className="profile-tabs mt-[121px]"
+            className="profile-tabs sm:mt-[121px]"
             onChange={setActiveTab}
             activeKey={activeTab}
+            tabPosition="top"
           >
             <TabPane key={"1"} tab="Edit Profile">
               <EditProfile

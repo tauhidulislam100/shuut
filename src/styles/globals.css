@@ -322,6 +322,10 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     border-bottom: 1px solid #D0CFD8;
 }
 
+.active-state .faq-collapse.ant-collapse-borderless {
+    background-color: transparent;
+}
+
 .active-state .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-header-text {
     font-size: 14px;
     font-weight: 400;
@@ -329,13 +333,13 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 }
 
 .active-state .faq-collapse .ant-collapse-item .ant-collapse-content-box {
-    font-size: 10px;
+    font-size: 13px;
 }
 
 .active-state .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
-    width: 18px;
-    height: 18px;
-    font-size: 12px;
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
 }
 
 .active-state .faq-collapse.ant-collapse-borderless>.ant-collapse-item,
@@ -807,6 +811,16 @@ input[data-autocompleted] {
 
     .rdp-months {
         flex-direction: column;
+    }
+
+    .profile-tabs .ant-tabs-tab:nth-child(5) {
+        margin-left: 32px;
+        margin-right: 0;
+    }
+
+    .profile-tabs .ant-tabs-nav-list {
+        width: auto !important;
+        justify-content: baseline;
     }
 }
 
