@@ -775,6 +775,43 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     height: 5px;
 }
 
+
+.right-info .insured-item .left-line::after {
+    content: "";
+    left: 50%;
+    width: 1px;
+    height: 40px;
+    background: rgba(43, 97, 18, 0.2);
+    position: absolute;
+    bottom: -36px;
+}
+
+.right-info .insured-item:nth-child(3) .left-line::before {
+    content: "";
+    left: 48%;
+    top: -35px;
+    width: 1px;
+    height: 40px;
+    background: rgba(43, 97, 18, 0.2);
+    position: absolute;
+}
+
+.right-info .insured-item:nth-child(4) .left-line::before {
+    content: "";
+    left: 48%;
+    top: -35px;
+    width: 1px;
+    height: 40px;
+    background: rgba(43, 97, 18, 0.2);
+    position: absolute;
+}
+
+
+
+.right-info .insured-item:nth-child(4) .left-line::after {
+    display: none;
+}
+
 /**
     resting autofil color
 **/
