@@ -10,15 +10,7 @@ import { topCities } from "../../../data";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { RiEqualizerLine } from "react-icons/ri";
 import { BiCurrentLocation } from "react-icons/bi";
-import {
-  AutoComplete,
-  Checkbox,
-  Dropdown,
-  notification,
-  Radio,
-  RadioChangeEvent,
-  Spin,
-} from "antd";
+import { Dropdown, notification, Radio, RadioChangeEvent, Spin } from "antd";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import {
   GetAllCategoryQuery,
@@ -78,17 +70,17 @@ const DropdownBody = ({
   return (
     <Radio.Group
       value={selectedValue}
-      className="bg-white shadow-lg rounded-lg"
+      className="!bg-white !shadow-lg !rounded-lg"
     >
       {dropdownData.map((itm: dropItems, idx: number) => (
         <li
           key={`dropdown_${idx}_${itm.value}`}
-          className="text-sm font-lota border-b-[1.5px] text-[#969696]"
+          className="!text-sm !font-lota !border-b-[1.5px] !text-[#969696]"
         >
           <Radio
             value={itm.value}
             onChange={onSortingChange}
-            className="text-[#969696] px-3.5 py-2.5"
+            className="!text-[#969696] !px-3.5 !py-2.5"
           >
             {itm.label}
           </Radio>

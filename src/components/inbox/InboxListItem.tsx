@@ -1,8 +1,10 @@
-import { Avatar } from "antd";
+import { Avatar, Grid } from "antd";
 import { format } from "date-fns";
 import { IUser } from "../../contexts/AuthProvider";
 import { InboxType } from "../../contexts/GlobalStateProvider";
 import { getSender } from "../../utils/utils";
+
+const { useBreakpoint } = Grid;
 
 const InboxListItem = ({
   selected,
@@ -13,6 +15,7 @@ const InboxListItem = ({
   inbox?: InboxType;
   user: IUser | null;
 }) => {
+  const screen = useBreakpoint();
   const sender = getSender(inbox, user);
 
   const undread = inbox?.messages?.filter(
@@ -21,26 +24,30 @@ const InboxListItem = ({
 
   return (
     <div
-      className={`flex items-start cursor-pointer p-2 rounded-[4px] ${
+      className={`flex items-start cursor-pointer lg:p-2 md:pr-0 p-2 xxs:px-0 rounded-[4px] ${
         selected ? "bg-[#090F4730]" : ""
       }`}
     >
-      <Avatar size={50} src={sender?.profile_photo} className="!bg-[#090F47]">
+      <Avatar
+        size={!screen.lg ? 40 : 50}
+        src={sender?.profile_photo}
+        className="!bg-[#090F47]"
+      >
         {`${sender?.firstName?.charAt(0)}${sender?.lastName?.charAt(
           0
         )}`.toUpperCase()}
       </Avatar>
-      <div className="ml-4 w-[calc(100%-66px)]">
+      <div className="lg:ml-4 md:ml-2 sm:ml-4 ml-2 w-[calc(100%-66px)]">
         <div className="flex justify-between">
           <h1
-            className={`font-bold font-sofia-pro text-base ${
+            className={`font-bold font-sofia-pro lg:text-base sm:text-base md:text-xs text-sm ${
               selected ? "text-[#090F47]" : "text-[#0C0D0C]"
             }`}
           >
             {sender?.firstName} {sender?.lastName}
           </h1>
           <p
-            className={`hidden sm:block text-xs font-sofia-pro  ${
+            className={`text-xs font-sofia-pro  ${
               selected ? "text-[#090F47]" : "text-[#0A242980]"
             }`}
           >
@@ -55,7 +62,7 @@ const InboxListItem = ({
           </p>
         </div>
         <p
-          className={`hidden sm:block text-sm font-sofia-pro mb-0  ${
+          className={`text-sm font-sofia-pro mb-0  ${
             selected ? "text-[#090F47]" : "text-[#0A2429] text-opacity-50"
           }`}
         >

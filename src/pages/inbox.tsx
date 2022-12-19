@@ -3,7 +3,7 @@ import { BsArrowLeftCircle } from "react-icons/bs";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { groupBy } from "lodash";
 import { NavBar } from "../components";
-import { Avatar, Button, Input, notification } from "antd";
+import { Button, Input, notification, Grid } from "antd";
 import { useRouter } from "next/router";
 import AuthGuard from "../components/auth-guard/AuthGuard";
 import { useGlobalState } from "../hooks/useGlobalState";
@@ -20,7 +20,11 @@ import useAsyncEffect from "use-async-effect";
 import { EmptyInbox, InboxSidebar, MessageBox } from "../components/inbox";
 import { getSender } from "../utils/utils";
 
+const { useBreakpoint } = Grid;
+
 const Message = () => {
+  const screen = useBreakpoint();
+  console.log("screen ", screen);
   const router = useRouter();
   const trackUserRef = useRef<number>();
 
@@ -179,7 +183,7 @@ const Message = () => {
           <div className="">
             <button
               onClick={router.back}
-              className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center mb-20"
+              className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center md:mb-20 mb-16"
             >
               <span className="mr-2 text-secondary">
                 <BsArrowLeftCircle />
@@ -198,87 +202,106 @@ const Message = () => {
           {inboxes?.length ? (
             <div className="rounded">
               {/* bg-[#FDFCFC] */}
-              <div className="sm:flex items-end border-b py-2">
+              <div className="flex flex-col border-b py-2">
                 <div className="w-2/5">
-                  <button className="btn border w-40 text-center py-2 cursor-pointer">
+                  <button className="btn md:block hidden border w-40 text-center py-2 cursor-pointer mb-2">
                     New Message
                   </button>
+                  {selectedInbox ? (
+                    <button
+                      onClick={() => setSelectedInbox(undefined)}
+                      className="text-primary-100 md:hidden font-normal font-sofia-pro text-xs capitalize flex items-center mb-2"
+                    >
+                      <span className="mr-2 text-secondary">
+                        <BsArrowLeftCircle />
+                      </span>
+                      Inbox
+                    </button>
+                  ) : (
+                    <h4 className="text-lg font-medium text-primary">Inbox</h4>
+                  )}
                 </div>
                 <div className="flex-1 flex items-end justify-between">
                   <h3 className="font-lota text-lg text-[#0C0D0C]">
                     {getSender(selectedInbox, user)?.firstName}{" "}
                     {getSender(selectedInbox, user)?.lastName}
                   </h3>
-                  <div className="flex items-center gap-1">
-                    <Input
-                      checked={canSelectInboxes}
-                      onChange={(e) => {
-                        setCanSelectInboxes(e.target.checked);
-                        if (e.target.checked) {
-                          setSelectedInbox(undefined);
-                        } else {
-                          setSelectedInboxes([]);
-                        }
-                      }}
-                      type="checkbox"
-                      className="cursor-pointer"
-                    />
-                    <RiDeleteBinFill
-                      onClick={onDeleteInboxes}
-                      className="w-full text-xl cursor-pointer text-red-500"
-                    />
-                  </div>
+                  {(!screen.md && !selectedInbox) || screen.md ? (
+                    <div className="flex items-center gap-1">
+                      <Input
+                        checked={canSelectInboxes}
+                        onChange={(e) => {
+                          setCanSelectInboxes(e.target.checked);
+                          if (e.target.checked) {
+                            setSelectedInbox(undefined);
+                          } else {
+                            setSelectedInboxes([]);
+                          }
+                        }}
+                        type="checkbox"
+                        className="cursor-pointer"
+                      />
+                      <RiDeleteBinFill
+                        onClick={onDeleteInboxes}
+                        className="w-full text-xl cursor-pointer text-red-500"
+                      />
+                    </div>
+                  ) : null}
                 </div>
               </div>
               <div className="flex max-h-[68vh] min-h-[66vh]">
-                <InboxSidebar
-                  canSelectMulitple={canSelectInboxes}
-                  selectedInboxes={selectedInboxes}
-                  selectedInbox={selectedInbox}
-                  updateSelectedInbox={(inb) => {
-                    setSelectedInbox(inb);
-                    markMessageAsRead?.(inb);
-                  }}
-                  updateMultipleSelection={setSelectedInboxes}
-                />
-                <div className="flex-1 border-l pt-5 flex flex-col">
-                  {selectedInbox ? (
-                    <>
-                      <MessageBox
-                        messages={messages}
-                        updateScrollPosition={updateScroll}
-                        selectedInbox={selectedInbox}
-                      />
-                      <div className="border border-l-0 border-[#E6E6E6] bg-white flex justify-end pb-5 pr-5 mt-auto rounded-t-md">
-                        <div className="w-full pl-10 flex items-end gap-5 mt-9">
-                          <textarea
-                            onKeyDown={handleEnter}
-                            onFocus={() => {
-                              markMessageAsRead?.();
-                            }}
-                            onChange={(e) => setMsgText(e.target.value)}
-                            value={msgText}
-                            rows={2.5}
-                            placeholder="Write a message..."
-                            className="w-full align-top border p-4 font-sofia-pro border-secondary rounded-md"
-                          />
-                          <Button
-                            onClick={onSendMessage}
-                            disabled={!msgText?.trim().length}
-                            className="font-sofia-pro font-medium px-6 rounded-md text-white py-2 bg-secondary text-[10px]"
-                            loading={loading}
-                          >
-                            Send
-                          </Button>
+                {(!screen.md && !selectedInbox) || screen.md ? (
+                  <InboxSidebar
+                    canSelectMulitple={canSelectInboxes}
+                    selectedInboxes={selectedInboxes}
+                    selectedInbox={selectedInbox}
+                    updateSelectedInbox={(inb) => {
+                      setSelectedInbox(inb);
+                      markMessageAsRead?.(inb);
+                    }}
+                    updateMultipleSelection={setSelectedInboxes}
+                  />
+                ) : null}
+                {screen.md || selectedInbox ? (
+                  <div className="flex-1 md:border-l pt-5 flex flex-col">
+                    {selectedInbox ? (
+                      <>
+                        <MessageBox
+                          messages={messages}
+                          updateScrollPosition={updateScroll}
+                          selectedInbox={selectedInbox}
+                        />
+                        <div className="border border-l-0 border-[#E6E6E6] bg-white flex justify-end pb-5 md:pr-5 pr-1 mt-auto rounded-t-md">
+                          <div className="w-full md:pl-10 pl-2 flex items-end flex-col md:flex-row gap-5 md:mt-9 mt-2">
+                            <textarea
+                              onKeyDown={handleEnter}
+                              onFocus={() => {
+                                markMessageAsRead?.();
+                              }}
+                              onChange={(e) => setMsgText(e.target.value)}
+                              value={msgText}
+                              rows={2.5}
+                              placeholder="Write a message..."
+                              className="w-full align-top border p-4 font-sofia-pro border-secondary rounded-md"
+                            />
+                            <Button
+                              onClick={onSendMessage}
+                              disabled={!msgText?.trim().length}
+                              className="font-sofia-pro font-medium px-6 rounded-md text-white py-2 bg-secondary text-[10px]"
+                              loading={loading}
+                            >
+                              Send
+                            </Button>
+                          </div>
                         </div>
+                      </>
+                    ) : (
+                      <div className="text-center">
+                        You have not selected any conversation
                       </div>
-                    </>
-                  ) : (
-                    <div className="text-center">
-                      You have not selected any conversation
-                    </div>
-                  )}
-                </div>
+                    )}
+                  </div>
+                ) : null}
               </div>
             </div>
           ) : (
