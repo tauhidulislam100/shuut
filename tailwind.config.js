@@ -10,9 +10,15 @@ module.exports = {
   theme: {
     screens: {
       xs: "480px",
+      xxs: {
+        max: "360px",
+      },
       ...defaultTheme.screens,
       mdMax: {
         max: "1023px",
+      },
+      lgMax: {
+        max: "1279px",
       },
     },
     extend: {
@@ -43,7 +49,10 @@ module.exports = {
       },
       container: {
         center: true,
-        padding: "2rem",
+        padding: {
+          DEFAULT: "1rem",
+          sm: "2rem",
+        },
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

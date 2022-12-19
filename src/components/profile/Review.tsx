@@ -1,14 +1,16 @@
 import { useLazyQuery, useMutation } from "@apollo/client";
-import { Avatar, notification, Progress, Rate } from "antd";
+import { Avatar, notification, Progress, Rate, Grid } from "antd";
 import { Input } from "antd";
 import { format } from "date-fns";
 import { groupBy } from "lodash";
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import useAsyncEffect from "use-async-effect";
 import { CREATE_REVIEW, GET_USER_REVIEWS } from "../../graphql/query_mutations";
 import { useAuth } from "../../hooks/useAuth";
 import Button from "../UI/Button";
+
+const { useBreakpoint } = Grid;
 
 const { TextArea } = Input;
 
@@ -47,6 +49,7 @@ const ratingKeys = {
 };
 
 const Review = () => {
+  const screen = useBreakpoint();
   const router = useRouter();
   const { user } = useAuth();
   const [error, setError] = useState<string>();
@@ -186,7 +189,7 @@ const Review = () => {
           <div className="flex" key={review?.id}>
             <div className="pr-5">
               <Avatar
-                size={80}
+                size={screen.xs ? 40 : 80}
                 src={
                   review?.parent_id
                     ? review.lender.profile_photo
@@ -197,7 +200,7 @@ const Review = () => {
             <div className="text-[#77838F] w-full">
               <div className="flex justify-between items-start w-full">
                 <div className="">
-                  <h2 className="text-lg font-semibold text-primary">
+                  <h2 className="xs:text-lg text-sm font-semibold text-primary">
                     {review?.parent_id
                       ? review.lender.firstName
                       : review.borrower.firstName}{" "}
@@ -236,13 +239,13 @@ const Review = () => {
               ) : null}
               {review?.replies?.map((reply: Record<string, any>) => (
                 <div className="flex mt-4" key={reply?.id}>
-                  <div className="pr-5">
-                    <Avatar size={40} src={review.lender.profile_photo} />
+                  <div className="xs:pr-5 pr-3">
+                    <Avatar size={35} src={review.lender.profile_photo} />
                   </div>
                   <div className="text-[#77838F] w-full">
                     <div className="flex justify-between items-start w-full">
                       <div className="">
-                        <h2 className="text-lg font-semibold text-primary">
+                        <h2 className="sm:text-lg text-sm font-semibold text-primary">
                           {review.lender.firstName} {review.lender.lastName}
                         </h2>
                         <p className="">

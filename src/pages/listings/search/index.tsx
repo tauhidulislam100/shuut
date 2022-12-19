@@ -10,15 +10,7 @@ import { topCities } from "../../../data";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { RiEqualizerLine } from "react-icons/ri";
 import { BiCurrentLocation } from "react-icons/bi";
-import {
-  AutoComplete,
-  Checkbox,
-  Dropdown,
-  notification,
-  Radio,
-  RadioChangeEvent,
-  Spin,
-} from "antd";
+import { Dropdown, notification, Radio, RadioChangeEvent, Spin } from "antd";
 import { useLazyQuery, useQuery } from "@apollo/client";
 import {
   GetAllCategoryQuery,
@@ -50,6 +42,26 @@ const sortingOptions = [
   { label: "Price (Cheapest First)", value: "price" },
 ];
 
+const FilterButton = ({
+  children,
+  className,
+  onClick,
+  ...rest
+}: {
+  children: React.ReactNode;
+  className?: string;
+  onClick?: () => void;
+}) => {
+  return (
+    <button
+      {...rest}
+      onClick={onClick}
+      className={`md:px-3 md:min-w-[121px] md:font-sofia-pro md:bg-[#FAFAFA] md:border md:border-[#DFDFE6] md:hover:border-secondary md:rounded-md md:text-[#0A2429] md:hover:text-secondary md:h-12 items-center ${className}`}
+    >
+      {children}
+    </button>
+  );
+};
 const DropdownBody = ({
   dropdownData,
   selectedValue,
@@ -58,17 +70,17 @@ const DropdownBody = ({
   return (
     <Radio.Group
       value={selectedValue}
-      className="bg-white shadow-lg rounded-lg"
+      className="!bg-white !shadow-lg !rounded-lg"
     >
       {dropdownData.map((itm: dropItems, idx: number) => (
         <li
           key={`dropdown_${idx}_${itm.value}`}
-          className="text-sm font-lota border-b-[1.5px] text-[#969696]"
+          className="!text-sm !font-lota !border-b-[1.5px] !text-[#969696]"
         >
           <Radio
             value={itm.value}
             onChange={onSortingChange}
-            className="text-[#969696] px-3.5 py-2.5"
+            className="!text-[#969696] !px-3.5 !py-2.5"
           >
             {itm.label}
           </Radio>
@@ -261,15 +273,15 @@ const ProductSearch = () => {
   return (
     <>
       <NavBar />
-      <div
+      <button
         onClick={() => setShowMap((prev) => !prev)}
-        className="md:hidden z-[5000] fixed bottom-5 left-1/2 text-2xl text-primary"
+        className="md:hidden z-[5000] fixed bottom-5 left-[calc(50%-32px)] text-white bg-secondary rounded-full h-8 w-16 grid place-items-center text-lg"
       >
         {showMap ? <FaList /> : <FaMapMarkerAlt />}
-      </div>
+      </button>
       <div className="bg-[#FFFFFF] border-t border-[#D0CFD8] border-opacity-30 pt-4 pb-10">
         <div className="container">
-          <div className="">
+          <div className="mb-4">
             <button
               onClick={() => router.back()}
               className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
@@ -280,8 +292,8 @@ const ProductSearch = () => {
               back
             </button>
           </div>
-          <div className="space-y-5 sm:space-y-0 sm:flex justify-between items-center">
-            <div className="mt-5 flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
+          <div className="space-y-5 sm:space-y-0 lg:flex justify-between items-center">
+            <div className="flex items-center lg:w-[430px] mdMax:mb-4 w-full max-w-full border border-body-light rounded-lg p-[2px] relative">
               <input
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
@@ -298,8 +310,8 @@ const ProductSearch = () => {
                 <IoIosSearch />
               </span>
             </div>
-            <div className="flex items-center gap-5 overflow-x-scroll sm:overflow-x-auto">
-              <button
+            <div className="flex items-center gap-5 overflow-x-scroll sm:overflow-x-auto border-b-2 border-[#1C1D2208] pb-2 md:pb-0 md:border-none">
+              <FilterButton
                 onClick={() => {
                   if (selectedCategoryName) {
                     setSelectedCategoryName(undefined);
@@ -307,25 +319,27 @@ const ProductSearch = () => {
                     setFilterOption("category");
                   }
                 }}
-                className={`px-3 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center ${
-                  filterOption === "category"
-                }`}
+                className={`${
+                  filterOption === "category" ? "activeFilter" : ""
+                } `}
               >
+                {/*  */}
                 {selectedCategoryName ? selectedCategoryName : "Category"}
-              </button>
-              <button
+              </FilterButton>
+              <FilterButton
                 onClick={() => setFilterOption("location")}
-                className={`px-5 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center ${
-                  filterOption === "location"
+                className={`${
+                  filterOption === "location" ? "activeFilter" : ""
                 }`}
               >
+                {/* px-5 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center */}
                 {isMapCenterChanged
                   ? "Location Selected By Map"
                   : (center as any)?.city
                   ? (center as any)?.city
                   : "Location"}
-              </button>
-              <button
+              </FilterButton>
+              <FilterButton
                 onClick={() => {
                   if (selectedDataRange) {
                     clearDateFilter();
@@ -333,10 +347,9 @@ const ProductSearch = () => {
                     setFilterOption("date");
                   }
                 }}
-                className={`px-3 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center ${
-                  filterOption === "date"
-                }`}
+                className={`${filterOption === "date" ? "activeFilter" : ""}`}
               >
+                {/* px-3 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center */}
                 {selectedDataRange ? (
                   <span>
                     {selectedDataRange?.from?.toLocaleDateString("default", {
@@ -352,8 +365,9 @@ const ProductSearch = () => {
                 ) : (
                   "Date"
                 )}
-              </button>
+              </FilterButton>
               <Dropdown
+                className="ml-auto"
                 arrow
                 trigger={["click"]}
                 overlay={
@@ -392,13 +406,13 @@ const ProductSearch = () => {
             </div>
             <div className={`${showMap ? "hidden md:block" : "block"}`}>
               {filterOption === "" && (
-                <div className="space-y-5 md:grid grid-cols-3 gap-7 mt-10">
+                <div className="space-y-5 md:grid lg:grid-cols-3 grid-cols-2 gap-7 mt-10">
                   {loading ? (
                     <div className="col-span-2 grid place-items-center">
                       <Spin size="large" />
                     </div>
                   ) : (
-                    <div className="col-span-2 sm:grid grid-cols-2 md:grid-cols-3 gap-5 items-start">
+                    <div className="lg:col-span-2 sm:grid xl:grid-cols-3 lg:grid-cols-2 sm:grid-cols-1 xs:grid-cols-2 grid-cols-1  gap-5 items-start">
                       {data?.listings?.map((listing: Record<string, any>) => (
                         <SingleProduct
                           onMouseOver={() =>
@@ -501,16 +515,16 @@ const ProductSearch = () => {
                       />
                     </div>
                   </div>
-                  <div className="mt-6 flex justify-end gap-5 py-2 w-[71%]">
+                  <div className="mt-6 flex justify-end gap-5 py-2 md:w-[71%]">
                     <button
                       onClick={clearDateFilter}
-                      className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
+                      className="sm:w-[193px] sm:px-0 px-8 font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
                     >
                       Clear
                     </button>
                     <button
                       onClick={applyDateFilter}
-                      className="px-10 font-sofia-pro bg-secondary hover:bg-primary rounded-md text-white h-12 items-center text-lg font-semibold"
+                      className="sm:px-10 px-4 font-sofia-pro bg-secondary hover:bg-primary rounded-md text-white h-12 items-center sm:text-lg text-base font-semibold"
                     >
                       Apply Filter
                     </button>

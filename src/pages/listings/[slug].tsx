@@ -1,12 +1,14 @@
-import { Avatar, Carousel, notification, Popover, Spin, Tabs } from "antd";
+import {
+  Avatar,
+  Carousel,
+  notification,
+  Popover,
+  Spin,
+  Tabs,
+  Grid,
+} from "antd";
 import { CarouselRef } from "antd/lib/carousel";
-import React, {
-  useCallback,
-  useEffect,
-  useMemo,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import cookie from "js-cookie";
 import {
   BsArrowLeftCircle,
@@ -16,18 +18,8 @@ import {
 } from "react-icons/bs";
 import { ImFacebook } from "react-icons/im";
 import { BiMinus } from "react-icons/bi";
-import {
-  IoIosAdd,
-  IoIosArrowDown,
-  IoIosArrowUp,
-  IoIosClose,
-} from "react-icons/io";
-import {
-  FaCheck,
-  FaCheckSquare,
-  FaInfoCircle,
-  FaTelegramPlane,
-} from "react-icons/fa";
+import { IoIosAdd, IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import { FaCheckSquare, FaInfoCircle, FaTelegramPlane } from "react-icons/fa";
 import { TbMail } from "react-icons/tb";
 import {
   DatePicker,
@@ -37,7 +29,6 @@ import {
   RattingBar,
   SingleProduct,
 } from "../../components";
-import { Niger } from "../../components/icons";
 import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   ADD_TO_CART,
@@ -46,15 +37,15 @@ import {
 } from "../../graphql/query_mutations";
 import { useRouter } from "next/router";
 import useAsyncEffect from "use-async-effect";
-import { checkDateOverlaps, formatMoney, roundBy } from "../../utils/utils";
+import { checkDateOverlaps, roundBy } from "../../utils/utils";
 import { Map, Marker } from "../../components/map/MapView";
-import { DateRange, DayClickEventHandler, Matcher } from "react-day-picker";
+import { DateRange, Matcher } from "react-day-picker";
 import { addDays, differenceInCalendarDays, format } from "date-fns";
 import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import Link from "next/link";
 
-const { TabPane } = Tabs;
+const { useBreakpoint } = Grid;
 
 const PopoverContent = ({ onSubmit }: { onSubmit?: () => void }) => (
   <div className="max-w-[350px] p-4 pt-8">
@@ -84,6 +75,7 @@ interface Billing {
 }
 const ProductView = () => {
   const router = useRouter();
+  const screen = useBreakpoint();
   const { isAuthenticated } = useAuth();
   const { SERVICE_CHARGE } = useGlobalState();
   const [getListingBySlug, { data, loading }] = useLazyQuery(
@@ -359,13 +351,14 @@ const ProductView = () => {
     setSelectedDate(range);
   };
 
+  console.log("screen ", screen);
   return (
     <>
       <div className="bg-[#F8F8F8] min-h-screen">
         <NavBar />
         <Modal
           onCancel={() => setShowAvailabilityCalendar(false)}
-          visible={showAvailabilityCalendar}
+          open={showAvailabilityCalendar}
           width={750}
         >
           <div className="w-full flex justify-center items-center px-10 pt-10">
@@ -381,10 +374,8 @@ const ProductView = () => {
           <div className="mt-6 flex justify-end gap-5 py-2">
             <button
               onClick={() => {
-                // setShowAvailabilityCalendar(false);
                 setShowBookingInfoCard(false);
                 setSelectedDate(undefined);
-                // setNextDisable(undefined);
               }}
               className="px-8 font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
             >
@@ -416,31 +407,33 @@ const ProductView = () => {
                   </span>
                   back
                 </button>
-                <div className="md:grid grid-cols-3 gap-8 mt-14 place-items-start">
-                  <div className="col-span-2 w-full">
-                    <div className="flex gap-x-8 h-[660px] py-6 relative">
+                <div className="md:grid xl:grid-cols-3 grid-cols-2 xl:gap-8 gap-4  xl:mt-14 place-items-start">
+                  <div className="xl:col-span-2 w-full">
+                    <div className="flex gap-x-8 xl:h-[660px] py-6 relative">
                       <button
                         onClick={goUp}
-                        className="absolute top-0 left-[14%] z-10 text-primary text-opacity-40 text-xl"
+                        className="absolute top-0 left-[14%] z-10 text-primary text-opacity-40 text-xl hidden xl:block"
                       >
                         <IoIosArrowUp />
                       </button>
                       <button
                         onClick={goDown}
-                        className="absolute bottom-0 left-[13%] z-20 text-primary text-opacity-40 text-xl"
+                        className="absolute bottom-0 left-[13%] z-20 text-primary text-opacity-40 text-xl hidden xl:block"
                       >
                         <IoIosArrowDown />
                       </button>
 
-                      <div className="w-[30%] relative overflow-hidden">
+                      <div className="xl:w-[30%] w-full relative overflow-hidden">
                         <Carousel
                           ref={carouselRef}
                           className="product-carousel"
-                          vertical={true}
-                          slidesToShow={3.5}
+                          vertical={screen.xl}
+                          slidesToShow={
+                            screen.xl ? 3.5 : screen.md ? 1 : screen.sm ? 2 : 1
+                          }
                           infinite={false}
                           arrows={false}
-                          dots={false}
+                          dots={!screen.xl}
                         >
                           {listing?.images?.map((image: any, index: number) => (
                             <div
@@ -449,7 +442,7 @@ const ProductView = () => {
                               className="w-full bg-white  rounded-sm p-[2px] overflow-hidden"
                             >
                               <img
-                                className="w-full object-cover h-[143px] rounded-sm"
+                                className="w-full object-cover xl:h-[143px] h-full max-h-[320px] rounded-sm"
                                 src={image.url}
                                 alt="item image"
                               />
@@ -457,7 +450,7 @@ const ProductView = () => {
                           ))}
                         </Carousel>
                       </div>
-                      <div className="w-[70%] bg-white p-8 rounded-md box-border">
+                      <div className="w-[70%] bg-white p-8 rounded-md box-border xl:block hidden">
                         <div className="box-border border border-[#F4F4F4] rounded-md px-4 py-10 h-[550px]">
                           <img
                             src={selectedImage}
@@ -467,14 +460,10 @@ const ProductView = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="w-full mt-10">
+                    <div className="w-full lg:mt-10 md:block hidden">
                       <h4 className="text-xl font-medium font-sofia-pro text-primary-100 mb-4">
                         Map Location
                       </h4>
-                      {/* <img
-                      src="/images/map-1.png"
-                      className="w-full h-[293px] object-cover rounded-md"
-                    /> */}
                       <div className="w-full h-[293px]">
                         <Map
                           center={{ lat: listing?.lat, lng: listing?.lng }}
@@ -494,12 +483,12 @@ const ProductView = () => {
                       </div>
                     </div>
                   </div>
-                  <div className="col-span-1">
+                  <div className="xl:col-span-1 w-full">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium text-primary-100 font-sofia-pro text-xl">
+                      <h3 className="font-medium text-primary-100 font-sofia-pro xl:text-xl lg:text-lg text-base hidden md:block">
                         {listing?.title}
                       </h3>
-                      <div className="inline-flex items-center bg-white rounded-md px-2 w-20 justify-between">
+                      <div className="inline-flex items-center bg-white rounded-md px-2 w-20 justify-between ml-auto">
                         <button
                           className="text-xl"
                           onClick={() =>
@@ -528,7 +517,7 @@ const ProductView = () => {
                       </div>
                     </div>
                     <Popover
-                      visible={visibleHelpPopup}
+                      open={visibleHelpPopup}
                       content={
                         <PopoverContent
                           onSubmit={() => {
@@ -563,15 +552,6 @@ const ProductView = () => {
                                 Change
                               </button>
                             </div>
-                            {/* <div className="flex flex-col items-end">
-                              <h4 className="">
-                                {format(selectedDate?.from as Date, "dd LLLL")}
-                              </h4>
-                             
-                              <h5 className="">
-                                {format(selectedDate?.to as Date, "dd LLLL")}
-                              </h5>
-                            </div> */}
                             <div className="flex justify-between">
                               <h4 className="">
                                 {priceOption === "weekly"
@@ -681,14 +661,14 @@ const ProductView = () => {
                           </div>
                         </div>
                       ) : (
-                        <div className="bg-white rounded-md p-6 mb-4 relative min-h-[255px]">
-                          <h3 className="font-medium text-xl">
+                        <div className="bg-white rounded-md lg:p-6 p-2 mb-4 relative min-h-[255px]">
+                          <h3 className="font-medium xl:text-xl lg:text-lg text-base">
                             {listing?.title}
                           </h3>
-                          <div className="grid grid-cols-3 gap-4 mt-5">
+                          <div className="grid grid-cols-3 sm:gap-4 gap-2 mt-5">
                             <div
                               onClick={() => onChangePriceOption("monthly")}
-                              className={`border relative p-4 rounded-[5px] hover:border-green-500 cursor-pointer ${
+                              className={`border relative p-4 px-2 lg:px-4 rounded-[5px] hover:border-green-500 cursor-pointer ${
                                 priceOption === "monthly"
                                   ? "border-green-500"
                                   : "border-[#DFDFE6]"
@@ -780,7 +760,7 @@ const ProductView = () => {
                       </p>
                     </div>
                     <div className="bg-white rounded-md p-4  h-[98px] flex">
-                      <Avatar size={68} />
+                      <Avatar size={screen.xs ? 48 : 68} />
                       <div className="ml-4 w-[75%]">
                         <div className="flex items-center justify-between">
                           <Link href={`/profile/${listing?.user?.id}`}>
@@ -852,9 +832,9 @@ const ProductView = () => {
                           See All
                         </a>
                       </div>
-                      <div className="bg-white rounded-md p-4 pb-8 h-[293px]">
+                      <div className="bg-white rounded-md p-4 pb-8 md:h-[293px]">
                         <div className="flex mb-5">
-                          <Avatar size={41} />
+                          <Avatar size={screen.xs ? 32 : 41} />
                           <div className="ml-3 w-[90%]">
                             <h4 className="text-[15px] font-sofia-pro text-primary-100 flex items-center justify-between">
                               Jane Doe
@@ -871,7 +851,7 @@ const ProductView = () => {
                           </div>
                         </div>
                         <div className="flex">
-                          <Avatar size={41} />
+                          <Avatar size={screen.xs ? 32 : 41} />
                           <div className="ml-3 w-[90%]">
                             <h4 className="text-[15px] font-sofia-pro text-primary-100">
                               Jane Doe
@@ -891,52 +871,27 @@ const ProductView = () => {
                   </div>
                 </div>
 
-                <div className="mt-8 md:grid grid-cols-3 gap-8">
-                  <div className="col-span-2 rounded-md overflow-hidden">
-                    {/* Listings owener and other */}
-                  </div>
-                  {/* <div className="col-span-1">
-                  <div className="mt-5 md:mt-0 flex items-center justify-between mb-4">
-                    <h4 className="text-xl font-medium font-sofia-pro text-primary-100">
-                      Reviews
-                    </h4>
-                    <a
-                      href="#"
-                      className="text-sm text-[#286EE6] font-normal font-sofia-pro"
+                <div className="w-full mt-10 md:hidden">
+                  <h4 className="text-xl font-medium font-sofia-pro text-primary-100 mb-4">
+                    Map Location
+                  </h4>
+                  <div className="w-full h-[293px]">
+                    <Map
+                      center={{ lat: listing?.lat, lng: listing?.lng }}
+                      zoom={20}
+                      style={{ flexGrow: "1", height: "100%" }}
+                      scaleControl={false}
+                      fullscreenControl={false}
+                      mapTypeControl={false}
+                      zoomControl={false}
+                      rotateControl={false}
+                      streetViewControl={false}
                     >
-                      See All
-                    </a>
+                      <Marker
+                        position={{ lat: listing?.lat, lng: listing?.lng }}
+                      />
+                    </Map>
                   </div>
-                  <div className="bg-white rounded-md p-4 pb-8 h-[293px]">
-                    <div className="flex mb-5">
-                      <Avatar size={41} />
-                      <div className="ml-3 w-[90%]">
-                        <h4 className="text-[15px] font-sofia-pro text-primary-100 flex items-center justify-between">
-                          Jane Doe
-                          <span>05 August 2022</span>
-                        </h4>
-                        <RattingBar ratting={4.5} className="!text-[#FFCB45]" />
-                        <p className="text-sm font-sofia-pro text-primary-100 mt-4">
-                          05 August 2022 We’ve analysed prices for Video
-                          CameraR.... from all renters on SHUUT.
-                        </p>
-                      </div>
-                    </div> */}
-                  {/* <div className="flex">
-                      <Avatar size={41} />
-                      <div className="ml-3 w-[90%]">
-                        <h4 className="text-[15px] font-sofia-pro text-primary-100">
-                          Jane Doe
-                        </h4>
-                        <RattingBar ratting={4.5} className="!text-[#FFCB45]" />
-                        <p className="text-sm font-sofia-pro text-primary-100 mt-4">
-                          05 August 2022 We’ve analysed prices for Video
-                          CameraR.... from all renters on SHUUT.
-                        </p>
-                      </div>
-                    </div>
-                  </div> */}
-                  {/* </div> */}
                 </div>
               </div>
             </section>
@@ -946,7 +901,7 @@ const ProductView = () => {
                 <h4 className="text-xl font-medium font-sofia-pro text-primary-100 mb-4">
                   Other Listing From Owner
                 </h4>
-                <div className="space-y-5 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-5 gap-5">
+                <div className="space-y-5 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-4 md:grid-cols-2  gap-5">
                   {listing?.user?.listings?.map((pd: any, idx: any) => (
                     <SingleProduct
                       key={`product_index_${idx}`}
@@ -961,7 +916,7 @@ const ProductView = () => {
                 <h4 className="text-xl font-medium font-sofia-pro text-primary-100 mb-4">
                   Other Listing From {listing?.category?.name}
                 </h4>
-                <div className="space-y-5 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-5 gap-5">
+                <div className="space-y-5 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-4 md:grid-cols-2 gap-5">
                   {listing?.category?.listings?.map((pd: any, idx: any) => (
                     <SingleProduct key={`product_index_${idx}`} data={pd} />
                   ))}

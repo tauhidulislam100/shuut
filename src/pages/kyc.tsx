@@ -1,45 +1,181 @@
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Footer,
-  IdForm,
+  InfoForm,
   NavBar,
+  PhotoStart,
   TakePhoto,
-  UploadId,
-  UploadPassport,
+  VerificationType,
 } from "../components";
 import { BsArrowLeftCircle } from "react-icons/bs";
-import CheckPhoto from "../components/verification/UploadPassport";
 import LastStep from "../components/verification/LastStep";
+import { useMutation } from "@apollo/client";
+import { VERIFY_USER_KYC } from "../graphql/query_mutations";
+import { notification } from "antd";
+import AuthGuard from "../components/auth-guard/AuthGuard";
+import { useAuth } from "../hooks/useAuth";
+
+export const supportedDocuments: Record<string, any> = {
+  NG: {
+    passport: "PASSPORT-FACE-MATCH-VERIFICATION",
+    nid: "VIN-FACE-MATCH-VERIFICATION",
+    license: "DRIVER-LICENSE-FULL-DETAIL-VERIFICATION",
+  },
+  GH: {
+    nid: [
+      { label: "Ghana Old Voter Id", value: "GH-OLD-VOTER-ID" },
+      { label: "Ghana New Voter Id", value: "GH-NEW-VOTER-ID" },
+    ],
+    license: "GH-DRIVER-LICENSE-VERIFICATION",
+  },
+  ZA: {
+    nid: "ZA-NATIONAL-ID",
+  },
+  KE: {
+    passport: "KE-PASSPORT-FULL-DETAILS",
+    nid: "KE-NATIONAL-ID",
+  },
+};
 
 const KYC = () => {
+  const { refetchCurrentUser } = useAuth();
   const [step, setStep] = useState(0);
+  const [kycForm, setKycForm] = useState({
+    documentType: "",
+    verificationType: "",
+    countryCode: "",
+    searchParameter: "",
+    firstName: "",
+    lastName: "",
+    dob: "",
+    gender: "",
+    selfie: "",
+    selfieToDatabaseMatch: true,
+  });
+  const [errorMessage, setErrorMessage] = useState<string>();
+  const [verifyUserKyc, { loading }] = useMutation(VERIFY_USER_KYC, {
+    onCompleted(data) {
+      refetchCurrentUser?.();
+      notification.success({
+        message: "your details has been succesfull verified",
+      });
+      setStep(4);
+    },
+    onError(error) {
+      notification.error({
+        message: `${error.message}\nwe are unable to verify your information please try again with vaild info`,
+      });
+    },
+  });
 
-  const nextHandler = () => {
-    if (step >= 4) return setStep(0);
-    setStep((prevState) => prevState + 1);
-  };
+  useEffect(() => {
+    setErrorMessage(undefined);
+  }, [kycForm]);
 
   const getStep = useMemo(() => {
+    const nextHandler = () => {
+      if (!kycForm.documentType) {
+        setErrorMessage("please select verification type");
+        console.log("stack here0");
+        return;
+      }
+
+      if (step === 1 && !kycForm.searchParameter) {
+        setErrorMessage("please fill all form fields accordingly");
+        return;
+      }
+
+      if (
+        step === 1 &&
+        kycForm.countryCode === "NG" &&
+        kycForm.documentType === "passport" &&
+        (!kycForm.searchParameter || !kycForm.firstName || !kycForm.lastName)
+      ) {
+        setErrorMessage("please fill all form fields accordingly");
+        return;
+      }
+
+      if (
+        step === 1 &&
+        ((kycForm.countryCode === "NG" && kycForm.documentType == "license") ||
+          kycForm.countryCode !== "NG")
+      ) {
+        // if country is not nigeria or country is nigeria and document type is license then we don't have to go any further step
+        return;
+      }
+
+      setErrorMessage("");
+      setStep((prevState) => prevState + 1);
+    };
+
+    const onSubmitKyc = async () => {
+      await verifyUserKyc({
+        variables: {
+          ...kycForm,
+        },
+      });
+    };
+
     switch (step) {
       case 0:
-        return <UploadId handleNext={nextHandler} />;
+        return (
+          <VerificationType
+            errorMessage={errorMessage}
+            kycForm={kycForm}
+            onChange={(name, v) => {
+              setKycForm((p) => ({ ...p, [name]: v }));
+            }}
+            handleNext={nextHandler}
+          />
+        );
       case 1:
-        return <IdForm handleNext={nextHandler} />;
+        return (
+          <InfoForm
+            errorMessage={errorMessage}
+            kycForm={kycForm}
+            loading={loading}
+            onChange={(name, v) => {
+              setKycForm((p) => ({ ...p, [name]: v }));
+            }}
+            handleNext={
+              (kycForm.countryCode === "NG" &&
+                kycForm.documentType === "license") ||
+              kycForm.countryCode !== "NG"
+                ? onSubmitKyc
+                : nextHandler
+            }
+            handlePrev={() => setStep((p) => p - 1)}
+          />
+        );
       case 2:
-        return <TakePhoto handleNext={nextHandler} />;
-      // case 3:
-      //   return <UploadPassport handleNext={nextHandler} />;
+        return (
+          <PhotoStart
+            handlePrev={() => setStep((p) => p - 1)}
+            handleNext={nextHandler}
+          />
+        );
       case 3:
-        return <CheckPhoto handleNext={nextHandler} />;
+        return (
+          <TakePhoto
+            loading={loading}
+            errorMessage={errorMessage}
+            kycForm={kycForm}
+            onChange={(name, value) => {
+              setKycForm((p) => ({ ...p, [name]: value }));
+            }}
+            handlePrev={() => setStep((p) => p - 1)}
+            handleNext={onSubmitKyc}
+          />
+        );
       case 4:
-        return <LastStep handleNext={nextHandler} />;
+        return <LastStep />;
       default:
         return null;
     }
-  }, [step]);
+  }, [step, kycForm, errorMessage, loading, verifyUserKyc]);
 
   return (
-    <div className="">
+    <AuthGuard>
       <NavBar />
       <div className="border-b"></div>
       <main className="container mt-5">
@@ -54,7 +190,7 @@ const KYC = () => {
         <div className="max-w-[1080px] mx-auto">{getStep}</div>
       </main>
       <Footer />
-    </div>
+    </AuthGuard>
   );
 };
 

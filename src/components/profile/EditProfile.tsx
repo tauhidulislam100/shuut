@@ -31,7 +31,7 @@ const EditProfile = ({
           labelCol={{ span: 24 }}
           wrapperCol={{ span: 24 }}
           size="large"
-          className="!px-10  !py-5"
+          className="xs:!px-10 !px-4  !py-5"
         >
           <Row gutter={87}>
             <Col span={24} md={12}>

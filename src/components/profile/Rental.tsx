@@ -283,12 +283,12 @@ const Rental = () => {
   }, [filter]);
   return (
     <>
-      <div className="mt-[60px] w-full md:flex justify-between">
-        <div className="">
-          <div className="flex items-center md:w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
+      <div className="mt-[60px] w-full xl:flex justify-between">
+        <div className="lgMax:flex lgMax:justify-center">
+          <div className="flex items-center lg:w-[430px] w-full max-w-full border border-body-light rounded-lg p-[2px] relative">
             <input
               placeholder="Search..."
-              className="min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light bg-transparent"
+              className="sm:min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light bg-transparent"
             />
             <button className="px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg">
               Find Gear
@@ -299,10 +299,10 @@ const Rental = () => {
           </div>
         </div>
         {view === "grid" ? (
-          <div className="mt-5 md:mt-0 flex items-center gap-5">
+          <div className="lgMax:mt-5 flex items-center xl:justify-end lg:justify-center mdMax:snap-mandatory mdMax:overflow-x-auto mdMax:snap-x gap-x-5">
             <button
               onClick={() => setFilter("request")}
-              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
+              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota min-w-max ${
                 filter === "request"
                   ? "border-secondary text-secondary"
                   : "border-[#D0CFD84D]"
@@ -312,7 +312,7 @@ const Rental = () => {
             </button>
             <button
               onClick={() => setFilter("handover-today")}
-              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
+              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota min-w-max ${
                 filter === "handover-today"
                   ? "border-secondary text-secondary"
                   : "border-[#D0CFD84D]"
@@ -322,7 +322,7 @@ const Rental = () => {
             </button>
             <button
               onClick={() => setFilter("handover-tomorrow")}
-              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota ${
+              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota min-w-max ${
                 filter === "handover-tomorrow"
                   ? "border-secondary text-secondary"
                   : "border-[#D0CFD84D]"
@@ -350,17 +350,17 @@ const Rental = () => {
             </div>
           </div>
         ) : (
-          <div>
+          <div className="flex">
             <button
               onClick={() => setView("grid")}
-              className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota border-[#D0CFD84D]`}
+              className={`ml-auto px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota border-[#D0CFD84D] mt-4`}
             >
               List View
             </button>
           </div>
         )}
       </div>
-      <div className="w-full mt-[60px] flex justify-end">
+      <div className="w-full lg:mt-[60px] mt-5 flex justify-end">
         <button
           className={`${
             (filter === "handover-today" ||
@@ -395,7 +395,7 @@ const Rental = () => {
               />
             </div>
           ) : (
-            <div className="grid grid-cols-5 gap-4">
+            <div className="grid 2xl:grid-cols-5 lg:grid-cols-4 md:gird-cols-3 sm:grid-cols-2 grid-cols-1  gap-4">
               {filter === "request" ||
               filter === "returned" ||
               filter === "rented"

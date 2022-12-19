@@ -70,7 +70,7 @@ const Cart: NextPage = () => {
                 <Spin size="large" />
               </div>
             ) : (
-              <div className="grid md:grid-cols-5 gap-5 mt-[30px]">
+              <div className="grid xl:grid-cols-5 md:grid-cols-3 sm:grid-cols-2  gap-5 mt-[30px]">
                 {cartItems?.map((item) => (
                   <CartProduct
                     item={item}

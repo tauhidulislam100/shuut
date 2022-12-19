@@ -45,7 +45,11 @@ const NewListing = () => {
   });
   const [createListing, { loading }] = useMutation(CreateListingMutation, {
     onCompleted: (data) => {
-      router.push(`/listings/${data.listing.slug}`);
+      if (user?.verified) {
+        router.push(`/listings/${data.listing.slug}`);
+      } else {
+        router.push(`/kyc`);
+      }
     },
     onError: (error) => {
       notification.error({
@@ -105,14 +109,17 @@ const NewListing = () => {
       <div className="border-b"></div>
       <main className="container mt-5">
         <div className="">
-          <button className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center">
+          <button
+            onClick={() => router.back()}
+            className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
+          >
             <span className="mr-2 text-secondary">
               <BsArrowLeftCircle />
             </span>
             back
           </button>
         </div>
-        <div className="md:px-[10%]">
+        <div className="lg:px-[10%]">
           <h1 className="mt-[74px] text-[32px] font-lota font-semibold text-primary">
             New Listings
           </h1>

@@ -332,31 +332,34 @@ const Calendar = () => {
 
   return (
     <>
-      <div className="w-full mt-[60px] flex justify-end gap-2">
+      <div className="w-full md:mt-[60px] mt-5 flex md:justify-end md gap-2 overflow-x-auto">
         <OutlinedButton
+          className="min-w-max"
           onClick={() => setFilter("today")}
           isActive={filter === "today"}
         >
           Today
         </OutlinedButton>
         <OutlinedButton
+          className="min-w-max"
           onClick={() => setFilter("check-date")}
           isActive={filter === "check-date"}
         >
           Check Dates
         </OutlinedButton>
         <OutlinedButton
+          className="min-w-max"
           onClick={() => setFilter("add-unavailability")}
           isActive={filter === "add-unavailability"}
         >
           Unavailability
         </OutlinedButton>
-        <button className="bg-secondary text-white font-lota rounded-md px-8 py-2.5 flex items-center">
+        <button className="bg-secondary text-white font-lota rounded-md px-8 py-2.5 flex items-center min-w-max">
           <AiOutlineCloudDownload className="mr-2 text-lg" />
           Download
         </button>
       </div>
-      <div className="flex justify-end mt-20">
+      <div className="flex justify-end sm:mt-20 mt-5 mb-2">
         {filter === "check-date" ? (
           <button
             onClick={() => setVisibleDatePicker(true)}
@@ -390,7 +393,7 @@ const Calendar = () => {
             ? "Check Dates"
             : "Add Unavailability"}
         </h1>
-        <div className="grid grid-cols-4 mt-4">
+        <div className="grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 mt-4">
           {filter === "check-date" || filter === "today"
             ? data?.booking?.map((booking: Record<string, any>) => (
                 <SingleProduct

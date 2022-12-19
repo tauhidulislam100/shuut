@@ -7,6 +7,7 @@ import React, { useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import useAsyncEffect from "use-async-effect";
 import { Footer, NavBar, SingleProduct } from "../../../components";
+import Button from "../../../components/UI/Button";
 import { hiwBeforeRental, listItemCat, topCities } from "../../../data";
 import { GetListingByCategory } from "../../../graphql/query_mutations";
 import { defaultRadius } from "../search";
@@ -16,9 +17,6 @@ const Category = () => {
   const [searchText, setSearchText] = useState<string>();
   const [getListingByCategory, { data, loading, client }] =
     useLazyQuery(GetListingByCategory);
-  // const cachedCategories = client.readQuery({
-  //   query: GetCategoryWithImages,
-  // });
 
   useAsyncEffect(
     async (isMounted) => {
@@ -45,8 +43,8 @@ const Category = () => {
 
   return (
     <>
+      <NavBar />
       <div className="container">
-        <NavBar />
         <section className="md:flex flex-row-reverse justify-between gap-10 md:pt-20">
           <div>
             <img
@@ -63,29 +61,15 @@ const Category = () => {
               The easiest way to rent camera gear, rent from local trusted
               creatives in your community.
             </p>
-
-            {/* <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
-              <input
-                placeholder="All Gears"
-                className="sm:min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
-              />
-              <button className="px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg">
-                Find Gear
-              </button>
-              <span className="absolute top-4 left-4 text-lg text-[#263238]">
-                <IoIosSearch />
-              </span>
-            </div> */}
-
-            <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
+            <div className="flex items-center xs:w-[430px] w-full max-w-full border border-body-light rounded-lg p-[2px] relative">
               <input
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="All Gears"
-                className="min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
+                className="min-w-max xs:px-10 px-8 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
               />
               <button
                 onClick={handleSearch}
-                className="px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg"
+                className="xs:px-7 px-5 h-12 bg-secondary text-white min-w-max rounded-r-lg"
               >
                 Search
               </button>
@@ -102,18 +86,6 @@ const Category = () => {
                 src="/images/logos/axamansard.png"
                 className="max-w-full object-cover w-[118px] h-[21px]"
               />
-              {/* <img
-                src="/images/logos/leadway.png"
-                className="max-w-full object-cover w-[82px] h-[32px]"
-              />
-              <img
-                src="/images/logos/people.png"
-                className="max-w-full object-cover w-[111px] h-[35px]"
-              />
-              <img
-                src="/images/logos/wapic.png"
-                className="max-w-full object-cover w-[94px] h-[29px]"
-              /> */}
             </div>
           </div>
         </section>
@@ -126,7 +98,7 @@ const Category = () => {
           {loading ? (
             <Spin size="large" />
           ) : (
-            <div className="mt-5 sm:mt-8 sm:pl-2 space-y-10 sm:space-y-0 sm:grid grid-cols-3 lg:grid-cols-5 gap-5">
+            <div className="mt-5 sm:mt-8 grid 2xl:grid-cols-5 lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-5">
               {data?.listing?.map((listing: Record<string, any>) => (
                 <SingleProduct
                   key={`lagos_${listing?.id}`}
@@ -157,8 +129,8 @@ const Category = () => {
                   Access To More
                 </h3>
                 <p className="text-base font-normal text-primary-100">
-                  Is be upon sang fond must shew. Really boy law county she
-                  unable her sister. Feet you off its like like six.
+                  Get access to a wide range of products to pursue your goals.
+                  More products, more possibilities
                 </p>
               </div>
               <div className="border border-[#DFDFDF] rounded-[10px] p-7">
@@ -166,8 +138,8 @@ const Category = () => {
                   Save Money
                 </h3>
                 <p className="text-base font-normal text-primary-100">
-                  Is be upon sang fond must shew. Really boy law county she
-                  unable her sister. Feet you off its like like six.
+                  Renting world-class gadgets saves you money, than buying.
+                  spend less, achieve more
                 </p>
               </div>
               <div className="border border-[#DFDFDF] rounded-[10px] p-7">
@@ -175,27 +147,12 @@ const Category = () => {
                   Get Insured
                 </h3>
                 <p className="text-base font-normal text-primary-100">
-                  Is be upon sang fond must shew. Really boy law county she
-                  unable her sister. Feet you off its like like six.
+                  Insurance gives security to gadgets. Your insurance, your
+                  security.
                 </p>
               </div>
             </div>
           </div>
-          {/* <h1 className="text-[32px] font-semibold text-primary">Categories</h1>
-                    <div className="grid grid-cols-4 gap-5 mt-[30px]">
-                        {
-                            listItemCat.map((cat, idx) => (
-                                <div key={`cat_${idx}`} className="bg-white rounded-md">
-                                    <div className="px-4 pt-3">
-                                        <div className="relative w-full rounded-[5px] overflow-hidden h-[220px]">
-                                            <Image src={cat.cat_img} alt="Cat Img" className="object-cover hover:scale-105 w-full h-[219px] transition-all duration-300" layout="fill" />
-                                        </div>
-                                        <h3 className="my-3.5 text-primary-100 text-sm font-medium">{cat.title}</h3>
-                                    </div>
-                                </div>
-                            ))
-                        }
-                    </div> */}
         </div>
       </section>
       <section className="bg-gradient-radial from-secondary to-primary">
@@ -234,35 +191,61 @@ const Category = () => {
       </section>
       <section className="bg-[#FFFFFF]">
         <div className="container py-[70px]">
-          <div className="pt-16 pl-4 grid md:grid-cols-2 2xl:gap-x-40 items-center">
+          <div className="pt-16 pl-4 grid md:grid-cols-2 2xl:gap-x-40 items-start max-w-6xl mx-auto">
             <img
-              src="/images/mockup.png"
-              className="object-cover max-w-full h-[537px]"
+              src="/images/iphone_14_pro.png"
+              className="object-cover max-w-full max-h-[666px] md:mb-0 mb-10"
+              alt="app preview"
             />
-            <div>
-              <h2 className="text-[32px] font-semibold text-primary-200">
-                Stay Updated On Our Mobile App
+            <div className="right-info">
+              <h2 className="text-[32px] font-semibold text-primary-200 mb-5">
+                Rent & List Insured Gears in 5 Minutes
               </h2>
-              <p className="text-body max-w-[498px] text-lg mt-4 mb-7">
-                Message and rent at the tap of a button. The Fat Llama app is
-                the easiest way to find what you need, manage your rentals and
-                purchases and get instant updates. Get it now on iOS and
-                Android.
-              </p>
-              <div className="flex items-center gap-10">
-                <a href="#">
-                  <img
-                    src="/images/logos/appstore.png"
-                    className="max-w-full object-cover"
-                  />
-                </a>
-                <a href="#">
-                  <img
-                    src="/images/logos/google-play.png"
-                    className="max-w-full object-cover"
-                  />
-                </a>
+              <div className="flex items-start mb-5 insured-item">
+                <div className="font-lota font-medium text-secondary text-2xl relative left-line">
+                  01
+                </div>
+                <div className="ml-4">
+                  <h2 className="text-2xl font-normal font-lota text-primary mb-2">
+                    Create an account
+                  </h2>
+                  <p className="text-base font-lota font-light text-primary">
+                    Get started by creating an account on shuut, to get access
+                    to rental deals close to you.
+                  </p>
+                </div>
               </div>
+
+              <div className="flex items-start my-12 insured-item">
+                <div className="font-lota font-medium text-secondary text-2xl relative left-line">
+                  02
+                </div>
+                <div className="ml-4">
+                  <h2 className="text-2xl font-normal font-lota text-primary mb-2">
+                    Get Verified
+                  </h2>
+                  <p className="text-base font-lota font-light text-primary">
+                    Get verified to prove authenticity.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-start insured-item  mt-16">
+                <div className="font-lota font-medium text-secondary text-2xl relative left-line">
+                  03
+                </div>
+                <div className="ml-4">
+                  <h2 className="text-2xl font-normal font-lota text-primary mb-2">
+                    List & Rent Equipments
+                  </h2>
+                  <p className="text-base font-lota font-light text-primary">
+                    List and rent all Items you need at attractive rates.
+                  </p>
+                </div>
+              </div>
+              <button className="bg-secondary text-white font-semibold font-sofia-pro text-lg rounded-lg px-10 h-12 mt-24">
+                Get Started
+              </button>
             </div>
           </div>
         </div>
@@ -272,7 +255,7 @@ const Category = () => {
           <h1 className="font-lota font-semibold text-[32px] text-center text-white">
             Find More In Lagos
           </h1>
-          <div className="mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:place-content-stretch place-items-center">
             {Array(30)
               .fill("Tripod Air")
               .map((_, idx) => (
@@ -287,7 +270,7 @@ const Category = () => {
           <h1 className="mt-[60px] font-lota font-semibold text-[32px] text-center text-white">
             Browse On Other Cities
           </h1>
-          <div className="mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+          <div className="mt-20 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 md:place-content-stretch place-items-center">
             {Array(30)
               .fill("")
               .map((_, idx) => (

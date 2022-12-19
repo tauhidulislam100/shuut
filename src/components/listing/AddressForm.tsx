@@ -136,7 +136,9 @@ const AddressForm = ({
     const addr =
       myAddress?.address?.find((item: any) => item?.is_default) ??
       myAddress?.address?.[0];
-    setDefaultAddress({ ...addr });
+    if (addr) {
+      setDefaultAddress({ ...addr });
+    }
   }, [myAddress]);
 
   useEffect(() => {
@@ -280,9 +282,10 @@ const AddressForm = ({
     });
   };
 
+  console.log("default Delevary Address ", defaultAddress);
   return (
     <>
-      <div className="border border-[#DFDFE6] rounded-[10px] bg-[#FCFCFD] p-6">
+      <div className="border border-[#DFDFE6] rounded-[10px] bg-[#FCFCFD] xs:p-6 p-3">
         {defaultAddress ? (
           <div className="flex flex-col items-end justify-center">
             <div className="bg-white rounded-lg p-4 font-lota font-normal border border-[#E3E8EF] w-full mb-3">
@@ -414,7 +417,7 @@ const AddressForm = ({
 
       <Modal
         onCancel={() => setVisibleAddressModal(false)}
-        visible={visibleAddressModal}
+        open={visibleAddressModal}
         width={750}
       >
         <div className="w-full">
@@ -498,7 +501,7 @@ const AddressForm = ({
               <div className="flex items-center justify-center">
                 <Button
                   onClick={() => setVisibleAddressModal(false)}
-                  className="w-[60%] bg-secondary text-white h-[81px] rounded-lg  flex items-center justify-center text-2xl font-semibold font-lota"
+                  className="xs:w-[60%] w-full bg-secondary text-white h-[81px] rounded-lg  flex items-center justify-center xs:text-2xl text-lg font-semibold font-lota"
                 >
                   Use This Address
                 </Button>
@@ -507,7 +510,7 @@ const AddressForm = ({
           ) : (
             <>
               <div className="flex items-center justify-between">
-                <div className="mb-4 w-[30%]">
+                <div className="mb-4 md:w-[30%] w-[45%]">
                   <label
                     htmlFor="firstName"
                     className="block font-lota text-base font-normal mb-1"
@@ -521,7 +524,7 @@ const AddressForm = ({
                     name="first_name"
                   />
                 </div>
-                <div className="mb-4 w-[30%]">
+                <div className="mb-4 md:w-[30%] w-[45%]">
                   <label
                     htmlFor="firstName"
                     className="block font-lota text-base font-normal mb-1"
@@ -608,7 +611,7 @@ const AddressForm = ({
                 />
               </div>
               <div className="flex items-center justify-between">
-                <div className="mb-4 w-[30%]">
+                <div className="mb-4 md:w-[30%] w-[45%]">
                   <label
                     htmlFor="firstName"
                     className="block font-lota text-base font-normal mb-1"
@@ -623,7 +626,7 @@ const AddressForm = ({
                     invalid={!createAddressForm.state && addressInvalid}
                   />
                 </div>
-                <div className="mb-4 w-[30%]">
+                <div className="mb-4 md:w-[30%] w-[45%]">
                   <label
                     htmlFor="firstName"
                     className="block font-lota text-base font-normal mb-1"

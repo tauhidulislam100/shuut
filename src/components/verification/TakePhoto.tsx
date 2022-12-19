@@ -1,53 +1,156 @@
-import Image from 'next/image';
-import React from 'react';
+import React, { useEffect, useRef, useState } from "react";
+import { BiCamera } from "react-icons/bi";
+import Button from "../UI/Button";
 
-const TakePhoto = ({handleNext}: {handleNext: () => void}) => {
+interface IProps {
+  handleNext: () => void;
+  handlePrev: () => void;
+  onChange: (name: string, value: string) => void;
+  errorMessage?: string;
+  kycForm: Record<string, any>;
+  loading?: boolean;
+}
+const TakePhoto = ({
+  handleNext,
+  handlePrev,
+  onChange,
+  kycForm,
+  errorMessage,
+  loading,
+}: IProps) => {
+  const [photo, setPhoto] = useState<string | null>(kycForm.selfie);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const rendered = useRef<boolean>(false);
+  const [localError, setLocalError] = useState("");
 
-return (
+  useEffect(() => {
+    if (!rendered.current) {
+      startCamera();
+    }
+    let r = videoRef.current;
+    rendered.current = true;
+    return () => {
+      if (r) {
+        r.pause();
+        r.srcObject = null;
+      }
+    };
+  }, [photo]);
+
+  const startCamera = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      if (videoRef.current) {
+        videoRef.current.srcObject = stream;
+      }
+    } catch (error) {
+      setLocalError(error as string);
+    }
+  };
+
+  // function to capture photo from webcam
+  const capture = async () => {
+    // get the video element that displays the webcam stream
+    const videoElement = document.querySelector(
+      "#videoElement"
+    ) as HTMLVideoElement;
+
+    // create a canvas element to convert the video frame to an image
+    const canvas = document.createElement("canvas");
+    canvas.width = 640;
+    canvas.height = 480;
+    const ctx = canvas.getContext("2d");
+    ctx?.drawImage(videoElement, 0, 0);
+    // convert the image to base64 format and store it in local state
+    const base64 = canvas.toDataURL("image/jpeg");
+    setPhoto(base64);
+    onChange("selfie", base64);
+  };
+
+  return (
     <div className="mt-5 md:px-40">
-        <h1 className="text-[32px] font-lota font-semibold text-primary">
-            Let’s Make Sure You’re You.
-        </h1>
-        <p className="font-lota text-lg">
-            Position yourself in the centre of the camera and them move your face left and right to show both sides.
-        </p>
-        <div className="mt-12 flex justify-center">
-            <div className="flex rounded-[5px] overflow-hidden p-2 border">
-                <div className="relative w-[200px] h-[250px] rounded-tl-[5px] rounded-bl-[5px] overflow-hidden">
-                    <Image
-                        src={'/images/photo.png'}
-                        alt="Photo 1"
-                        layout='fill'
-                        objectFit="cover"
-                        />
-                </div>
-                <div className="relative w-[200px] h-[250px] rounded-tr-[5px] rounded-br-[5px] overflow-hidden">
-                    <Image
-                        src={'/images/photo2.png'}
-                        alt="Photo 1"
-                        layout='fill'
-                        />
-                </div>
-            </div>
+      <p className="font-lota text-lg">
+        Take a clear photo of your entire face.
+      </p>
+      <div className="mt-12 flex justify-center">
+        <div className="flex rounded-[5px] overflow-hidden p-2 border">
+          <div className="relative w-[400px] h-[250px] rounded-tl-[5px] rounded-bl-[5px] overflow-hidden">
+            {!photo ? (
+              <video
+                id="videoElement"
+                className="object-cover w-full h-full"
+                autoPlay
+                ref={videoRef}
+              ></video>
+            ) : (
+              <img
+                className="w-full h-full object-cover rounded-[5px]"
+                src={photo}
+                alt="selfie"
+              />
+            )}
+          </div>
         </div>
-        <div className="mt-12 flex flex-col sm:flex-row justify-end gap-5">
-            <button onClick={handleNext} className='min-w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold'>
-                Get Started
-            </button>
-            <button onClick={() => console.log("Button!")} className='min-w-[193px] px-8 font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>
+      </div>
+      {localError || errorMessage ? (
+        <div className="text-red-500 font-medium font-sofia-pro text-center mt-2 text-base">
+          {localError || errorMessage}
+        </div>
+      ) : null}
+      <div className="mt-12 flex flex-col md:flex-row justify-end gap-5">
+        <button
+          onClick={handlePrev}
+          className="min-w-[120px] flex justify-center items-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 text-lg font-semibold"
+        >
+          Back
+        </button>
+        {photo ? (
+          <button
+            onClick={() => {
+              rendered.current = false;
+              setPhoto(null);
+              onChange("selfie", "");
+            }}
+            className="min-w-[193px] flex justify-center items-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 text-lg font-semibold"
+          >
+            <span className="text-xl pr-2">
+              <BiCamera />
+            </span>{" "}
+            Retake Photo
+          </button>
+        ) : (
+          <button
+            onClick={capture}
+            className="min-w-[193px] flex justify-center items-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 text-lg font-semibold"
+          >
+            <span className="text-xl pr-2">
+              <BiCamera />
+            </span>{" "}
+            Take Photo
+          </button>
+        )}
+        {photo ? (
+          <Button
+            loading={loading}
+            onClick={handleNext}
+            className="min-w-[193px] px-8 font-sofia-pro bg-secondary/20 rounded-md text-secondary h-12 items-center text-lg font-semibold"
+          >
+            Use This Photo
+          </Button>
+        ) : null}
+        {/* <button onClick={() => console.log("Button!")} className='min-w-[193px] px-8 font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>
                 Continue With Another Device
-            </button>
-        </div>
-        <div className="border rounded-[5px] mt-10 bg-[#FCFCFD] font-lota">
-            <p className="p-8">
-                By continuing i acknowledge that Matis biom, 
-                By continuing i acknowledge that Matis biom,
-                By continuing i acknowledge that Matis biom,
-            </p>
-        </div>
+            </button> */}
+      </div>
+      <div className="border rounded-[5px] mt-10 bg-[#FCFCFD] font-lota">
+        <p className="p-8">
+          By continuing i acknowledge that Matis biom, By continuing i
+          acknowledge that Matis biom, By continuing i acknowledge that Matis
+          biom,
+        </p>
+      </div>
     </div>
-) 
-
+  );
 };
 
 export default TakePhoto;

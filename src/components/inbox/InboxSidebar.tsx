@@ -31,10 +31,6 @@ const InboxSidebar = ({
       if (el && el.offsetHeight + el.scrollTop === el.scrollHeight) {
         await fetchMoreInboxes?.();
       }
-
-      // if (el && el?.scrollTop <= 0) {
-      //   console.log("reached Top ", el.scrollHeight);
-      // }
     }
     const el = sensorRef.current;
     el?.addEventListener("scroll", handleInfinteScroll);
@@ -43,7 +39,7 @@ const InboxSidebar = ({
 
   return (
     <div
-      className="sm:w-2/5 pr-4 overflow-y-auto custom-scrollbar"
+      className="md:w-2/5 w-full md:pr-4 overflow-y-auto custom-scrollbar"
       ref={sensorRef}
     >
       {inboxes?.map((inbox) => (

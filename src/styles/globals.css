@@ -322,6 +322,10 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     border-bottom: 1px solid #D0CFD8;
 }
 
+.active-state .faq-collapse.ant-collapse-borderless {
+    background-color: transparent;
+}
+
 .active-state .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-header-text {
     font-size: 14px;
     font-weight: 400;
@@ -329,13 +333,13 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 }
 
 .active-state .faq-collapse .ant-collapse-item .ant-collapse-content-box {
-    font-size: 10px;
+    font-size: 13px;
 }
 
 .active-state .faq-collapse .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
-    width: 18px;
-    height: 18px;
-    font-size: 12px;
+    width: 25px;
+    height: 25px;
+    font-size: 14px;
 }
 
 .active-state .faq-collapse.ant-collapse-borderless>.ant-collapse-item,
@@ -492,7 +496,7 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 
 .ant-input {
     border-radius: 5px !important;
-    padding: 15px 30px !important;
+    padding: 12px 30px !important;
     border: 1px solid #DFDFE6;
     font-family: 'Inter', sans-serif !important;
     font-style: Italic !important;
@@ -513,7 +517,7 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 .ant-form-item-label {
     font-size: 18px !important;
     font-family: 'Lota Grotesque' !important;
-    line-height: 50px !important;
+    line-height: 50px;
     color: #1B1C20 !important;
 }
 
@@ -702,19 +706,27 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     background: rgba(196, 196, 196, 0.2);
 }
 
-.choose-country {
+.choose-country,
+.choose-gender {
     width: 100%;
 }
 
-.choose-country .ant-select-selector {
+.choose-country .ant-select-selector,
+.choose-gender .ant-select-selector {
     background: #FCFCFD !important;
     border-radius: 5px !important;
     height: 48px !important;
     border-color: #DFDFE6 !important;
 }
 
+.choose-gender .ant-select-selector {
+    background: #fff !important;
+}
+
 .choose-country .ant-select-selector .ant-select-selection-item,
-.choose-country .ant-select-selector .ant-select-selection-placeholder {
+.choose-country .ant-select-selector .ant-select-selection-placeholder,
+.choose-gender .ant-select-selector .ant-select-selection-item,
+.choose-gender .ant-select-selector .ant-select-selection-placeholder {
     line-height: 48px !important;
 }
 
@@ -747,6 +759,59 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     padding: 0 !important;
 }
 
+.kyc-option.ant-radio-wrapper {
+    width: 100%;
+}
+
+.kyc-info .ant-form-item-label {
+    line-height: 0;
+}
+
+.ant-carousel .product-carousel .slick-dots-bottom {
+    bottom: 35px;
+}
+
+.ant-carousel .product-carousel .slick-dots li button {
+    height: 5px;
+}
+
+
+.right-info .insured-item .left-line::after {
+    content: "";
+    left: 50%;
+    width: 1px;
+    height: 40px;
+    background: rgba(43, 97, 18, 0.2);
+    position: absolute;
+    bottom: -36px;
+}
+
+.right-info .insured-item:nth-child(3) .left-line::before {
+    content: "";
+    left: 48%;
+    top: -35px;
+    width: 1px;
+    height: 40px;
+    background: rgba(43, 97, 18, 0.2);
+    position: absolute;
+}
+
+.right-info .insured-item:nth-child(4) .left-line::before {
+    content: "";
+    left: 48%;
+    top: -35px;
+    width: 1px;
+    height: 40px;
+    background: rgba(43, 97, 18, 0.2);
+    position: absolute;
+}
+
+
+
+.right-info .insured-item:nth-child(4) .left-line::after {
+    display: none;
+}
+
 /**
     resting autofil color
 **/
@@ -759,10 +824,40 @@ input[data-autocompleted] {
     background-color: transparent !important;
 }
 
+@media screen and (max-width: 767px) {
+    .activeFilter {
+        position: relative;
+    }
+
+    .activeFilter::after {
+        position: absolute;
+        width: 100%;
+        height: 2px;
+        background: #4436AC;
+        content: "";
+        left: 0;
+        bottom: -12px;
+    }
+}
+
 @media screen and (max-width: 440px) {
     .faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header {
         font-size: 12px;
         font-weight: 600;
+    }
+
+    .rdp-months {
+        flex-direction: column;
+    }
+
+    .profile-tabs .ant-tabs-tab:nth-child(5) {
+        margin-left: 32px;
+        margin-right: 0;
+    }
+
+    .profile-tabs .ant-tabs-nav-list {
+        width: auto !important;
+        justify-content: baseline;
     }
 }
 
