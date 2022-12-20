@@ -138,7 +138,7 @@ function NavBar() {
             <div className="hidden lg:flex gap-x-10">
               <NavLinkItem label="How It Works" href="/how-it-works" />
               <NavLinkItem label="FAQs" />
-              <NavLinkItem label="List Item" href="/create-item" />
+              <NavLinkItem label="List Item" href="/list-item" />
               <NavLinkItem label="Cart" href="/cart" />
             </div>
             {isAuthenticated ? (
