@@ -297,7 +297,8 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 
 
 
-.faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
+.faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header .ant-collapse-arrow,
+.faq-info-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
     width: 40px;
     height: 40px;
     color: #0A2429;
@@ -522,36 +523,36 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 }
 
 
-.ant-checkbox-wrapper.ant-checkbox-wrapper-in-form-item input[type="checkbox"],
-.ant-checkbox-inner {
-    width: 24px;
-    height: 24px;
+.checkbox.ant-checkbox-wrapper-in-form-item input[type="checkbox"],
+.checkbox .ant-checkbox-inner {
+    width: 19px;
+    height: 19px;
 }
 
-.ant-checkbox-inner {
+.checkbox .ant-checkbox-inner {
     border-radius: 4px;
 }
 
-.ant-checkbox-inner::after {
-    top: 46%;
-    left: 33.5%;
+.checkbox .ant-checkbox-inner::after {
+    top: 47%;
+    left: 24%;
     width: 5.71428571px;
-    height: 12.143px;
+    height: 9.143px;
 }
 
-.ant-checkbox-checked::after {
+.checkbox .ant-checkbox-checked::after {
     border-color: #4436AC;
     border-radius: 4px;
 }
 
-.ant-checkbox-checked .ant-checkbox-inner::after {
+.checkbox .ant-checkbox-checked .ant-checkbox-inner::after {
     border-color: #4436AC;
 }
 
-.ant-checkbox-checked .ant-checkbox-inner,
-.ant-checkbox-wrapper:hover .ant-checkbox-inner,
-.ant-checkbox:hover .ant-checkbox-inner,
-.ant-checkbox-input:focus+.ant-checkbox-inner {
+.checkbox .ant-checkbox-checked .ant-checkbox-inner,
+.checkbox .ant-checkbox-wrapper:hover .ant-checkbox-inner,
+.checkbox .ant-checkbox:hover .ant-checkbox-inner,
+.checkbox .ant-checkbox-input:focus+.ant-checkbox-inner {
     background-color: transparent;
     border-color: #4436AC;
     color: #4436AC;
@@ -812,6 +813,27 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     display: none;
 }
 
+.faq-info-collapse {
+    background: #fff !important;
+}
+
+.faq-info-collapse .ant-collapse-item {
+    margin-bottom: 30px !important;
+    background: #F9F9F9 !important;
+    border-radius: 8px !important;
+    border-bottom: 0 !important;
+}
+
+.faq-info-collapse .ant-collapse-item>.ant-collapse-header {
+    font-size: 24px;
+    font-weight: 600;
+    padding: 1.5rem 1rem !important;
+}
+
+.react-tel-input .form-control {
+    width: 100% !important;
+}
+
 /**
     resting autofil color
 **/
@@ -841,9 +863,16 @@ input[data-autocompleted] {
 }
 
 @media screen and (max-width: 440px) {
-    .faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header {
+
+    .faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header,
+    .faq-info-collapse .ant-collapse-item>.ant-collapse-header {
         font-size: 12px;
         font-weight: 600;
+    }
+
+    .faq-info-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
+        width: 30px;
+        height: 30px;
     }
 
     .rdp-months {
@@ -862,13 +891,16 @@ input[data-autocompleted] {
 }
 
 @media screen and (max-width: 320px) {
+
     .faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header {
         font-size: 10px;
         font-weight: 500;
         padding: 20px 0;
     }
 
-    .faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
+
+    .faq-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header .ant-collapse-arrow,
+    .faq-info-collapse.ant-collapse-borderless .ant-collapse-item .ant-collapse-header .ant-collapse-arrow {
         width: 30px;
         height: 30px;
     }

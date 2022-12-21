@@ -83,6 +83,22 @@ export const SEND_PHONE_VERIFICATION_CDOE = gql`
   }
 `;
 
+export const RESET_PASSWORD_MUTATION = gql`
+  mutation ($email: String!) {
+    reset: ResetPassword(email: $email) {
+      status
+    }
+  }
+`;
+
+export const SET_NEW_PASSWORD_MUTATION = gql`
+  mutation ($resetToken: String!, $password: String!) {
+    reset: SetNewPassword(resetToken: $resetToken, password: $password) {
+      status
+    }
+  }
+`;
+
 export const SearchListingQuery = gql`
   query SearchQuery(
     $queryText: String
