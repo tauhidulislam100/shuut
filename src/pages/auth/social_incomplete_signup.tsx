@@ -2,7 +2,7 @@ import { ApolloError, gql, useMutation } from "@apollo/client";
 import { notification } from "antd";
 import cookie from "js-cookie";
 import React, { useEffect, useState } from "react";
-import Verification from "../../components/Verification";
+import Verification from "../../components/AuthVerification";
 import {
   SIGNUP_MUTATION,
   VERIFICATION_MUTATION,

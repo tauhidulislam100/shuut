@@ -65,10 +65,10 @@ const Verification = ({
       <div className="flex justify-center items-center">
         <Image src="/images/bulb.png" alt="Bulb Icon" width={30} height={30} />
       </div>
-      <h1 className="mt-5 text-center font-semibold text-4xl text-primary">
+      <h1 className="mt-5 text-center font-semibold xl:text-4xl lg:text-3xl md:text-2xl text-lg text-primary">
         Enter Your Phone Number
       </h1>
-      <p className="mt-[18px] text-2xl text-[#010918F7] text-center">
+      <p className="mt-[18px] xl:text-2xl md:text-xl text-base text-[#010918F7] text-center">
         In order to secure your new SHUUT account we will
         <br />
         need to verify your phone number.
@@ -77,9 +77,9 @@ const Verification = ({
         <PhoneInput
           value={phone}
           country="ng"
-          containerClass="w-auto"
+          containerClass="!w-[260px]"
           dropdownClass="bg-white"
-          inputClass="h-10"
+          inputClass="h-12"
           onChange={(num) => setPhone(num)}
         />
       </div>
