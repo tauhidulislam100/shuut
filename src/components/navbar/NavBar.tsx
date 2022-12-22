@@ -19,7 +19,9 @@ const NavLinkItem = ({
 }) => (
   <li className={liClass}>
     <Link href={href}>
-      <a className={`text-body-50 font-outfit font-medium ${className}`}>
+      <a
+        className={`text-body-50 hover:text-secondary font-outfit font-medium ${className}`}
+      >
         {label}
       </a>
     </Link>
@@ -137,8 +139,8 @@ function NavBar() {
           <ul className="flex items-center ml-auto gap-x-10">
             <div className="hidden lg:flex gap-x-10">
               <NavLinkItem label="How It Works" href="/how-it-works" />
-              <NavLinkItem label="FAQs" />
-              <NavLinkItem label="List Item" href="/create-item" />
+              <NavLinkItem label="FAQs" href="/faq" />
+              <NavLinkItem label="List Item" href="/list-item" />
               <NavLinkItem label="Cart" href="/cart" />
             </div>
             {isAuthenticated ? (

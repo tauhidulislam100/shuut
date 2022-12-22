@@ -20,9 +20,6 @@ const Home: NextPage = () => {
   const carosuselRef = useRef<CarouselRef>(null);
   const [searchText, setSearchText] = useState<string>();
 
-  const isDesktop = useMediaQuery({ query: "(min-width: 1024px)" });
-  const isTablet = useMediaQuery({ query: "(min-width: 768px)" });
-
   function next() {
     carosuselRef.current?.next();
   }

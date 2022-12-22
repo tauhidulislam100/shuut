@@ -59,7 +59,7 @@ const Footer = ({ className = "" }: { className?: string }) => {
                   href="#"
                   className="text-body-200 text-base hover:text-body-200 block mb-3"
                 >
-                  Careers
+                  Terms & Conditions
                 </a>
               </li>
               <li>
@@ -75,7 +75,7 @@ const Footer = ({ className = "" }: { className?: string }) => {
                   href="#"
                   className="text-body-200 text-base hover:text-body-200 block mb-3"
                 >
-                  Pricing
+                  Privacy Policy
                 </a>
               </li>
             </ul>

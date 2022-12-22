@@ -8,25 +8,13 @@ import OtpInput from "react-otp-input";
 import { ApolloError, gql, useMutation } from "@apollo/client";
 import Button from "../../components/UI/Button";
 import Router from "next/router";
+import {
+  RESET_PASSWORD_MUTATION,
+  SET_NEW_PASSWORD_MUTATION,
+} from "../../graphql/query_mutations";
 const Modal = dynamic(() => import("../../components/UI/Modal"), {
   ssr: false,
 });
-
-const RESET_PASSWORD_MUTATION = gql`
-  mutation ($email: String!) {
-    reset: ResetPassword(email: $email) {
-      status
-    }
-  }
-`;
-
-const SET_NEW_PASSWORD_MUTATION = gql`
-  mutation ($resetToken: String!, $password: String!) {
-    reset: SetNewPassword(resetToken: $resetToken, password: $password) {
-      status
-    }
-  }
-`;
 
 const VERIFICATION_MUTATION = gql`
   mutation ($code: String!, $verificationType: String!) {
@@ -158,7 +146,7 @@ const Forgot = () => {
 
   return (
     <div className="bg-white">
-      <Modal width={935} visible={showModal}>
+      <Modal width={935} open={showModal} onCancel={() => setShowModal(false)}>
         <div className="flex justify-center items-center pt-10">
           <Image
             src="/images/bulb.png"
@@ -219,9 +207,8 @@ const Forgot = () => {
           </button>
         </div>
       </Modal>
-      <div className="container">
-        <NavBar />
-      </div>
+      <NavBar />
+
       <div className="container">
         <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
           <input
@@ -240,11 +227,11 @@ const Forgot = () => {
             Forgot Password
           </h1>
           {!token ? (
-            <Form size="large" className="login-form w-[65%] mx-auto">
+            <div className="login-form lg:w-[65%] w-full mx-auto">
               <Form.Item>
                 <Input
                   placeholder="Email"
-                  className=""
+                  className="bottom_bordered_input"
                   value={resetForm.email}
                   onChange={(e) =>
                     setResetForm({ ...resetForm, email: e.target.value })
@@ -260,13 +247,13 @@ const Forgot = () => {
                   Confirm
                 </Button>
               </div>
-            </Form>
+            </div>
           ) : (
-            <Form size="large" className="login-form w-[65%] mx-auto">
+            <div className="login-form lg:w-[65%] w-full mx-auto">
               <Form.Item>
                 <Input.Password
                   placeholder="New Password"
-                  className=""
+                  className="bottom_bordered_input"
                   value={resetForm.password}
                   onChange={(e) =>
                     setResetForm({ ...resetForm, password: e.target.value })
@@ -279,7 +266,7 @@ const Forgot = () => {
                   status={
                     resetForm.password !== resetForm.password2 ? "error" : ""
                   }
-                  className=""
+                  className="bottom_bordered_input"
                   value={resetForm.password2}
                   onChange={(e) =>
                     setResetForm({ ...resetForm, password2: e.target.value })
@@ -295,7 +282,7 @@ const Forgot = () => {
                   <span>Confirm</span>
                 </Button>
               </div>
-            </Form>
+            </div>
           )}
         </div>
       </div>

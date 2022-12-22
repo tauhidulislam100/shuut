@@ -2,15 +2,15 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { Form, Input, notification } from "antd";
 import { ApolloError, useMutation } from "@apollo/client";
-import { Footer, NavBar } from "../../components";
-import { IoIosSearch } from "react-icons/io";
 import { FcGoogle } from "react-icons/fc";
 import { FaFacebook, FaApple } from "react-icons/fa";
+import cookie from "js-cookie";
 import Button from "../../components/UI/Button";
+import { Footer, NavBar } from "../../components";
 import { useAuth } from "../../hooks/useAuth";
 import SocialIncompletSignup from "./social_incomplete_signup";
 import { SIGNUP_MUTATION } from "../../graphql/query_mutations";
-import VerificationForm from "../../components/VerificationForm";
+import AuthVerificationForm from "../../components/AuthVerificationForm";
 
 const Signup = () => {
   const { handleOAuth } = useAuth();
@@ -21,7 +21,7 @@ const Signup = () => {
       onCompleted: (data) => onSignupComplete(data),
     }
   );
-
+  const [signupData, setSignUpdata] = useState<Record<string, any>>();
   const [submited, setSubmited] = useState(false);
   const [visibleOnlyOtpForm, setVisibleOnlyOtpForm] = useState(true);
   const [signupForm, setSignupForm] = useState({
@@ -64,6 +64,7 @@ const Signup = () => {
   };
 
   const onSignupComplete = (data: any) => {
+    setSignUpdata(data.result);
     setVisibleOnlyOtpForm(true);
     setShowVerificationForm(true);
   };
@@ -121,7 +122,7 @@ const Signup = () => {
           <div className="px-2 text-center mt-10 mb-20 uppercase text-[#A1A1A1]">
             - or -
           </div>
-          <div className="login-form sm:w-[50%] mx-auto">
+          <div className="login-form lg:w-[60%] md:w-[80%] w-full mx-auto">
             <Form.Item
               validateStatus={
                 submited && !signupForm.firstName
@@ -224,7 +225,13 @@ const Signup = () => {
         />
       ) : null}
       {showVerificationForm ? (
-        <VerificationForm
+        <AuthVerificationForm
+          onVerificationComplete={() => {
+            cookie.set("token", signupData?.token as string, {
+              expires: 1,
+            });
+            window.location.href = "/";
+          }}
           onClose={() => setShowVerificationForm(false)}
           showOnlyOtpForm={visibleOnlyOtpForm}
           email={signupForm.email}

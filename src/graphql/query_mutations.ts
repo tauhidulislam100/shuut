@@ -31,36 +31,6 @@ export const SIGNUP_MUTATION = gql`
   }
 `;
 
-// const SIGNUP_MUTATION = gql`
-//   mutation (
-//     $firstName: String!
-//     $lastName: String!
-//     $email: String!
-//     $password: String
-//     $phone: String
-//     $emailVerified: Boolean
-//     $phoneVerified: Boolean
-//     $isActive: Boolean
-//     $postalCode: String
-//     $social_id: String!
-//   ) {
-//     user: SignUp(
-//       firstName: $firstName
-//       lastName: $lastName
-//       email: $email
-//       password: $password
-//       phone: $phone
-//       emailVerified: $emailVerified
-//       phoneVerified: $phoneVerified
-//       isActive: $isActive
-//       postalCode: $postalCode
-//       social_id: $social_id
-//     ) {
-//       token
-//     }
-//   }
-// `;
-
 export const GET_ME_QUERY = gql`
   query {
     currentUser: GetMe {
@@ -109,6 +79,22 @@ export const SEND_PHONE_VERIFICATION_CDOE = gql`
     result: SendPhoneVerificationCode(email: $email, phone: $phone) {
       status
       transactionId
+    }
+  }
+`;
+
+export const RESET_PASSWORD_MUTATION = gql`
+  mutation ($email: String!) {
+    reset: ResetPassword(email: $email) {
+      status
+    }
+  }
+`;
+
+export const SET_NEW_PASSWORD_MUTATION = gql`
+  mutation ($resetToken: String!, $password: String!) {
+    reset: SetNewPassword(resetToken: $resetToken, password: $password) {
+      status
     }
   }
 `;
@@ -171,12 +157,16 @@ export const GetAllCategoryQuery = gql`
 
 export const GetCategoryWithImages = gql`
   query {
-    category(where: { image: { _neq: "" } }) {
+    category(
+      where: { _and: [{ order: { _gt: 0 } }, { order: { _lte: 8 } }] }
+      order_by: { order: asc }
+    ) {
       id
       slug
       name
       image
       description
+      order
     }
   }
 `;
@@ -307,6 +297,27 @@ export const GetListingDetailsBySlug = gql`
             name
           }
         }
+        reviews_info: customer_reviews_aggregate(
+          where: { parent_id: { _is_null: true } }
+        ) {
+          aggregate {
+            count
+            avg {
+              rating
+            }
+          }
+        }
+        customer_reviews(limit: 2, where: { parent_id: { _is_null: true } }) {
+          id
+          borrower {
+            id
+            firstName
+            lastName
+            profile_photo
+          }
+          rating
+          content
+        }
       }
       bookings(
         where: {
@@ -322,6 +333,32 @@ export const GetListingDetailsBySlug = gql`
         quantity
         start
         end
+      }
+    }
+  }
+`;
+
+export const GetListingBySlug = gql`
+  query ListingBySlug($slug: String!) {
+    listing(where: { slug: { _eq: $slug } }, limit: 1) {
+      id
+      title
+      description
+      daily_price
+      weekly_price
+      monthly_price
+      location_name
+      quantity
+      lat
+      lng
+      images {
+        url
+        id
+      }
+      category {
+        id
+        name
+        image
       }
     }
   }
@@ -366,21 +403,6 @@ export const GetListingByCategory = gql`
 `;
 
 export const CHECK_AVAILABILITY_QUERY = gql`
-  # query CheckAvailability(
-  #   $startdate: date!
-  #   $enddate: date!
-  #   $listing_id: Int!
-  # ) {
-  #   result: check_availability(
-  #     args: {
-  #       startdate: $startdate
-  #       enddate: $enddate
-  #       listing_id: $listing_id
-  #     }
-  #   ) {
-  #     available
-  #   }
-  # }
   query CheckAvailability(
     $start: date!
     $end: date!

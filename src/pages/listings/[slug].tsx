@@ -351,7 +351,7 @@ const ProductView = () => {
     setSelectedDate(range);
   };
 
-  console.log("screen ", screen);
+  console.log("listing ", listing);
   return (
     <>
       <div className="bg-[#F8F8F8] min-h-screen">
@@ -772,11 +772,16 @@ const ProductView = () => {
                           </Link>
                           <div className="flex items-center">
                             <RattingBar
-                              ratting={4.5}
+                              ratting={
+                                listing?.user?.reviews_info?.aggregate?.avg
+                                  ?.rating
+                              }
                               className="text-[#FFCB45]"
                             />
                             <h3 className="ml-[2px] text-[#286EE6] text-sm font-normal font-sofia-pro">
-                              17 Reviews
+                              {listing?.user?.reviews_info?.aggregate?.count ??
+                                0}{" "}
+                              Reviews
                             </h3>
                           </div>
                         </div>
@@ -832,25 +837,32 @@ const ProductView = () => {
                           See All
                         </a>
                       </div>
-                      <div className="bg-white rounded-md p-4 pb-8 md:h-[293px]">
-                        <div className="flex mb-5">
-                          <Avatar size={screen.xs ? 32 : 41} />
-                          <div className="ml-3 w-[90%]">
-                            <h4 className="text-[15px] font-sofia-pro text-primary-100 flex items-center justify-between">
-                              Jane Doe
-                              <span>05 August 2022</span>
-                            </h4>
-                            <RattingBar
-                              ratting={4.5}
-                              className="!text-[#FFCB45]"
-                            />
-                            <p className="text-sm font-sofia-pro text-primary-100 mt-4">
-                              05 August 2022 We’ve analysed prices for Video
-                              CameraR.... from all renters on SHUUT.
-                            </p>
-                          </div>
-                        </div>
-                        <div className="flex">
+                      <div className="bg-white rounded-md p-4 pb-8 md:max-h-[293px]">
+                        {listing?.user?.customer_reviews?.map(
+                          (review: Record<string, any>) => (
+                            <div className="flex mb-5" key={review.id}>
+                              <Avatar
+                                size={screen.xs ? 32 : 41}
+                                src={review?.borrower?.profile_photo}
+                              />
+                              <div className="ml-3 w-[90%]">
+                                <h4 className="text-[15px] font-sofia-pro text-primary-100 flex items-center justify-between">
+                                  {review.borrower.firstName}{" "}
+                                  {review.borrower.lastName}
+                                  <span>05 August 2022</span>
+                                </h4>
+                                <RattingBar
+                                  ratting={review.rating}
+                                  className="!text-[#FFCB45]"
+                                />
+                                <p className="text-sm font-sofia-pro text-primary-100 mt-4">
+                                  {review.content}
+                                </p>
+                              </div>
+                            </div>
+                          )
+                        )}
+                        {/* <div className="flex">
                           <Avatar size={screen.xs ? 32 : 41} />
                           <div className="ml-3 w-[90%]">
                             <h4 className="text-[15px] font-sofia-pro text-primary-100">
@@ -865,7 +877,7 @@ const ProductView = () => {
                               CameraR.... from all renters on SHUUT.
                             </p>
                           </div>
-                        </div>
+                        </div> */}
                       </div>
                     </div>
                   </div>

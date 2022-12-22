@@ -7,18 +7,20 @@ import {
   SEND_PHONE_VERIFICATION_CDOE,
   VERIFICATION_MUTATION,
 } from "../graphql/query_mutations";
-import Verification from "./Verification";
+import Verification from "./AuthVerification";
 
 interface IProps {
   email?: string;
   showOnlyOtpForm?: boolean;
   onClose?: () => void;
+  onVerificationComplete?: () => void;
 }
 
 const VerificationForm = ({
   email,
   showOnlyOtpForm = true,
   onClose,
+  onVerificationComplete,
 }: IProps) => {
   const router = useRouter();
 
@@ -86,10 +88,15 @@ const VerificationForm = ({
       });
       setVisibleOnlyOtpForm(false);
       setVisiblePhoneOtp(false);
-      router.push("/auth/login");
+      if (onVerificationComplete) {
+        onVerificationComplete();
+      } else {
+        router.push("/auth/login");
+      }
     }
     onClose?.();
   };
+
   return (
     <>
       <Verification
