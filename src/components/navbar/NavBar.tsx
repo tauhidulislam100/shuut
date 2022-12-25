@@ -36,6 +36,13 @@ const Menu = ({ onLogout }: IMenuProps) => (
     <div id="triangle-up" className="absolute  top-2 right-0"></div>
     <ul className="shadow-md border rounded-[5px]  bg-white mt-5 min-w-[185px]">
       <li className="p-2 border-b hover:text-secondary">
+        <Link href={"/profile"}>
+          <a className="text-primary text-[14px] font-lota font-normal">
+            Profile
+          </a>
+        </Link>
+      </li>
+      <li className="p-2 border-b hover:text-secondary">
         <Link href={"/inbox"}>
           <a className="text-primary text-[14px] font-lota font-normal">
             Inbox
@@ -50,23 +57,16 @@ const Menu = ({ onLogout }: IMenuProps) => (
         </Link>
       </li>
       <li className="p-2 border-b hover:text-secondary">
-        <Link href={"/favorites"}>
-          <a className="text-primary text-[14px] font-lota font-normal">
-            Favorites
-          </a>
-        </Link>
-      </li>
-      <li className="p-2 border-b hover:text-secondary">
-        <Link href={"/profile"}>
-          <a className="text-primary text-[14px] font-lota font-normal">
-            Profile
-          </a>
-        </Link>
-      </li>
-      <li className="p-2 border-b hover:text-secondary">
         <Link href={"/profile?tab=my-items"}>
           <a className="text-primary text-[14px] font-lota font-normal">
             My Items
+          </a>
+        </Link>
+      </li>
+      <li className="p-2 border-b hover:text-secondary">
+        <Link href={"/favorites"}>
+          <a className="text-primary text-[14px] font-lota font-normal">
+            Favorites
           </a>
         </Link>
       </li>

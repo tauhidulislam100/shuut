@@ -12,15 +12,18 @@ import { useMutation, useQuery } from "@apollo/client";
 import {
   CreateListingMutation,
   GetAllCategoryQuery,
+  GET_ALL_BANKS,
 } from "../../graphql/query_mutations";
 import { notification } from "antd";
 import { useRouter } from "next/router";
 import { useAuth } from "../../hooks/useAuth";
+import { format } from "date-fns";
 
 const NewListing = () => {
   const router = useRouter();
-  const { user } = useAuth();
+  const { user, refetchCurrentUser } = useAuth();
   const { data: categoryList } = useQuery(GetAllCategoryQuery);
+  const { data: bankList } = useQuery(GET_ALL_BANKS);
   const [step, setStep] = useState<number>(0);
   const [isInvalidForm, setIsInvalidForm] = useState(false);
   const [listingForm, setListingForm] = useState({
@@ -34,7 +37,7 @@ const NewListing = () => {
     daily_price: 0,
     weekly_price: 0,
     monthly_price: 0,
-    availability_exceptions: {},
+    availability_exceptions: [],
     is_always_available: false,
     delivery_option: "",
     images: [],
@@ -42,9 +45,12 @@ const NewListing = () => {
     accept_terms: false,
     user_id: user?.id,
     address_id: null,
+    bank_id: user?.bank_account?.bank_id,
+    account_number: user?.bank_account?.account_number,
   });
   const [createListing, { loading }] = useMutation(CreateListingMutation, {
     onCompleted: (data) => {
+      refetchCurrentUser?.();
       if (user?.verified) {
         router.push(`/listed/${data.listing.slug}`);
       } else {
@@ -92,13 +98,23 @@ const NewListing = () => {
 
   const handleOnSubmit = async () => {
     setIsInvalidForm(false);
-    if (!listingForm.accept_insurance) {
+    if (
+      !listingForm.accept_insurance ||
+      !listingForm.account_number ||
+      !listingForm.bank_id
+    ) {
       setIsInvalidForm(true);
       return;
     }
     await createListing({
       variables: {
         ...listingForm,
+        availability_exceptions: listingForm.availability_exceptions.map(
+          (v: any) => ({
+            from: format(v.from, "yyyy-MM-dd"),
+            to: format(v.to, "yyyy-MM-dd"),
+          })
+        ),
       },
     });
   };
@@ -119,7 +135,7 @@ const NewListing = () => {
             back
           </button>
         </div>
-        <div className="lg:px-[10%]">
+        <div className="lg:px-[10%] create-listing">
           <h1 className="mt-[74px] text-[32px] font-lota font-semibold text-primary">
             New Listings
           </h1>
@@ -143,6 +159,7 @@ const NewListing = () => {
             <Insurance
               isInvalid={isInvalidForm}
               data={listingForm}
+              banks={bankList?.banks}
               onChange={onChange}
               onSubmit={handleOnSubmit}
               onCancel={() => setStep(1)}

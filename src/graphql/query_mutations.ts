@@ -46,6 +46,10 @@ export const GET_ME_QUERY = gql`
         showRating
         paused
         verified
+        bank_account {
+          bank_id
+          account_number
+        }
       }
     }
   }
@@ -183,11 +187,6 @@ export const GetAllInsuranceQuery = gql`
 `;
 
 export const CreateListingMutation = gql`
-  # input Location {
-  #   lat: float8!
-  #   lng: float8!
-  #   name: String!
-  # }
   mutation InsertNewListing(
     $title: String!
     $location: Location!
@@ -206,8 +205,10 @@ export const CreateListingMutation = gql`
     $is_always_available: Boolean
     $user_id: bigint!
     $categoryId: bigint!
-    $availability_exceptions: Exception
+    $availability_exceptions: [Exception]
     $address_id: bigint!
+    $bank_id: bigint!
+    $account_number: String!
   ) {
     listing: CreateListing(
       title: $title
@@ -232,6 +233,19 @@ export const CreateListingMutation = gql`
     ) {
       id
       slug
+    }
+    bank_account: insert_user_bank_accounts(
+      objects: {
+        bank_id: $bank_id
+        account_number: $account_number
+        user_id: $user_id
+      }
+      on_conflict: {
+        constraint: user_bank_accounts_user_id_key
+        update_columns: [account_number, bank_id]
+      }
+    ) {
+      affected_rows
     }
   }
 `;
@@ -317,6 +331,7 @@ export const GetListingDetailsBySlug = gql`
           }
           rating
           content
+          created_at
         }
       }
       bookings(
@@ -521,15 +536,8 @@ export const GET_USER_REVIEWS = gql`
     reviews(
       where: {
         deleted: { _eq: false }
-        _or: [
-          { lender_id: { _eq: $userId } }
-          {
-            _and: [
-              { borrower_id: { _eq: $userId } }
-              { parent_id: { _is_null: false } }
-            ]
-          }
-        ]
+        lender_id: { _eq: $userId }
+        parent_id: { _is_null: true }
       }
       distinct_on: borrower_id
     ) {
@@ -562,15 +570,8 @@ export const GET_USER_REVIEWS = gql`
     reviews_avg: reviews_aggregate(
       where: {
         deleted: { _eq: false }
-        _or: [
-          { lender_id: { _eq: $userId } }
-          {
-            _and: [
-              { borrower_id: { _eq: $userId } }
-              { parent_id: { _is_null: false } }
-            ]
-          }
-        ]
+        lender_id: { _eq: $userId }
+        parent_id: { _is_null: true }
       }
       distinct_on: borrower_id
     ) {
@@ -624,8 +625,8 @@ export const DELETE_CART_ITEM = gql`
 `;
 
 export const GET_TRANSACTION_SUMMARY = gql`
-  query {
-    summary: GetTransactionSummary {
+  query ($bookings: [bigint]) {
+    summary: GetTransactionSummary(bookings: $bookings) {
       transactionId
       total
       serviceCharge
@@ -1179,6 +1180,75 @@ export const VERIFY_USER_KYC = gql`
     ) {
       status
       message
+    }
+  }
+`;
+export const EXTEND_REQUEST = gql`
+  mutation ($extend_to: date!, $extend_from: date!, $booking_id: bigint!) {
+    update_booking(
+      where: { id: { _eq: $booking_id } }
+      _set: {
+        state: "EXTEND"
+        extend_from: $extend_from
+        extend_to: $extend_to
+      }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const EXTENSION_PAYMENT = gql`
+  mutation (
+    $vat: numeric!
+    $service_charge: numeric!
+    $cost: numeric!
+    $booking_id: bigint!
+    $amount: numeric!
+    $status: String!
+    $reference: String!
+    $transaction_id: bigint!
+  ) {
+    update_booking(
+      where: { id: { _eq: $booking_id } }
+      _set: {
+        is_extension_paid: true
+        vat: $vat
+        cost: $cost
+        service_charge: $service_charge
+      }
+    ) {
+      affected_rows
+    }
+    result: insert_payment_one(
+      object: {
+        amount: $amount
+        status: $status
+        reference: $reference
+        transaction_id: $transaction_id
+      }
+    ) {
+      id
+    }
+  }
+`;
+
+export const GET_ALL_BANKS = gql`
+  query GetAllBanks {
+    banks {
+      id
+      name
+    }
+  }
+`;
+
+export const CANCEL_BOOKING = gql`
+  mutation CancelBooking($booking_id: bigint) {
+    update_booking(
+      where: { id: { _eq: $booking_id } }
+      _set: { state: "CANCELLED" }
+    ) {
+      affected_rows
     }
   }
 `;

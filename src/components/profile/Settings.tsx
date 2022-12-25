@@ -28,7 +28,7 @@ const Settings = () => {
   );
 
   return (
-    <div className="mt-[60px]">
+    <div className="my-[60px]">
       <h1 className="font-lota text-2xl font-semibold text-primary">
         Settings
       </h1>
@@ -42,7 +42,7 @@ const Settings = () => {
           <div className="font-lota text-sm sm:text-lg md:text-xl">
             <h2 className="text-inherit font-semibold">Show Ratings</h2>
             <p className="text-[#77838F]">
-              See all ratings and reviews sent by users
+              show my ratings and reviews from previous engagement
             </p>
           </div>
           <div className="">
@@ -61,7 +61,7 @@ const Settings = () => {
           <div className="font-lota text-sm sm:text-lg md:text-xl">
             <h2 className="text-inherit font-semibold">Allow Notifications</h2>
             <p className="text-[#77838F]">
-              See all ratings and reviews sent by users
+              Turn On/Off notifications to attend to request Immediately
             </p>
           </div>
           <div className="">
@@ -80,7 +80,8 @@ const Settings = () => {
           <div className="font-lota text-sm sm:text-lg md:text-xl">
             <h2 className="text-inherit font-semibold">Pause My Account</h2>
             <p className="text-[#77838F]">
-              See all ratings and reviews sent by users
+              Going on Holiday? Not to worry, you can pick up right where you
+              stopped.
             </p>
           </div>
           <div className="">

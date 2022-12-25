@@ -57,7 +57,7 @@ const InboxListItem = ({
                     inbox?.messages?.[inbox?.messages?.length - 1]?.created_at
                   )
                 : new Date(),
-              "MMMM yyyy"
+              "MMM dd yyyy, hh:mm"
             )}
           </p>
         </div>

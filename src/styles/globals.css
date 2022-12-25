@@ -500,8 +500,11 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     padding: 12px 30px !important;
     border: 1px solid #DFDFE6;
     font-family: 'Inter', sans-serif !important;
-    font-style: Italic !important;
     color: #23262F !important;
+}
+
+.create-listing .ant-input {
+    font-style: Italic !important;
 }
 
 .ant-input:hover {
@@ -613,15 +616,18 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     border: none;
     border-radius: 0;
     border-bottom: 1px solid #E8E8E8;
+    font-style: normal !important;
 }
 
 .ant-form-item-label>label {
     font-size: 18px;
     font-family: 'Lota Grotesque', sans-serif;
+    font-style: normal !important;
 }
 
 .ant-form.login-form .ant-input-password .ant-input {
     border: none;
+    font-style: normal !important;
 }
 
 .ant-select-auto-complete.search-auto-complete .ant-select-selector,
@@ -720,6 +726,7 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     border-color: #DFDFE6 !important;
 }
 
+
 .choose-gender .ant-select-selector {
     background: #fff !important;
 }
@@ -748,16 +755,19 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
     border-radius: 0 !important;
     height: 48px;
     padding: 0 !important;
+    font-style: normal !important;
 }
 
 .ant-input.bottom_bordered_input,
 .ant-input-affix-wrapper.bottom_bordered_input {
     box-shadow: none !important;
     border-color: #E8E8E8 !important;
+    font-style: normal !important;
 }
 
 .ant-input-affix-wrapper.bottom_bordered_input input {
     padding: 0 !important;
+    font-style: normal !important;
 }
 
 .kyc-option.ant-radio-wrapper {
@@ -832,6 +842,26 @@ button.rdp-button_reset.rdp-button.rdp-day.rdp-day_disabled {
 
 .react-tel-input .form-control {
     width: 100% !important;
+}
+
+.activity {
+    position: relative;
+}
+
+.activity::before {
+    content: "";
+    width: 140px;
+    height: 60px;
+    background-image: url(/images/strip.svg);
+    background-size: contain;
+    top: 0;
+    right: 0;
+    position: absolute;
+    background-repeat: no-repeat;
+}
+
+.activity:hover::before {
+    background-image: url(/images/strip_active.svg);
 }
 
 /**

@@ -210,19 +210,7 @@ const Forgot = () => {
       <NavBar />
 
       <div className="container">
-        <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
-          <input
-            placeholder="Search..."
-            className="min-w-max px-10 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light bg-transparent"
-          />
-          <button className="px-7 h-12 bg-secondary text-white min-w-max rounded-r-lg">
-            Find Gear
-          </button>
-          <span className="absolute top-4 left-4 text-lg text-[#263238]">
-            <IoIosSearch />
-          </span>
-        </div>
-        <div className="mt-28">
+        <div className="mt-40">
           <h1 className="mb-12 font-lota text-center font-semibold text-[26px] text-[#525252]">
             Forgot Password
           </h1>

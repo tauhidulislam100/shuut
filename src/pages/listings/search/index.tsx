@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { IoIosSearch } from "react-icons/io";
 import {
+  CategoryFilterView,
   DatePicker,
+  LocationFilterView,
   MapView,
   NavBar,
   SingleProduct,
@@ -45,18 +47,24 @@ const sortingOptions = [
 const FilterButton = ({
   children,
   className,
+  activeFilter = false,
   onClick,
   ...rest
 }: {
   children: React.ReactNode;
   className?: string;
+  activeFilter?: boolean;
   onClick?: () => void;
 }) => {
   return (
     <button
       {...rest}
       onClick={onClick}
-      className={`md:px-3 md:min-w-[121px] md:font-sofia-pro md:bg-[#FAFAFA] md:border md:border-[#DFDFE6] md:hover:border-secondary md:rounded-md md:text-[#0A2429] md:hover:text-secondary md:h-12 items-center ${className}`}
+      className={`md:px-3 md:min-w-[121px] md:font-sofia-pro md:bg-[#FAFAFA] md:border  md:hover:border-secondary md:rounded-md  md:hover:text-secondary md:h-12 items-center ${
+        activeFilter
+          ? "md:border-secondary text-secondary font-semibold"
+          : "md:border-[#DFDFE6] md:text-[#0A2429]"
+      }`}
     >
       {children}
     </button>
@@ -93,7 +101,6 @@ const DropdownBody = ({
 export const defaultRadius = 80000;
 
 const ProductSearch = () => {
-  const isTablet = useMediaQuery({ query: "(min-width: 768px)" });
   const router = useRouter();
   const [center, setCenter] = React.useState<google.maps.LatLngLiteral>(
     topCities[0]
@@ -139,13 +146,22 @@ const ProductSearch = () => {
       setCenter(JSON.parse(previousPosition));
     }
     const { query } = router.query;
-    setSearchText(query as string);
+    if (query) {
+      setSearchText(query as string);
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, query: undefined },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
   }, [router]);
 
   useAsyncEffect(
     async (isMounted) => {
       if (isMounted()) {
-        console.log("searchText: ", searchText);
         if (
           searchText ||
           selectedCategoryName ||
@@ -182,6 +198,21 @@ const ProductSearch = () => {
     [center, selectedCategoryName, selectedDataRange, selectedSorting, router]
   );
 
+  useEffect(() => {
+    if (router.query._location) {
+      setFilterOption("location");
+      setSelectedCategoryName(router.query.category as string);
+      router.replace(
+        {
+          pathname: router.pathname,
+          query: { ...router.query, _location: undefined, category: undefined },
+        },
+        undefined,
+        { shallow: true }
+      );
+    }
+  }, [router]);
+
   const onSearch = async () => {
     await searchListing({
       variables: {
@@ -191,12 +222,10 @@ const ProductSearch = () => {
         queryText: searchText,
       },
     });
-    // setSearchText("");
   };
 
   const onSearchByCategory = async (categoryName?: string) => {
     setFilterOption("");
-    setSelectedCategoryName(categoryName as string);
     await searchListing({
       variables: {
         lat: center.lat,
@@ -221,14 +250,18 @@ const ProductSearch = () => {
       },
     });
   };
+
   const clearDateFilter = () => {
     setFilterOption("");
     setSelectedDateRange(undefined);
   };
 
+  const clearCategoryFilter = () => {
+    setFilterOption("");
+    setSelectedCategoryName(undefined);
+  };
+
   const handleOnChanterChange = (map: google.maps.Map) => {
-    // console.log("center of the map: ", map.getCenter()?.toJSON());
-    // console.log("center changes?.");
     setIsMapCenterChanged(true);
   };
 
@@ -275,7 +308,7 @@ const ProductSearch = () => {
       <NavBar />
       <button
         onClick={() => setShowMap((prev) => !prev)}
-        className="md:hidden z-[5000] fixed bottom-5 left-[calc(50%-32px)] text-white bg-secondary rounded-full h-8 w-16 grid place-items-center text-lg"
+        className="md:hidden z-[5000] fixed bottom-5 left-10 text-white bg-secondary rounded-full h-8 w-16 grid place-items-center text-lg"
       >
         {showMap ? <FaList /> : <FaMapMarkerAlt />}
       </button>
@@ -313,26 +346,18 @@ const ProductSearch = () => {
             <div className="flex items-center gap-5 overflow-x-scroll sm:overflow-x-auto border-b-2 border-[#1C1D2208] pb-2 md:pb-0 md:border-none">
               <FilterButton
                 onClick={() => {
-                  if (selectedCategoryName) {
-                    setSelectedCategoryName(undefined);
-                  } else {
-                    setFilterOption("category");
-                  }
+                  setFilterOption("category");
                 }}
-                className={`${
-                  filterOption === "category" ? "activeFilter" : ""
-                } `}
+                activeFilter={
+                  !!selectedCategoryName || filterOption === "category"
+                }
               >
-                {/*  */}
-                {selectedCategoryName ? selectedCategoryName : "Category"}
+                Category
               </FilterButton>
               <FilterButton
                 onClick={() => setFilterOption("location")}
-                className={`${
-                  filterOption === "location" ? "activeFilter" : ""
-                }`}
+                activeFilter={true}
               >
-                {/* px-5 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center */}
                 {isMapCenterChanged
                   ? "Location Selected By Map"
                   : (center as any)?.city
@@ -341,15 +366,10 @@ const ProductSearch = () => {
               </FilterButton>
               <FilterButton
                 onClick={() => {
-                  if (selectedDataRange) {
-                    clearDateFilter();
-                  } else {
-                    setFilterOption("date");
-                  }
+                  setFilterOption("date");
                 }}
-                className={`${filterOption === "date" ? "activeFilter" : ""}`}
+                activeFilter={!!selectedDataRange || filterOption === "date"}
               >
-                {/* px-3 min-w-[121px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] hover:border-secondary rounded-md text-[#0A2429] hover:text-secondary h-12 items-center */}
                 {selectedDataRange ? (
                   <span>
                     {selectedDataRange?.from?.toLocaleDateString("default", {
@@ -380,10 +400,7 @@ const ProductSearch = () => {
                   />
                 }
               >
-                <button
-                  onClick={() => setFilterOption("")}
-                  className="text-[#0A2429] hover:text-secondary"
-                >
+                <button className="text-[#0A2429] hover:text-secondary">
                   <RiEqualizerLine className="text-3xl" />
                 </button>
               </Dropdown>
@@ -426,6 +443,16 @@ const ProductSearch = () => {
                           data={listing as any}
                         />
                       ))}
+                      {!data?.listings?.length ? (
+                        <div className="col-span-full grid place-items-center h-[40vh] text-center">
+                          <p className="text-base font-medium font-lota text-primary max-w-[400px]">
+                            Sorry, we were unable to find any products that
+                            match your search/filter criteria. Please try again
+                            with different search/filter terms or browse through
+                            our selection of products.
+                          </p>
+                        </div>
+                      ) : null}
                     </div>
                   )}
                   <div className="hidden md:block w-full md:w-auto col-span-1  min-h-[70vh] max-h-[70vh] !mt-0">
@@ -441,68 +468,21 @@ const ProductSearch = () => {
                 </div>
               )}
               {filterOption === "category" && (
-                <div className="">
-                  <h1 className="text-2xl font-lota font-semibold mt-5">
-                    Category
-                  </h1>
-                  <div className="flex flex-wrap gap-10 mt-5 px-16">
-                    {categoryList?.category?.map(
-                      (category: Record<string, string>) => (
-                        <div
-                          onClick={() => onSearchByCategory(category.name)}
-                          key={category.id}
-                          className="cursor-pointer"
-                        >
-                          <div className="w-36 h-36 font-lota bg-[#9D9D9D]/10 text-[#0A2429] rounded-full flex justify-center items-center">
-                            <img
-                              src={category.icon}
-                              alt={category.name}
-                              className="object-cover w-[43px] max-w-full"
-                            />
-                          </div>
-                          <h4 className="text-center text-2xl mt-5">
-                            {category.name}
-                          </h4>
-                        </div>
-                      )
-                    )}
-                  </div>
-                </div>
+                <>
+                  <CategoryFilterView
+                    selected={selectedCategoryName}
+                    onChange={(name) => setSelectedCategoryName(name)}
+                    categoryList={categoryList?.category}
+                    onApply={() => onSearchByCategory(selectedCategoryName)}
+                    onClear={clearCategoryFilter}
+                  />
+                </>
               )}
               {filterOption === "location" && (
-                <div className="mt-10">
-                  <h1 className="text-2xl">Select Location</h1>
-                  <div className="mt-10">
-                    <div
-                      className="py-3 px-7 text-white flex items-center border rounded-[5px] cursor-pointer"
-                      onClick={getCurrentLocation}
-                    >
-                      <div className="pr-3">
-                        <BiCurrentLocation className="text-xl text-primary" />
-                      </div>
-                      <div className="text-[#263238] font-sofia-pro">
-                        <h3 className="text-sm">Select My Location</h3>
-                        <p className="text-xs font-light mt-2">
-                          We will show you items near you sorted by distance
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                  <h1 className="mt-7 font-lota text-2xl text-[#0A2429]">
-                    Popular
-                  </h1>
-                  <ul className="mt-7">
-                    {topCities.map((itm, idx) => (
-                      <li
-                        onClick={() => onLocationSelect(itm)}
-                        className="text-lg py-2.5 font-lota text-[#0A2429] cursor-pointer"
-                        key={idx}
-                      >
-                        {itm.city}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
+                <LocationFilterView
+                  onChange={onLocationSelect}
+                  getCurrentLocation={getCurrentLocation}
+                />
               )}
               {filterOption === "date" && (
                 <div className="mt-10">

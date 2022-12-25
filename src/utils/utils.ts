@@ -1,3 +1,4 @@
+import { isSameDay } from "date-fns";
 import { get } from "js-cookie";
 import _, {
   chain,
@@ -118,4 +119,16 @@ export function mergeUnionByKey(...args: any) {
     })
     .filter(key)
     .value();
+}
+export function isDayInRange(
+  day: Date,
+  range: { from: Date; to: Date }
+): boolean {
+  const from = range.from;
+  const to = range.to;
+  return (
+    (from && isSameDay(day, from)) ||
+    (to && isSameDay(day, to)) ||
+    (from && to && day > from && day < to)
+  );
 }
