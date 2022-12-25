@@ -10,6 +10,7 @@ import AuthGuard from "../components/auth-guard/AuthGuard";
 import CartProduct, { CARTITEM } from "../components/products/CartProduct";
 import { DELETE_CART_ITEM, GET_CART_ITEMS } from "../graphql/query_mutations";
 import { useAuth } from "../hooks/useAuth";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
 
 const Cart: NextPage = () => {
   const { user } = useAuth();

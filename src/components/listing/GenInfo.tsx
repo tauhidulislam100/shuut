@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { DatePicker } from "../../components";
+import { ActiveModifiers, DateRange } from "react-day-picker";
 import { AutoComplete, Checkbox, Col, Form, Input, Row, Grid } from "antd";
 import {
   FilesUpload,
@@ -8,6 +9,7 @@ import {
   WidgetAPI,
 } from "@uploadcare/react-widget";
 import { FaCloudUploadAlt } from "react-icons/fa";
+import { isDayInRange } from "../../utils/utils";
 
 const { useBreakpoint } = Grid;
 interface IProps {
@@ -26,7 +28,9 @@ const GeneralInfo = ({
   isInvalid,
 }: IProps) => {
   const screen = useBreakpoint();
-
+  const [selectedRanges, setSelectedRanges] = React.useState<
+    { from: Date | undefined; to: Date | undefined }[]
+  >(data.availability_exceptions ?? []);
   const autocomplete = useRef<google.maps.places.Autocomplete | null>(null);
   const locationRef = useRef<HTMLInputElement>(null);
   const [locationValue, setLocationValue] = useState<string>(
@@ -104,6 +108,37 @@ const GeneralInfo = ({
       onChange?.("daily_price", +e.target.value);
       onChange?.("weekly_price", weekly);
       onChange?.("monthly_price", monthly);
+    }
+  };
+
+  const handleDayClick = (day: Date, { selected }: ActiveModifiers) => {
+    if (selected) {
+      // If the day is already selected, remove it from the selection
+      const newSelectedRanges = selectedRanges.filter(
+        (range) => !isDayInRange(day, range as any)
+      );
+      setSelectedRanges(newSelectedRanges);
+      onChange?.("availability_exceptions", newSelectedRanges);
+    } else {
+      // If the day is not selected, add it to the selection
+      if (
+        selectedRanges.length === 0 ||
+        selectedRanges[selectedRanges.length - 1].to
+      ) {
+        // If there are no ranges selected or the current range is full, start a new range
+        const r = [...selectedRanges, { from: day, to: undefined }];
+        setSelectedRanges(r);
+        onChange?.("availability_exceptions", r);
+      } else {
+        // Otherwise, add the day to the current range
+        const newSelectedRanges = [...selectedRanges];
+        newSelectedRanges[newSelectedRanges.length - 1] = {
+          ...newSelectedRanges[newSelectedRanges.length - 1],
+          to: day,
+        };
+        setSelectedRanges(newSelectedRanges);
+        onChange?.("availability_exceptions", newSelectedRanges);
+      }
     }
   };
 
@@ -301,17 +336,6 @@ const GeneralInfo = ({
           </Form.Item>
         </Col>
       </Row>
-      {/* {pricing.daily_price ? (
-        (pricing.daily_price as number) * 7 < +pricing.weekly_price ? (
-          <div className="text-red-500 mb-4">
-            Weekly price cannot be higher than daily per day
-          </div>
-        ) : (pricing.daily_price as number) * 7 * 3 < +pricing.monthly_price ? (
-          <div className="text-red-500 mb-4">
-            Monthly price cannot be higher than weekly per day
-          </div>
-        ) : null
-      ) : null} */}
       <Row gutter={65}>
         <Col span={screen.md ? 12 : 24}>
           <Form.Item label="Quantity">
@@ -344,15 +368,15 @@ const GeneralInfo = ({
       <div className="w-full flex justify-center items-center my-5">
         <div className="p-4 rounded-xl shadow">
           <DatePicker
-            onChange={(date) => onChange?.("availability_exceptions", date)}
-            selected={data.availability_exceptions}
+            onDayClick={handleDayClick}
+            selected={selectedRanges as unknown as DateRange}
           />
         </div>
       </div>
       <Form.Item>
         <Checkbox
           name="is_always_available"
-          className="checkbox-label md:ml-40"
+          className="checkbox md:ml-40"
           checked={data.is_always_available}
           onChange={(e) => onChange?.("is_always_available", e.target.checked)}
         >

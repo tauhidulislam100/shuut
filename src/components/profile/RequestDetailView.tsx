@@ -126,8 +126,8 @@ const RequestDetailView = ({
   return (
     <div className="font-lota">
       <h1 className="text-[32px] text-primary">
-        {activeFilter === "handover-today" ||
-        activeFilter === "handover-tommorow" ||
+        {activeFilter === "handin-today" ||
+        activeFilter === "handin-tomorrow" ||
         activeFilter === "rented"
           ? "Approved"
           : "Rentals"}

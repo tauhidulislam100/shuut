@@ -55,11 +55,10 @@ const Category = () => {
           </div>
           <div className="mt-10">
             <h2 className="text-[50px] leading-[60px] font-semibold text-primary max-w-[509px]">
-              Rentals, For Camera Gears
+              Ready . Rent . Roll
             </h2>
             <p className="text-2xl text-body font-normal text-opacity-80 mt-7 mb-8 max-w-[469px]">
-              The easiest way to rent camera gear, rent from local trusted
-              creatives in your community.
+              Hire tripods from other creatives in Lagos at attractive rates.
             </p>
             <div className="flex items-center xs:w-[430px] w-full max-w-full border border-body-light rounded-lg p-[2px] relative">
               <input
@@ -93,7 +92,7 @@ const Category = () => {
       <section className="bg-[#F8F8F8]">
         <div className="container py-16">
           <h1 className="text-[32px] text-secondary font-semibold font-lota">
-            {router.query?.name} In Lagos
+            {router.query?.name}
           </h1>
           {loading ? (
             <Spin size="large" />
@@ -108,9 +107,11 @@ const Category = () => {
             </div>
           )}
           <div className="flex justify-center mt-12">
-            <Link href={`/listings/search?query=${router.query?.name}`}>
+            <Link
+              href={`/listings/search?category=${router.query?.name}&_location=true`}
+            >
               <button className=" bg-secondary hover:bg-primary px-10 h-[48px] min-w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
-                Browse {router.query?.name} Tn Lagos
+                Browse Item
               </button>
             </Link>
           </div>
@@ -183,9 +184,11 @@ const Category = () => {
             ))}
           </div>
           <div className="flex justify-center mt-[60px]">
-            <button className="transition-all duration-200 bg-white hover:bg-secondary  h-[48px] w-[193px] text-secondary hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
-              List An Item
-            </button>
+            <Link href={"/list-item"}>
+              <a className="transition-all duration-200 bg-white hover:bg-secondary  h-[48px] w-[193px] text-secondary hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
+                List An Item
+              </a>
+            </Link>
           </div>
         </div>
       </section>
@@ -243,9 +246,11 @@ const Category = () => {
                   </p>
                 </div>
               </div>
-              <button className="bg-secondary text-white font-semibold font-sofia-pro text-lg rounded-lg px-10 h-12 mt-24">
-                Get Started
-              </button>
+              <Link href={"/list-item"}>
+                <a className="bg-secondary text-white font-semibold font-sofia-pro text-lg rounded-lg px-10 h-12 mt-24 inline-flex items-center hover:text-white">
+                  Get Started
+                </a>
+              </Link>
             </div>
           </div>
         </div>

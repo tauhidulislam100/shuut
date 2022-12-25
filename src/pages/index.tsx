@@ -48,17 +48,17 @@ const Home: NextPage = () => {
     <>
       <NavBar />
       <div className="container">
-        <section className="flex flex-col-reverse lg:flex-row gap-5 md:gap-10 pt-20">
-          <div>
-            <h2 className="text-4xl leading-[40px] md:text-[50px] md:leading-[60px] font-semibold text-primary lg:max-w-[509px]">
-              Rentals, For Camera Gears
+        <section className="flex flex-col lg:flex-row gap-5 md:gap-10 pt-20">
+          <div className="mdMax:flex mdMax:flex-col mdMax:items-center">
+            <h2 className="text-4xl mdMax:text-center leading-[40px] md:text-[50px] md:leading-[60px] font-semibold text-primary max-w-[580px]">
+              Rent on the go whatever, whenever and wherever.
             </h2>
-            <p className="text-lg md:text-2xl text-body font-normal text-opacity-80 mt-7 mb-8 max-w-[469px]">
-              The easiest way to rent camera gear, rent from local trusted
-              creatives in your community.
+            <p className="text-lg mdMax:text-center md:text-2xl text-body font-normal text-opacity-80 mt-7 mb-8 max-w-[545px]">
+              Find and hire all your creative project&pos;s needs from people in
+              your community.
             </p>
 
-            <div className="flex items-center w-[430px] max-w-full border border-body-light rounded-lg p-[2px] relative">
+            <div className="flex items-center md:w-[430px] w-full max-w-full border border-body-light rounded-lg p-[2px] relative">
               <input
                 onChange={(e) => setSearchText(e.target.value)}
                 placeholder="All Gears"
@@ -74,7 +74,7 @@ const Home: NextPage = () => {
                 <IoIosSearch />
               </span>
             </div>
-            <p className="mt-16 text-[#6C6C6C] text-base font-normal">
+            <p className="lg:mt-16 mt-4 text-[#6C6C6C] text-base font-normal">
               In Partnership With
             </p>
             <div className="flex items-center gap-6 mt-4">
@@ -85,13 +85,11 @@ const Home: NextPage = () => {
               />
             </div>
           </div>
-          <div className="w-full h-full lg:ml-10">
-            <Image
+          <div className="lg:w-[calc(100%-580px)] w-full h-full flex lg:justify-end justify-center">
+            <img
               src="/images/camera-big-with-bg.png"
               alt="Home bg image"
-              className="object-cover max-w-full"
-              width={822}
-              height={590}
+              className="object-cover max-w-[720px] w-full"
             />
           </div>
         </section>

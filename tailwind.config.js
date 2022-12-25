@@ -58,6 +58,7 @@ module.exports = {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
         "profile-bg": "url('/images/profile_bg.png')",
         "activity-strip": "url('/images/strip.svg')",
+        "activity-strip-active": "url('/images/strip_active.svg')",
       },
     },
   },

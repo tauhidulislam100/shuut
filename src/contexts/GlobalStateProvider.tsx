@@ -51,12 +51,14 @@ export type StateType = {
   inboxesLoading: boolean;
   messagesLoading: boolean;
   favorites: Record<string, any>[];
+  checkoutItems: number[];
   fetchMoreInboxes?: () => Promise<void>;
   fetchMoreMessages?: () => Promise<void>;
   updateSelectedInbox?: (inbx?: InboxType) => void;
   removeInboxes?: (ids: number[]) => void;
   markMessageAsRead?: (inbx?: InboxType) => Promise<void>;
   updateFavorites?: () => Promise<void>;
+  updateCheckoutItems?: (id: number) => void;
 };
 
 const initalState: StateType = {
@@ -66,6 +68,7 @@ const initalState: StateType = {
   inboxesLoading: false,
   messagesLoading: false,
   favorites: [],
+  checkoutItems: [],
 };
 
 const SERVICE_CHARGE = Number(process.env.NEXT_PUBLIC_SERVICE_CHARGE);
@@ -74,6 +77,7 @@ const SERVICE_VAT = Number(process.env.NEXT_PUBLIC_SERVICE_VAT);
 let inboxPageSize = 10;
 let inboxPage = 0;
 let messagePageSize = 10;
+
 // inboxId:currentPage
 const messagePagination: Record<number, number> = {};
 
@@ -88,6 +92,7 @@ const GlobalStateProvider = ({ children }: IProps) => {
   const [messagesByInbox, setMessagesByInbox] = useState<
     Record<number, IMessage[]>
   >({});
+  const [checkoutItems, setCheckoutItems] = useState<number[]>([]);
 
   const [getFavorites, { refetch: reFetchFavorites }] = useLazyQuery(
     GET_FAVORITES,
@@ -362,6 +367,14 @@ const GlobalStateProvider = ({ children }: IProps) => {
     });
   };
 
+  const updateCheckoutItems = (id: number) => {
+    if (checkoutItems.includes(id)) {
+      setCheckoutItems([...checkoutItems.filter((_id) => _id !== id)]);
+    } else {
+      setCheckoutItems([...checkoutItems, id]);
+    }
+  };
+
   return (
     <GlobalContext.Provider
       value={{
@@ -371,12 +384,14 @@ const GlobalStateProvider = ({ children }: IProps) => {
         inboxesLoading,
         messagesLoading,
         favorites,
+        checkoutItems,
         fetchMoreInboxes: onFetchMoreInboxes,
         fetchMoreMessages: onFetchMoreMessages,
         updateSelectedInbox: setSelectedInbox,
-        removeInboxes: removeInboxes,
         markMessageAsRead: onMarkMessageAsRead,
-        updateFavorites: updateFavorites,
+        removeInboxes,
+        updateFavorites,
+        updateCheckoutItems,
       }}
     >
       {children}

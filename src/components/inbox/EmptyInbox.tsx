@@ -1,7 +1,7 @@
 const EmptyInbox = ({ onClick }: { onClick?: () => void }) => (
   <div className="min-h-[74.5vh]">
     <div className="mt-20">
-      <h1 className="text-primary text-[32px] font-semibold">Message</h1>
+      <h1 className="text-primary text-[32px] font-semibold">Inbox</h1>
     </div>
     <div className="py-10 flex justify-center items-center">
       <img
