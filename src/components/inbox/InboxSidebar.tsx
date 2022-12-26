@@ -54,7 +54,6 @@ const InboxSidebar = ({
                 } else {
                   return [...p.filter((item: any) => item !== inbox.id)];
                 }
-                return [...p];
               });
             } else {
               updateSelectedInbox?.(inbox);

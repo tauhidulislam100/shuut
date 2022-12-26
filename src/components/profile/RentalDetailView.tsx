@@ -1,4 +1,4 @@
-import { gql, useMutation } from "@apollo/client";
+import { useMutation } from "@apollo/client";
 import { Avatar, Collapse, notification, Spin } from "antd";
 import {
   addDays,
@@ -12,6 +12,11 @@ import { useRouter } from "next/router";
 import React, { useEffect, useState } from "react";
 import { DateRange, Matcher } from "react-day-picker";
 import { BsPlus, BsX } from "react-icons/bs";
+import {
+  CANCEL_BOOKING,
+  EXTEND_REQUEST,
+  EXTENSION_PAYMENT,
+} from "../../graphql/query_mutations";
 import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import { PayButton } from "../../pages/transaction-summary";
@@ -81,65 +86,13 @@ interface IProps {
   bookings: Record<string, any>[];
   activeItem?: Record<string, any>;
   activeFilter?: string;
-  setFilter?: (v: any) => void;
-  resetView?: () => void;
+  resetView?: (_f?: string) => void;
 }
-
-const EXTEND_REQUEST = gql`
-  mutation ($extend_to: date!, $extend_from: date!, $booking_id: bigint!) {
-    update_booking(
-      where: { id: { _eq: $booking_id } }
-      _set: {
-        state: "EXTEND"
-        extend_from: $extend_from
-        extend_to: $extend_to
-      }
-    ) {
-      affected_rows
-    }
-  }
-`;
-
-const EXTENSION_PAYMENT = gql`
-  mutation (
-    $vat: numeric!
-    $service_charge: numeric!
-    $cost: numeric!
-    $booking_id: bigint!
-    $amount: numeric!
-    $status: String!
-    $reference: String!
-    $transaction_id: bigint!
-  ) {
-    update_booking(
-      where: { id: { _eq: $booking_id } }
-      _set: {
-        is_extension_paid: true
-        vat: $vat
-        cost: $cost
-        service_charge: $service_charge
-      }
-    ) {
-      affected_rows
-    }
-    result: insert_payment_one(
-      object: {
-        amount: $amount
-        status: $status
-        reference: $reference
-        transaction_id: $transaction_id
-      }
-    ) {
-      id
-    }
-  }
-`;
 
 const RentalDetailView = ({
   bookings = [],
   activeItem,
   activeFilter,
-  setFilter,
   resetView,
 }: IProps) => {
   const router = useRouter();
@@ -162,8 +115,7 @@ const RentalDetailView = ({
       notification.success({
         message: "An extension Request Has been sent",
       });
-      setFilter?.("request");
-      resetView?.();
+      resetView?.("request");
     },
   });
   const [extensionPayment, { loading: paymentLoading }] = useMutation(
@@ -176,8 +128,7 @@ const RentalDetailView = ({
         setExtend(false);
         setSelectedDate(undefined);
         setExtensionCost(0);
-        setFilter?.("request");
-        resetView?.();
+        resetView?.("request");
       },
       onError(error) {
         notification.error({
@@ -186,10 +137,26 @@ const RentalDetailView = ({
       },
     }
   );
+  const [cancelBooking, { loading: cancelInprogress }] = useMutation(
+    CANCEL_BOOKING,
+    {
+      onCompleted() {
+        notification.success({
+          message: "Booking Request Successfully Cancelled",
+        });
+        resetView?.("request");
+      },
+      onError(error) {
+        notification.error({
+          message: error.message ?? "Unable to cancel the booking",
+        });
+      },
+    }
+  );
 
   const isRented =
-    activeFilter === "handover-today" ||
-    activeFilter === "handover-tommorow" ||
+    activeFilter === "handin-today" ||
+    activeFilter === "handin-tomorrow" ||
     activeFilter === "rented";
 
   useEffect(() => {
@@ -606,9 +573,16 @@ const RentalDetailView = ({
                       </Link>
                     </li>
                     <li className="">
-                      <Link href={"/item"}>
-                        <a className="text-[#EB001B]">Cancel</a>
-                      </Link>
+                      <button
+                        className="text-[#EB001B] bg-transparent border-0"
+                        onClick={() =>
+                          cancelBooking({
+                            variables: { booking_id: selectedBooking?.id },
+                          })
+                        }
+                      >
+                        {cancelInprogress ? "Cancelling..." : "Cancel"}
+                      </button>
                     </li>
                   </ul>
                 </>

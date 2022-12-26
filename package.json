@@ -33,6 +33,7 @@
     "react-paystack": "^4.0.1",
     "react-phone-input-2": "^2.15.1",
     "react-responsive": "^9.0.0",
+    "react-share": "^4.4.1",
     "scrollmonitor": "^1.2.11",
     "scrollmonitor-hooks": "^1.0.2",
     "use-async-effect": "^2.2.7"

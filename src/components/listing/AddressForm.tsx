@@ -282,7 +282,6 @@ const AddressForm = ({
     });
   };
 
-  console.log("default Delevary Address ", defaultAddress);
   return (
     <>
       <div className="border border-[#DFDFE6] rounded-[10px] bg-[#FCFCFD] xs:p-6 p-3">
@@ -302,7 +301,7 @@ const AddressForm = ({
               onClick={() => setVisibleAddressModal(true)}
               className="ml-auto text-[#0094FF] text-base font-lota"
             >
-              Change Delivery Address
+              Change Location
             </button>
           </div>
         ) : (
@@ -357,7 +356,7 @@ const AddressForm = ({
                 htmlFor="Phone Number"
                 className="block font-lota text-base font-normal mb-1"
               >
-                Delivery Address
+                Address
               </label>
               <textarea
                 onChange={handleAddressFormChange}
@@ -595,7 +594,7 @@ const AddressForm = ({
                   htmlFor="Phone Number"
                   className="block font-lota text-base font-normal mb-1"
                 >
-                  Delivery Address
+                  Address
                 </label>
                 <textarea
                   onChange={onCreateAddressFormChange}
@@ -605,7 +604,7 @@ const AddressForm = ({
                       ? "border-red-500"
                       : "border-[#E3E8EF]"
                   }`}
-                  placeholder="Delivery Address"
+                  placeholder="Address"
                   rows={3}
                   name="delivery_address"
                 />

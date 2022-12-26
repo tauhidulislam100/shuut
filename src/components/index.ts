@@ -18,3 +18,5 @@ export { default as PhotoStart } from "./verification/PhotoStart";
 export { default as TakePhoto } from "./verification/TakePhoto";
 export { default as DatePicker } from "./DatePicker";
 export { default as MapView } from "./map/MapView";
+export { default as CategoryFilterView } from "./search/CategoryFilterView";
+export { default as LocationFilterView } from "./search/LocationFilterView";

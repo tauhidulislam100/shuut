@@ -143,18 +143,18 @@ const HowItWorks: NextPage = () => {
           <div className="">
             <div className="max-w-[498px] font-lota">
               <h1 className="font-semibold text-[32px] text-[#1B1C20]">
-                Want To Make Some Money
+                Want to make some extra cash?
               </h1>
               <p className="mt-5 text-lg text-body">
-                Message and rent at the tap of a button. The Fat Llama app is
-                the easiest way to find what you need, manage your rentals and
-                purchases and get instant updates. Get it now on iOS and
-                Android.
+                Do you have an Item sitting pretty in your storage? List it and
+                make some earnings.
               </p>
               <div className="flex justify-center md:justify-start mt-12">
-                <button className=" bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
-                  Learn More
-                </button>
+                <Link href={"/list-item"}>
+                  <a className=" bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
+                    Learn More
+                  </a>
+                </Link>
               </div>
             </div>
           </div>

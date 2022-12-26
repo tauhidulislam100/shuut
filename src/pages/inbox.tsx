@@ -24,7 +24,6 @@ const { useBreakpoint } = Grid;
 
 const Message = () => {
   const screen = useBreakpoint();
-  console.log("screen ", screen);
   const router = useRouter();
   const trackUserRef = useRef<number>();
 
@@ -32,7 +31,7 @@ const Message = () => {
   const { inboxes, updateSelectedInbox, removeInboxes, markMessageAsRead } =
     useGlobalState();
   const [selectedInbox, setSelectedInbox] = useState<InboxType>();
-  const [messages, setMessages] = useState<Record<string, IMessage[]>>({});
+  const [messages, setMessages] = useState<IMessage[]>([]);
   const [msgText, setMsgText] = useState<string>();
   const [creatingInbox, setCreatingInbox] = useState(false);
   const [canSelectInboxes, setCanSelectInboxes] = useState(false);
@@ -81,7 +80,7 @@ const Message = () => {
       inboxes.find((inb) => inb.id === selectedInbox?.id)
     ) {
       const msg = inboxes.find((inb) => inb.id === selectedInbox?.id)?.messages;
-      setMessages({ ...groupBy(msg, (k) => k.created_at.substring(0, 7)) });
+      setMessages([...(msg as IMessage[])]);
     }
   }, [inboxes, selectedInbox]);
 
@@ -114,28 +113,15 @@ const Message = () => {
   const onSendMessage = async () => {
     if (!msgText?.trim().length) return;
     const text = msgText;
-
-    const k = format(new Date(), "yyyy-MM");
-    if (messages[k]) {
-      messages[k].push({
+    setMessages([
+      ...messages,
+      {
         content: text,
         id: Date.now(),
         sender: user,
-        month: format(new Date(), "yyyy-MM"),
-      } as any);
-    } else {
-      messages[k] = [
-        {
-          content: text,
-          id: Date.now(),
-          sender: user,
-          month: format(new Date(), "yyyy-MM"),
-        } as any,
-      ];
-    }
-    setMessages({ ...messages });
-    setMsgText("");
-    updateScroll();
+        created_at: new Date().toISOString(),
+      } as any,
+    ]);
     await sendMessage({
       variables: {
         sender: user?.id,
@@ -143,6 +129,8 @@ const Message = () => {
         message: text,
       },
     });
+    setMsgText("");
+    updateScroll();
   };
 
   const onDeleteInboxes = async () => {
@@ -201,12 +189,8 @@ const Message = () => {
           ) : null}
           {inboxes?.length ? (
             <div className="rounded">
-              {/* bg-[#FDFCFC] */}
               <div className="flex flex-col border-b py-2">
                 <div className="w-2/5">
-                  <button className="btn md:block hidden border w-40 text-center py-2 cursor-pointer mb-2">
-                    New Message
-                  </button>
                   {selectedInbox ? (
                     <button
                       onClick={() => setSelectedInbox(undefined)}

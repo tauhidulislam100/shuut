@@ -34,7 +34,7 @@ const Location = ({
       </div>
       <div className="flex pt-2">
         <Checkbox
-          className="checkbox-label"
+          className="checkbox"
           onChange={(e) => onChange?.("accept_terms", e.target.checked)}
           checked={data.accept_terms}
         >

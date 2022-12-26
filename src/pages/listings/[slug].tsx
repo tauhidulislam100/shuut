@@ -44,6 +44,23 @@ import { addDays, differenceInCalendarDays, format } from "date-fns";
 import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import Link from "next/link";
+import {
+  EmailShareButton,
+  FacebookShareButton,
+  HatenaShareButton,
+  InstapaperShareButton,
+  LineShareButton,
+  LinkedinShareButton,
+  LivejournalShareButton,
+  MailruShareButton,
+  OKShareButton,
+  PinterestShareButton,
+  PocketShareButton,
+  RedditShareButton,
+  TelegramShareButton,
+  TumblrShareButton,
+  TwitterShareButton,
+} from "react-share";
 
 const { useBreakpoint } = Grid;
 
@@ -76,7 +93,7 @@ interface Billing {
 const ProductView = () => {
   const router = useRouter();
   const screen = useBreakpoint();
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, user } = useAuth();
   const { SERVICE_CHARGE } = useGlobalState();
   const [getListingBySlug, { data, loading }] = useLazyQuery(
     GetListingDetailsBySlug,
@@ -485,9 +502,9 @@ const ProductView = () => {
                   </div>
                   <div className="xl:col-span-1 w-full">
                     <div className="flex items-center justify-between mb-2">
-                      <h3 className="font-medium text-primary-100 font-sofia-pro xl:text-xl lg:text-lg text-base hidden md:block">
+                      {/* <h3 className="font-medium text-primary-100 font-sofia-pro xl:text-xl lg:text-lg text-base hidden md:block">
                         {listing?.title}
-                      </h3>
+                      </h3> */}
                       <div className="inline-flex items-center bg-white rounded-md px-2 w-20 justify-between ml-auto">
                         <button
                           className="text-xl"
@@ -786,38 +803,36 @@ const ProductView = () => {
                           </div>
                         </div>
                         <div className="flex items-center gap-2 mt-4">
+                          <FacebookShareButton url={window.location.href}>
+                            <button className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm">
+                              <ImFacebook />
+                            </button>
+                          </FacebookShareButton>
+
                           <a
-                            href="#"
-                            className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm"
-                          >
-                            <ImFacebook />
-                          </a>
-                          <a
-                            href="#"
+                            href={`instagram://share?url=${window.location.href}`}
                             className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm"
                           >
                             <BsInstagram />
                           </a>
+                          <TelegramShareButton url={window.location.href}>
+                            <button className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm">
+                              <FaTelegramPlane />
+                            </button>
+                          </TelegramShareButton>
+                          <TwitterShareButton url={window.location.href}>
+                            <button className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm">
+                              <BsTwitter />
+                            </button>
+                          </TwitterShareButton>
                           <a
-                            href="#"
-                            className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm"
-                          >
-                            <FaTelegramPlane />
-                          </a>
-                          <a
-                            href="#"
-                            className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm"
-                          >
-                            <BsTwitter />
-                          </a>
-                          <a
-                            href="#"
+                            href={`mailto:${user?.email}`}
                             className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm"
                           >
                             <TbMail />
                           </a>
                           <a
-                            href="#"
+                            href={`tel:${user?.phone}`}
                             className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm"
                           >
                             <BsTelephone />
@@ -849,7 +864,12 @@ const ProductView = () => {
                                 <h4 className="text-[15px] font-sofia-pro text-primary-100 flex items-center justify-between">
                                   {review.borrower.firstName}{" "}
                                   {review.borrower.lastName}
-                                  <span>05 August 2022</span>
+                                  <span>
+                                    {format(
+                                      new Date(review.created_at),
+                                      "dd MMMM yyyy"
+                                    )}
+                                  </span>
                                 </h4>
                                 <RattingBar
                                   ratting={review.rating}
@@ -862,22 +882,6 @@ const ProductView = () => {
                             </div>
                           )
                         )}
-                        {/* <div className="flex">
-                          <Avatar size={screen.xs ? 32 : 41} />
-                          <div className="ml-3 w-[90%]">
-                            <h4 className="text-[15px] font-sofia-pro text-primary-100">
-                              Jane Doe
-                            </h4>
-                            <RattingBar
-                              ratting={4.5}
-                              className="!text-[#FFCB45]"
-                            />
-                            <p className="text-sm font-sofia-pro text-primary-100 mt-4">
-                              05 August 2022 We’ve analysed prices for Video
-                              CameraR.... from all renters on SHUUT.
-                            </p>
-                          </div>
-                        </div> */}
                       </div>
                     </div>
                   </div>

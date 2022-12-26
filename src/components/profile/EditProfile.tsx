@@ -1,8 +1,5 @@
-import { useQuery } from "@apollo/client";
-import { Col, Divider, Form, Input, Row, Spin } from "antd";
+import { Col, Collapse, Divider, Form, Input, Row, Spin } from "antd";
 import React from "react";
-import { GET_USER_INFO_BY_ID } from "../../graphql/query_mutations";
-import { useAuth } from "../../hooks/useAuth";
 
 const { TextArea } = Input;
 
@@ -13,6 +10,7 @@ const EditProfile = ({
   onChange,
   onChangeAddress,
   onSave,
+  onCancel,
 }: {
   data: Record<string, any>;
   address: Record<string, any>;
@@ -20,6 +18,7 @@ const EditProfile = ({
   onChange?: (name: string, value: string) => void;
   onChangeAddress?: (name: string, value: string) => void;
   onSave?: () => void;
+  onCancel?: () => void;
 }) => {
   return (
     <div className="mt-20">
@@ -58,7 +57,13 @@ const EditProfile = ({
               rows={8}
               value={data?.description}
               onChange={(e) => onChange?.("description", e.target.value)}
+              maxLength={200}
             />
+            <div className="flex">
+              <span className="ml-auto inline-block text-sm text-primary font-medium font-lota">
+                {data?.description?.length ?? 0}/200
+              </span>
+            </div>
           </Form.Item>
           <Divider />
           <h2 className="text-left text-2xl">Address</h2>
@@ -86,7 +91,7 @@ const EditProfile = ({
               </Form.Item>
             </Col>
           </Row>
-          <Form.Item label="Delivery Address">
+          <Form.Item label="Address">
             <TextArea
               rows={3}
               value={address?.delivery_address}
@@ -101,46 +106,54 @@ const EditProfile = ({
               onChange={(e) => onChange?.("phone", e.target.value)}
             />
           </Form.Item>
-          <Form.Item label="Advance">
-            <Input
-              value={data?.advance}
-              onChange={(e) => onChange?.("advance", e.target.value)}
-            />
-          </Form.Item>
-          <Form.Item label="business Name">
-            <Input
-              value={data?.business_name}
-              onChange={(e) => onChange?.("business_name", e.target.value)}
-            />
-          </Form.Item>
-          <Form.Item label="Store Location">
-            <Input
-              value={data?.store_location}
-              onChange={(e) => onChange?.("store_location", e.target.value)}
-            />
-          </Form.Item>
-          <Row gutter={87}>
-            <Col span={24} md={12}>
-              <Form.Item label="Opening Hours">
+          <Collapse
+            expandIconPosition="right"
+            className="!rounded-lg !bg-white !text-lg py-0"
+          >
+            <Collapse.Panel key={"1"} header="Advance">
+              <Form.Item label="business Name">
                 <Input
-                  value={data?.opening_hours}
-                  onChange={(e) => onChange?.("opening_hours", e.target.value)}
+                  value={data?.business_name}
+                  onChange={(e) => onChange?.("business_name", e.target.value)}
                 />
               </Form.Item>
-            </Col>
-            <Col span={24} md={12}>
-              <Form.Item label="Closing Hours">
+              <Form.Item label="Store Location">
                 <Input
-                  value={data?.closing_hours}
-                  onChange={(e) => onChange?.("closing_hours", e.target.value)}
+                  value={data?.store_location}
+                  onChange={(e) => onChange?.("store_location", e.target.value)}
                 />
               </Form.Item>
-            </Col>
-          </Row>
+              <Row gutter={87}>
+                <Col span={24} md={12}>
+                  <Form.Item label="Opening Hours">
+                    <Input
+                      value={data?.opening_hours}
+                      onChange={(e) =>
+                        onChange?.("opening_hours", e.target.value)
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+                <Col span={24} md={12}>
+                  <Form.Item label="Closing Hours">
+                    <Input
+                      value={data?.closing_hours}
+                      onChange={(e) =>
+                        onChange?.("closing_hours", e.target.value)
+                      }
+                    />
+                  </Form.Item>
+                </Col>
+              </Row>
+            </Collapse.Panel>
+          </Collapse>
         </Form>
       </div>
       <div className="mt-6 flex justify-end gap-5">
-        <button className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold">
+        <button
+          onClick={onCancel}
+          className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
+        >
           Cancel
         </button>
         <button

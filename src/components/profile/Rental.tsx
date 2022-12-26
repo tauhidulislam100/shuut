@@ -14,8 +14,8 @@ import { addDays, format } from "date-fns";
 
 type FilterType =
   | "request"
-  | "handover-today"
-  | "handover-tomorrow"
+  | "handin-today"
+  | "handin-tomorrow"
   | "rented"
   | "returned";
 
@@ -196,65 +196,69 @@ const Rental = () => {
   const [view, setView] = useState<"grid" | "detail">("grid");
   const [selectedItem, setSelectedItem] = useState<Record<string, any>>();
 
+  const fetchData = async (_f: FilterType) => {
+    switch (_f) {
+      case "request":
+        let start = format(new Date(), "yyyy-MM-dd");
+        await getMyBookings({
+          variables: {
+            customer: user?.id,
+            state: [{ state: { _eq: "PENDING" } }],
+            start: start,
+          },
+        });
+        return;
+      case "handin-today":
+        start = format(addDays(new Date(), 1), "yyyy-MM-dd");
+        await getHandOverListing({
+          variables: {
+            customer: user?.id,
+            state: "ACCEPTED",
+            start: start,
+          },
+        });
+        return;
+      case "handin-tomorrow":
+        start = format(addDays(new Date(), 2), "yyyy-MM-dd");
+        await getHandOverListing({
+          variables: {
+            customer: user?.id,
+            state: "ACCEPTED",
+            start: start,
+          },
+        });
+        return;
+      case "returned":
+        await await getMyBookings({
+          variables: {
+            customer: user?.id,
+            state: [{ state: { _eq: "RETURNED" } }],
+          },
+        });
+        return;
+      case "rented":
+        start = format(new Date(), "yyyy-MM-dd");
+        await await getMyBookings({
+          variables: {
+            customer: user?.id,
+            state: [
+              { state: { _eq: "ACCEPTED" } },
+              { state: { _eq: "EXTEND" } },
+              { state: { _eq: "EXTENDED" } },
+            ],
+            start,
+          },
+        });
+        return;
+      default:
+        return null;
+    }
+  };
+
   useAsyncEffect(
     async (isMounted) => {
       if (isMounted() && user) {
-        switch (filter) {
-          case "request":
-            let start = format(new Date(), "yyyy-MM-dd");
-            await getMyBookings({
-              variables: {
-                customer: user?.id,
-                state: [{ state: { _eq: "PENDING" } }],
-                start: start,
-              },
-            });
-            return;
-          case "handover-today":
-            start = format(addDays(new Date(), 1), "yyyy-MM-dd");
-            await getHandOverListing({
-              variables: {
-                customer: user.id,
-                state: "ACCEPTED",
-                start: start,
-              },
-            });
-            return;
-          case "handover-tomorrow":
-            start = format(addDays(new Date(), 2), "yyyy-MM-dd");
-            await getHandOverListing({
-              variables: {
-                customer: user.id,
-                state: "ACCEPTED",
-                start: start,
-              },
-            });
-            return;
-          case "returned":
-            await await getMyBookings({
-              variables: {
-                customer: user?.id,
-                state: [{ state: { _eq: "RETURNED" } }],
-              },
-            });
-            return;
-          case "rented":
-            start = format(new Date(), "yyyy-MM-dd");
-            await await getMyBookings({
-              variables: {
-                customer: user?.id,
-                state: [
-                  { state: { _eq: "ACCEPTED" } },
-                  { state: { _eq: "EXTEND" } },
-                  { state: { _eq: "EXTENDED" } },
-                ],
-                start,
-              },
-            });
-            return;
-          default:
-            return null;
-        }
+        await fetchData(filter);
       }
     },
     [user?.id, filter]
@@ -266,11 +270,11 @@ const Rental = () => {
       case "request":
         title = "My Request";
         break;
-      case "handover-today":
-        title = "Handover Today";
+      case "handin-today":
+        title = "Hand in today";
         break;
-      case "handover-tomorrow":
-        title = "Handover Tomorrow";
+      case "handin-tomorrow":
+        title = "Hand in tomorrow";
         break;
       case "returned":
         title = "Returned";
@@ -311,24 +315,24 @@ const Rental = () => {
               New Request
             </button>
             <button
-              onClick={() => setFilter("handover-today")}
+              onClick={() => setFilter("handin-today")}
               className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota min-w-max ${
-                filter === "handover-today"
+                filter === "handin-today"
                   ? "border-secondary text-secondary"
                   : "border-[#D0CFD84D]"
               }`}
             >
-              Handover Today
+              Hand in today
             </button>
             <button
-              onClick={() => setFilter("handover-tomorrow")}
+              onClick={() => setFilter("handin-tomorrow")}
               className={`px-7 py-2.5 bg-[#FCFCFD] border-[0.5px] rounded-md font-lota min-w-max ${
-                filter === "handover-tomorrow"
+                filter === "handin-tomorrow"
                   ? "border-secondary text-secondary"
                   : "border-[#D0CFD84D]"
               }`}
             >
-              Handover Tomorrow
+              Hand in tomorrow
             </button>
             <button
               onClick={() => setFilter("returned")}
@@ -363,8 +367,8 @@ const Rental = () => {
       <div className="w-full lg:mt-[60px] mt-5 flex justify-end">
         <button
           className={`${
-            (filter === "handover-today" ||
-              filter === "handover-tomorrow" ||
+            (filter === "handin-today" ||
+              filter === "handin-tomorrow" ||
               filter === "rented") &&
             view == "detail"
               ? "bg-[#06E775]"
@@ -414,7 +418,7 @@ const Rental = () => {
                   ))
                 : null}
 
-              {filter === "handover-today" || filter === "handover-tomorrow"
+              {filter === "handin-today" || filter === "handin-tomorrow"
                 ? handOverItems?.booking?.map(
                     (booking: Record<string, any>) => (
                       <SingleProduct
@@ -435,13 +439,13 @@ const Rental = () => {
         <RentalDetailView
           activeFilter={filter}
           activeItem={selectedItem}
-          setFilter={setFilter}
-          resetView={() => {
+          resetView={(_f = "rented") => {
             setView("grid");
-            setFilter("rented");
+            setFilter(_f as FilterType);
+            fetchData(_f as FilterType);
           }}
           bookings={
-            filter === "handover-today" || "handover-tomorrow"
+            filter === "handin-today" || "handin-tomorrow"
               ? handOverItems?.booking
               : data?.booking
           }

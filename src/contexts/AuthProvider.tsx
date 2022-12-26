@@ -24,6 +24,10 @@ export interface IUser {
   allowNotification?: boolean;
   showRating?: boolean;
   verified?: boolean;
+  bank_account?: {
+    bank_id: number;
+    account_number: string;
+  };
 }
 
 export type StateType = {

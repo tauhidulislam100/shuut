@@ -21,6 +21,7 @@ import {
 } from "../../graphql/query_mutations";
 import { Widget, WidgetAPI } from "@uploadcare/react-widget";
 import { RiImageEditFill } from "react-icons/ri";
+import Button from "../../components/UI/Button";
 
 const { TabPane } = Tabs;
 
@@ -29,6 +30,7 @@ const Profile = () => {
   const profileRef = useRef<WidgetAPI | null>(null);
   const coverRef = useRef<WidgetAPI | null>(null);
   const { user } = useAuth();
+  const [editMode, setEditMode] = useState(false);
   const [editProfileForm, setEditProfileForm] = useState({
     cover_photo: null,
     description: "",
@@ -51,7 +53,6 @@ const Profile = () => {
 
   const [upsertProfile, { loading }] = useMutation(UPSERT_PROFILE, {
     onError: (error) => {
-      console.log("error ", error);
       notification.error({
         message: error.message,
       });
@@ -61,6 +62,7 @@ const Profile = () => {
       notification.success({
         message: "Profile update success",
       });
+      setEditMode(false);
     },
   });
   const [createAddress, { loading: createAddressLoading }] = useMutation(
@@ -237,7 +239,7 @@ const Profile = () => {
             </button>
           </div>
           <h3 className="mt-[88px] font-lota text-lg text-center text-[#23262F]">
-            Videographer by day, night watcher by night
+            {editProfileForm?.description}
           </h3>
           <Tabs
             className="profile-tabs sm:mt-[121px]"
@@ -246,14 +248,66 @@ const Profile = () => {
             tabPosition="top"
           >
             <TabPane key={"1"} tab="Edit Profile">
-              <EditProfile
-                onSave={onSave}
-                data={editProfileForm}
-                onChange={handleOnChangeInput}
-                onChangeAddress={onChangeAddressInput}
-                loading={loading || updateLoading || createAddressLoading}
-                address={address}
-              />
+              {!editMode ? (
+                <div className="bg-[#FCFCFD] border border-[#DFDFE6] rounded-[10px] p-4">
+                  <div className="flex justify-end mb-4">
+                    <button
+                      className="font-semibold font-lota text-primary hover:text-secondary"
+                      onClick={() => setEditMode(true)}
+                    >
+                      Edit
+                    </button>
+                  </div>
+                  <div className="flex justify-between items-start mb-4 last:mb-0">
+                    <strong>Name:</strong>
+                    <span>
+                      {editProfileForm.firstName} {editProfileForm?.lastName}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-start mb-4 last:mb-0">
+                    <strong>Email Address:</strong>
+                    <span>{user?.email}</span>
+                  </div>
+                  <div className="flex justify-between items-start mb-4 last:mb-0">
+                    <strong>Phone Number:</strong>
+                    <span>{editProfileForm?.phone}</span>
+                  </div>
+                  <div className="flex justify-between items-start mb-4 last:mb-0">
+                    <strong>Address:</strong>
+                    <span>{address?.delivery_address}</span>
+                  </div>
+                  <div className="flex justify-between items-start mb-4 last:mb-0">
+                    <strong>Business Name:</strong>
+                    <span>{editProfileForm.business_name}</span>
+                  </div>
+                  <div className="flex justify-between items-start mb-4 last:mb-0">
+                    <strong>Store Location:</strong>
+                    <span>{user?.phone}</span>
+                  </div>
+                  <div className="flex justify-between items-start mb-4 last:mb-0">
+                    <strong>Opening Hours:</strong>
+                    <span>{editProfileForm?.opening_hours}</span>
+                  </div>
+                  <div className="flex justify-between items-start mb-4 last:mb-0">
+                    <strong>Closing Hours:</strong>
+                    <span>{editProfileForm.closing_hours}</span>
+                  </div>
+                  <div className="flex justify-between items-start mb-4 last:mb-0">
+                    <strong>Descrption:</strong>
+                    <span>{editProfileForm.description}</span>
+                  </div>
+                </div>
+              ) : (
+                <EditProfile
+                  onCancel={() => setEditMode(false)}
+                  onSave={onSave}
+                  data={editProfileForm}
+                  onChange={handleOnChangeInput}
+                  onChangeAddress={onChangeAddressInput}
+                  loading={loading || updateLoading || createAddressLoading}
+                  address={address}
+                />
+              )}
             </TabPane>
             <TabPane key={"2"} tab="See Activities">
               <Activities />

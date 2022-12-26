@@ -4,6 +4,11 @@ import { Niger } from "../icons";
 import RattingBar from "../ratting-bar/RattingBar";
 import Image from "next/image";
 import { IoMdClose } from "react-icons/io";
+import { Checkbox } from "antd";
+import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { useGlobalState } from "../../hooks/useGlobalState";
+import Link from "next/link";
+import { useRouter } from "next/router";
 
 export interface CARTITEM {
   id: string;
@@ -25,23 +30,50 @@ export interface CARTITEM {
 interface IProps {
   item?: CARTITEM;
   onDelete?: (id: number) => void;
+  onChange?: (e: CheckboxChangeEvent) => void;
 }
 
-const CartProduct = ({ item, onDelete }: IProps) => {
+const CartProduct = ({ item, onDelete, onChange }: IProps) => {
+  const router = useRouter();
+  const { checkoutItems, updateCheckoutItems } = useGlobalState();
   return (
-    <div className="relative bg-white rounded-[5px] p-4 shadow-sm">
+    <div
+      className="relative bg-white rounded-[5px] p-4 shadow-sm cursor-pointer"
+      onClick={(e) => {
+        if (
+          (e.target as HTMLElement).nodeName !== "INPUT" &&
+          (e.target as HTMLElement).nodeName !== "BUTTON"
+        ) {
+          router.push(`/listings/${item?.listing?.slug}`);
+        }
+      }}
+    >
       <div className="px-3 py-2.5 border border-[#F4F4F4] rounded-[6px] p-3 mb-2">
-        <div className="relative h-[176px]">
+        <div className="absolute left-0 -top-2">
+          <Checkbox
+            className="checkbox"
+            name="cart-item"
+            value={item?.id}
+            checked={checkoutItems.includes(item?.id as any)}
+            onChange={(e) => {
+              e.stopPropagation();
+              updateCheckoutItems?.(item?.id as any);
+            }}
+          />
+        </div>
+        <div className="relative h-[170px]">
           <img
             src={item?.listing?.images?.[0]?.url ?? ""}
             className="object-cover w-full h-full rounded"
             alt={item?.listing?.title}
-            // layout="fill"
           />
         </div>
         <button
-          onClick={() => onDelete?.(item?.id as any)}
-          className="absolute top-0 right-0 w-7 h-7 border border-primary hover:border-red-600 rounded-full grid place-items-center text-primary text-xs hover:text-red-600"
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete?.(item?.id as any);
+          }}
+          className="absolute -top-2 right-0 w-7 h-7 border border-primary hover:border-red-600 rounded-full grid place-items-center text-primary text-xs hover:text-red-600"
         >
           <IoMdClose />
         </button>

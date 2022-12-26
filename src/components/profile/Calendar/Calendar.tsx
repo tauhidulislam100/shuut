@@ -13,6 +13,7 @@ import { checkDateOverlaps } from "../../../utils/utils";
 import ActionButton from "./ActionButton";
 import OutlinedButton from "./OutlinedButton";
 import { notification, Spin } from "antd";
+import { GoPlusSmall } from "react-icons/go";
 
 const CHECK_DATE_QUERY = gql`
   query GetBookings($start: date!, $end: date!, $userId: bigint!) {
@@ -335,23 +336,19 @@ const Calendar = () => {
       <div className="w-full md:mt-[60px] mt-5 flex md:justify-end md gap-2 overflow-x-auto">
         <OutlinedButton
           className="min-w-max"
-          onClick={() => setFilter("today")}
-          isActive={filter === "today"}
-        >
-          Today
-        </OutlinedButton>
-        <OutlinedButton
-          className="min-w-max"
           onClick={() => setFilter("check-date")}
           isActive={filter === "check-date"}
         >
           Check Dates
         </OutlinedButton>
         <OutlinedButton
-          className="min-w-max"
+          className="min-w-max flex items-center"
           onClick={() => setFilter("add-unavailability")}
           isActive={filter === "add-unavailability"}
         >
+          <span className="text-base">
+            <GoPlusSmall />
+          </span>{" "}
           Unavailability
         </OutlinedButton>
         <button className="bg-secondary text-white font-lota rounded-md px-8 py-2.5 flex items-center min-w-max">
@@ -393,7 +390,7 @@ const Calendar = () => {
             ? "Check Dates"
             : "Add Unavailability"}
         </h1>
-        <div className="grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 mt-4">
+        <div className="grid xl:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 grid-cols-1 gap-4 mt-4">
           {filter === "check-date" || filter === "today"
             ? data?.booking?.map((booking: Record<string, any>) => (
                 <SingleProduct
@@ -466,7 +463,6 @@ const Calendar = () => {
             }}
             className="w-[244px] purple-button font-sofia-pro bg-secondary hover:bg-primary disabled:bg-primary disabled:cursor-not-allowed rounded-md text-white h-12 items-center text-lg font-semibold"
           >
-            {/* {checkInProgress ? <Spin size="small" /> : "Submit"} */}
             Submit
           </button>
         </div>
