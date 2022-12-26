@@ -12,8 +12,8 @@ services:
         - traefik.docker.network=ticketsir-net
         - traefik.constraint-label=ticketsir-net
         - traefik.http.routers.dalatek-web-development-https.middlewares=default@file
-        - traefik.http.routers.dalatek-web-development.rule=Host(`development.shuut.co`)
-        - traefik.http.routers.dalatek-web-development-https.rule=Host(`development.shuut.co`)
+        - traefik.http.routers.dalatek-web-development.rule=Host(`shuut.co`)
+        - traefik.http.routers.dalatek-web-development-https.rule=Host(`shuut.co`)
         - traefik.http.routers.dalatek-web-development-https.entrypoints=https
         - traefik.http.routers.dalatek-web-development-https.tls=true
         - traefik.http.routers.dalatek-web-development-https.tls.options=modern@file
