@@ -457,28 +457,28 @@ export const ADD_TO_CART = gql`
 
 export const GET_CART_ITEMS = gql`
   query GetCartItems($userId: bigint!) {
-    cart: transaction(
-      where: { ordered: { _eq: false }, _and: { customer: { _eq: $userId } } }
-      limit: 1
+    cartItems: booking(
+      where: {
+        user_id: { _eq: $userId }
+        _and: { transaction_id: { _is_null: true } }
+      }
     ) {
-      cartItems: bookings {
+      id
+      quantity
+      listing {
         id
-        quantity
-        listing {
+        slug
+        title
+        daily_price
+        location_name
+        images {
+          url
           id
-          slug
-          title
-          daily_price
-          location_name
-          images {
-            url
-            id
-          }
-          user {
-            firstName
-            lastName
-            id
-          }
+        }
+        user {
+          firstName
+          lastName
+          id
         }
       }
     }
@@ -625,9 +625,8 @@ export const DELETE_CART_ITEM = gql`
 `;
 
 export const GET_TRANSACTION_SUMMARY = gql`
-  query ($bookings: [bigint]) {
+  query ($bookings: [bigint!]!) {
     summary: GetTransactionSummary(bookings: $bookings) {
-      transactionId
       total
       serviceCharge
       vat
@@ -639,7 +638,7 @@ export const GET_TRANSACTION_SUMMARY = gql`
           quantity
           serviceCharge
           listingId
-          transactionItemId
+          bookingId
           title
           images
         }
@@ -647,30 +646,47 @@ export const GET_TRANSACTION_SUMMARY = gql`
           id
           firstName
           lastName
+          reviews {
+            rating
+            total
+          }
         }
       }
     }
   }
 `;
 
+export const CREATE_TRANSACTION = gql`
+  mutation CreateTransaction(
+    $payinTotal: numeric!
+    $userId: bigint!
+    $address: String!
+  ) {
+    transaction: insert_transaction_one(
+      object: {
+        address: $address
+        payinTotal: $payinTotal
+        customer: $userId
+        ordered: true
+        payoutTotal: 0
+      }
+    ) {
+      id
+    }
+  }
+`;
+
 export const CONFIRM_TRANSACTION = gql`
   mutation (
-    $id: bigint!
+    $transaction_id: bigint!
     $amount: numeric!
     $status: String!
     $reference: String!
-    $address: String!
+    $bookings: [bigint!]!
   ) {
-    update_transaction(
-      where: { id: { _eq: $id } }
-      _set: { ordered: true, payinTotal: $amount, address: $address }
-    ) {
-      affected_rows
-    }
-
     update_booking(
-      where: { transaction_id: { _eq: $id } }
-      _set: { state: "PENDING" }
+      where: { id: { _in: $bookings } }
+      _set: { state: "PENDING", transaction_id: $transaction_id }
     ) {
       affected_rows
     }
@@ -680,7 +696,7 @@ export const CONFIRM_TRANSACTION = gql`
         amount: $amount
         status: $status
         reference: $reference
-        transaction_id: $id
+        transaction_id: $transaction_id
       }
     ) {
       id

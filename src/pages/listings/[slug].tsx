@@ -45,20 +45,8 @@ import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import Link from "next/link";
 import {
-  EmailShareButton,
   FacebookShareButton,
-  HatenaShareButton,
-  InstapaperShareButton,
-  LineShareButton,
-  LinkedinShareButton,
-  LivejournalShareButton,
-  MailruShareButton,
-  OKShareButton,
-  PinterestShareButton,
-  PocketShareButton,
-  RedditShareButton,
   TelegramShareButton,
-  TumblrShareButton,
   TwitterShareButton,
 } from "react-share";
 
