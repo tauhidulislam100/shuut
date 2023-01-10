@@ -106,7 +106,6 @@ const AuthProvider = ({ children }: IProps) => {
       const intervalId = setInterval(() => {
         try {
           if (win?.location.href.includes(window.location.host)) {
-            console.log("win.location: ", win.location);
             const query = new URLSearchParams(win.location.search);
             if (query.get("status") === "success") {
               cookie.set("token", query.get("token") as string, {

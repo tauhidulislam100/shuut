@@ -1,27 +1,28 @@
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import { notification, Spin } from "antd";
 import { NextPage } from "next";
 import Link from "next/link";
-import { Router, useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
+import React, { useState } from "react";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { NavBar } from "../components";
 import AuthGuard from "../components/auth-guard/AuthGuard";
 import CartProduct, { CARTITEM } from "../components/products/CartProduct";
 import { DELETE_CART_ITEM, GET_CART_ITEMS } from "../graphql/query_mutations";
 import { useAuth } from "../hooks/useAuth";
-import { CheckboxChangeEvent } from "antd/lib/checkbox";
+import { useGlobalState } from "../hooks/useGlobalState";
 
 const Cart: NextPage = () => {
   const { user } = useAuth();
   const router = useRouter();
+  const { checkoutItems, updateCheckoutItems } = useGlobalState();
   const { loading, error, refetch } = useQuery(GET_CART_ITEMS, {
     variables: {
       userId: user?.id,
     },
     onCompleted(data) {
-      if (data.cart && data.cart.length) {
-        setCartItems(data.cart[0]["cartItems"]);
+      if (data) {
+        setCartItems(data.cartItems);
       }
     },
     fetchPolicy: "cache-and-network",
@@ -60,7 +61,29 @@ const Cart: NextPage = () => {
             </button>
           </div>
           <div className="mt-20">
-            <h1 className="font-lota text-[32px] font-semibold">Cart</h1>
+            <div className="flex items-center">
+              <h1 className="font-lota text-[32px] font-semibold">Cart</h1>
+              {cartItems?.length ? (
+                <button
+                  onClick={() => {
+                    if (cartItems.length === checkoutItems.length) {
+                      updateCheckoutItems?.(undefined, []);
+                    } else {
+                      updateCheckoutItems?.(
+                        undefined,
+                        cartItems.map((item) => item.id) as any
+                      );
+                    }
+                  }}
+                  className="ml-4 text-secondary"
+                >
+                  {cartItems.length === checkoutItems.length
+                    ? "Deselect"
+                    : "Select"}{" "}
+                  All
+                </button>
+              ) : null}
+            </div>
             {error ? (
               <div className="text-red-500 bg-red-100 p-3 text-center my-2">
                 {error.message}
@@ -86,11 +109,13 @@ const Cart: NextPage = () => {
 
             <div className="flex justify-center mt-[60px] mb-10">
               {cartItems.length ? (
-                <Link href={"/transaction-summary"}>
-                  <a className=" bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
-                    CheckOut
-                  </a>
-                </Link>
+                <button
+                  onClick={() => router.push("/transaction-summary")}
+                  disabled={!checkoutItems.length}
+                  className=" disabled:bg-gray-500 bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg"
+                >
+                  CheckOut
+                </button>
               ) : (
                 <div className="text-center">
                   <h3 className="font-semibold text-black font-sofia-pro text-lg">

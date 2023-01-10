@@ -58,7 +58,7 @@ export type StateType = {
   removeInboxes?: (ids: number[]) => void;
   markMessageAsRead?: (inbx?: InboxType) => Promise<void>;
   updateFavorites?: () => Promise<void>;
-  updateCheckoutItems?: (id: number) => void;
+  updateCheckoutItems?: (id?: number, all?: number[]) => void;
 };
 
 const initalState: StateType = {
@@ -367,11 +367,14 @@ const GlobalStateProvider = ({ children }: IProps) => {
     });
   };
 
-  const updateCheckoutItems = (id: number) => {
-    if (checkoutItems.includes(id)) {
+  const updateCheckoutItems = (id?: number, all?: any) => {
+    if (all) {
+      return setCheckoutItems([...all]);
+    }
+    if (checkoutItems.includes(id as number)) {
       setCheckoutItems([...checkoutItems.filter((_id) => _id !== id)]);
     } else {
-      setCheckoutItems([...checkoutItems, id]);
+      setCheckoutItems([...checkoutItems, id as number]);
     }
   };
 

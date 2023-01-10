@@ -1,0 +1,134 @@
+  image: docker:latest
+  services:
+    - docker:dind
+
+  stages:
+    - build-production
+    - deploy-production
+    - build-staging
+    - deploy-staging
+    - build-development
+    - deploy-development
+
+  variables:
+    REG_URL: registry.digitalocean.com/picknfix/picknfixwebapp
+    CONTAINER_IMAGE: registry.digitalocean.com/picknfix/shuut-web-prod:$CI_COMMIT_SHORT_SHA
+    CONTAINER_STAG_IMAGE: registry.digitalocean.com/picknfix/shuut-web-stg:$CI_COMMIT_SHORT_SHA
+    CONTAINER_DEV_IMAGE: registry.digitalocean.com/picknfix/shuut-web-dev:$CI_COMMIT_SHORT_SHA
+   
+  build-production:
+    timeout: 3h
+    stage: build-production
+    environment:
+      name: production
+    tags:
+      - build-shell-production
+    script:
+      - cat $ENV_PROD_FILE > .env
+      - echo -e '\nPROD_COMMIT='$CI_COMMIT_SHORT_SHA >> .env
+      - export PROD_COMMIT=$CI_COMMIT_SHORT_SHA
+      - export PORT=$PROD_PORT
+      - yarn set version stable
+      - yarn --version
+      - yarn install --network-timeout 100000 
+      - yarn build && yarn install 
+      - docker build -t $CONTAINER_IMAGE .;
+      - docker tag $CONTAINER_IMAGE $CONTAINER_IMAGE;
+      - docker push $CONTAINER_IMAGE;
+    only:
+    - production
+
+  deploy-production:
+    stage: deploy-production
+    environment:
+      name: production
+    tags:
+      - deploy-shell-production
+    script:
+      - cat $ENV_PROD_FILE > .env
+      - echo -e '\nPROD_COMMIT='$CI_COMMIT_SHORT_SHA >> .env
+      - export PROD_COMMIT=$CI_COMMIT_SHORT_SHA
+      - export PORT=$PROD_PORT
+      - docker stack deploy -c web.production.yml shuut-web-production --with-registry-auth
+
+    only:
+    - production
+
+  build-staging:
+    timeout: 3h
+    stage: build-staging
+    environment:
+      name: staging
+    tags:
+      - build-shell-staging
+    script:
+      - cat $ENV_STAG_FILE > .env
+      - echo -e '\nPROD_COMMIT='$CI_COMMIT_SHORT_SHA >> .env
+      - export PROD_COMMIT=$CI_COMMIT_SHORT_SHA
+      - export PORT=$STAG_PORT
+      - yarn set version stable
+      - yarn --version
+      - yarn install --network-timeout 100000 
+      - yarn build && yarn install 
+      - docker build -t $CONTAINER_STAG_IMAGE .;
+      - docker tag $CONTAINER_STAG_IMAGE $CONTAINER_STAG_IMAGE;
+      - docker push $CONTAINER_STAG_IMAGE;
+    only:
+    - staging
+
+  deploy-staging:
+    stage: deploy-staging
+    environment:
+      name: staging
+    tags:
+      - deploy-shell-staging
+    services:
+      - docker:dind
+    script:
+      - cat $ENV_STAG_FILE > .env
+      - export PROD_COMMIT=$CI_COMMIT_SHORT_SHA
+      - export PORT=$STAG_PORT
+      - echo -e '\nPROD_COMMIT='$CI_COMMIT_SHORT_SHA >> .env
+      - docker stack deploy -c web.staging.yml shuut-web-staging --with-registry-auth
+
+    only:
+    - staging
+
+  build-development:
+    stage: build-development
+    environment:
+      name: development
+    tags:
+      - build-shell-development
+    script:
+      - cat $ENV_DEV_FILE > .env
+      - echo -e '\nPROD_COMMIT='$CI_COMMIT_SHORT_SHA >> .env
+      - export PROD_COMMIT=$CI_COMMIT_SHORT_SHA
+      - export PORT=$DEV_PORT
+      - yarn set version berry
+      - yarn --version
+      - yarn install --network-timeout 100000 
+      - yarn build && yarn install 
+      - docker build -t $CONTAINER_DEV_IMAGE .;
+      - docker tag $CONTAINER_DEV_IMAGE $CONTAINER_DEV_IMAGE;
+      - docker push $CONTAINER_DEV_IMAGE;
+    only:
+    - development
+
+  deploy-development:
+    stage: deploy-development
+    environment:
+      name: development
+    tags:
+      - deploy-shell-development
+    services:
+      - docker:dind
+    script:
+      - cat $ENV_DEV_FILE > .env
+      - export PROD_COMMIT=$CI_COMMIT_SHORT_SHA
+      - export PORT=$DEV_PORT
+      - echo -e '\nPROD_COMMIT='$CI_COMMIT_SHORT_SHA >> .env
+      - docker stack deploy -c web.development.yml shuut-web-development --with-registry-auth
+
+    only:
+    - development

@@ -216,8 +216,8 @@ const Review = () => {
                   <Rate
                     allowHalf={true}
                     disabled
-                    count={5}
                     value={review?.rating ?? 0}
+                    count={5}
                     className="text-sm"
                   />
                 </div>

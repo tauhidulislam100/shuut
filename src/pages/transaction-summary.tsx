@@ -8,6 +8,8 @@ import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
 import {
   ADD_TO_CART,
   CONFIRM_TRANSACTION,
+  CREATE_TRANSACTION,
+  DELETE_CART_ITEM,
   GET_MY_ADDRESSES,
   GET_TRANSACTION_SUMMARY,
 } from "../graphql/query_mutations";
@@ -20,6 +22,10 @@ import useAsyncEffect from "use-async-effect";
 import { turnicate } from "../utils/utils";
 import { differenceInCalendarDays } from "date-fns";
 import AddressForm from "../components/listing/AddressForm";
+import { useGlobalState } from "../hooks/useGlobalState";
+import { FaTimes } from "react-icons/fa";
+import { RiCloseLine } from "react-icons/ri";
+import { AiOutlineCloseCircle } from "react-icons/ai";
 
 export const PayButton = ({
   amount = 0,
@@ -51,13 +57,19 @@ const Payment = () => {
   const ref = useRef<boolean>();
   const router = useRouter();
   const { user } = useAuth();
+  const { checkoutItems, updateCheckoutItems } = useGlobalState();
   const [completeTransaction, setCompleteTransaction] = useState(false);
   const [transactionSummary, setTransactionSummary] =
     useState<Record<string, any>>();
   const [selectedAddress, setSelectedAddress] = useState<Record<string, any>>();
-  const [getSummary, { loading, error, data: transactionData }] = useLazyQuery(
-    GET_TRANSACTION_SUMMARY
-  );
+  const [
+    getSummary,
+    { loading: summaryLoading, error, data: transactionData },
+  ] = useLazyQuery(GET_TRANSACTION_SUMMARY, {
+    variables: {
+      bookings: checkoutItems,
+    },
+  });
   const [addToCart, { loading: cartInProgress }] = useMutation(ADD_TO_CART, {
     onError: (error) => {
       notification.error({
@@ -81,6 +93,9 @@ const Payment = () => {
         });
       },
     });
+
+  const [createTransaction, { loading: creatingTransaction }] =
+    useMutation(CREATE_TRANSACTION);
 
   useEffect(() => {
     if (transactionData) {
@@ -112,18 +127,31 @@ const Payment = () => {
     },
     [router, ref]
   );
+
   const onPaymentSuccess = (resources?: any) => {
-    confirmTransaction({
+    createTransaction({
       variables: {
-        amount: transactionData.summary.total,
-        status: resources.status,
-        reference: resources.reference,
-        transaction_id: transactionData.summary.transactionId,
-        id: transactionData.summary.transactionId,
         payinTotal: transactionData.summary.total,
+        userId: user?.id,
         address: `${selectedAddress?.delivery_address},${
           selectedAddress?.city
         },${selectedAddress?.state} ${selectedAddress?.country ?? ""}`,
+      },
+      onCompleted(data) {
+        confirmTransaction({
+          variables: {
+            transaction_id: data.transaction.id,
+            amount: transactionData.summary.total,
+            status: resources.status,
+            reference: resources.reference,
+            bookings: checkoutItems,
+          },
+        });
+      },
+      onError(err) {
+        notification.error({
+          message: err.message,
+        });
       },
     });
   };
@@ -175,7 +203,7 @@ const Payment = () => {
         ) : (
           <div className="grid lg:grid-cols-6 grid-cols-1 gap-6 mt-20">
             <div className="2xl:col-span-4 lg:col-span-3 lg:order-1 order-2">
-              {loading ? (
+              {summaryLoading && !ref.current ? (
                 <div className="flex items-center justify-center">
                   <Spin size="large" />
                 </div>
@@ -199,7 +227,9 @@ const Payment = () => {
                       <PayButton
                         email={user?.email as string}
                         amount={+transactionSummary?.total}
-                        loading={confirmTransactionLoading}
+                        loading={
+                          confirmTransactionLoading || creatingTransaction
+                        }
                         onSuccess={onPaymentSuccess}
                         onClose={onClose}
                       />
@@ -214,12 +244,12 @@ const Payment = () => {
                   {error.message}
                 </div>
               ) : null}
-              {loading || cartInProgress ? (
+              {summaryLoading || cartInProgress ? (
                 <div className="flex items-center justify-center">
                   <Spin size="large" />
                 </div>
               ) : null}
-              {transactionSummary ? (
+              {transactionSummary && transactionSummary?.items?.length ? (
                 <>
                   <div className="">
                     <div className="bg-[#FCFCFD] border bg-[] p-4 sm:px-4 px-2 border-[#DFDFE6] rounded-[5px]">
@@ -240,7 +270,27 @@ const Payment = () => {
                                   >
                                     <div className="flex">
                                       <div className="relative rounded-sm">
-                                        <div className="rounded-lg drop-shadow-lg">
+                                        <div className="rounded-lg drop-shadow-lg relative">
+                                          <button
+                                            className="absolute -left-2 -top-2 text-red-500"
+                                            onClick={() => {
+                                              updateCheckoutItems?.(
+                                                listing.bookingId
+                                              );
+                                              setTransactionSummary((p) => ({
+                                                ...p,
+                                                items: [
+                                                  ...p?.items.filter(
+                                                    (item: any) =>
+                                                      item.bookingId !==
+                                                      listing.bookingId
+                                                  ),
+                                                ],
+                                              }));
+                                            }}
+                                          >
+                                            <AiOutlineCloseCircle />
+                                          </button>
                                           <img
                                             src={listing?.images?.[0]?.url}
                                             alt={listing.title}
@@ -283,10 +333,17 @@ const Payment = () => {
                                 <span className="text-[#677489]">Owner </span>
                                 {transactionItem?.user?.firstName}
                               </h4>
-                              <div className="flex items-end">
-                                <Rate defaultValue={4.5} disabled />
-                                <span className="text-[#286EE6] text-xl font-normal">
-                                  17 reviews
+                              <div className="flex items-center">
+                                <Rate
+                                  count={5}
+                                  className="text-base"
+                                  value={transactionItem?.user?.reviews?.rating}
+                                  disabled
+                                />
+
+                                <span className="text-[#286EE6] text-lg font-normal ml-1 mt-2 inline-block">
+                                  {transactionItem?.user?.reviews?.total}{" "}
+                                  reviews
                                 </span>
                               </div>
                             </div>
@@ -315,10 +372,10 @@ const Payment = () => {
                   </div>
                   <div className="font-lota"></div>
                 </>
-              ) : !loading ? (
-                <div className="h-[50vh] w-full flex flex-col items-center justify-center">
+              ) : !summaryLoading ? (
+                <div className="h-[20vh] w-full flex flex-col items-center justify-center">
                   <h4 className="text-lg font-sofia-pro text-primary">
-                    No Items Found
+                    looks like your cart is empty
                   </h4>
                   <p className="text-base font-normal font-sofia-pro">
                     <Link href={"/listings/search"}>
