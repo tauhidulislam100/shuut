@@ -1,0 +1,23 @@
+version: '3.6'
+services:
+  shuut-web-development:
+    image: registry.digitalocean.com/picknfix/shuut-web-dev:${PROD_COMMIT}
+    env_file:
+      - ./.env
+    networks:
+      - ticketsir-net
+    deploy:
+      labels:
+        - traefik.enable=true
+        - traefik.docker.network=ticketsir-net
+        - traefik.constraint-label=ticketsir-net
+        - traefik.http.routers.shuut-web-development-https.middlewares=default@file
+        - traefik.http.routers.shuut-web-development.rule=Host(`shuut.co`)
+        - traefik.http.routers.shuut-web-development-https.rule=Host(`shuut.co`)
+        - traefik.http.routers.shuut-web-development-https.entrypoints=https
+        - traefik.http.routers.shuut-web-development-https.tls=true
+        - traefik.http.routers.shuut-web-development-https.tls.options=modern@file
+        - traefik.http.services.shuut-web-development.loadbalancer.server.port=${PORT}
+networks:
+  ticketsir-net:
+    external: true
