@@ -697,6 +697,7 @@ export const CONFIRM_TRANSACTION = gql`
         status: $status
         reference: $reference
         transaction_id: $transaction_id
+        comment: "payment for full transaction"
       }
     ) {
       id
@@ -1242,6 +1243,8 @@ export const EXTENSION_PAYMENT = gql`
         status: $status
         reference: $reference
         transaction_id: $transaction_id
+        booking_id: $booking_id
+        comment: "booking extension payment"
       }
     ) {
       id
@@ -1265,6 +1268,71 @@ export const CANCEL_BOOKING = gql`
       _set: { state: "CANCELLED" }
     ) {
       affected_rows
+    }
+  }
+`;
+
+export const CHANGE_BOOKING_DATE = gql`
+  mutation ChangeBookingDate(
+    $id: bigint!
+    $startDate: date!
+    $endDate: date!
+    $cost: numeric!
+    $vat: numeric!
+    $serviceCharge: numeric!
+    $transaction_id: bigint
+    $amount: numeric
+    $status: String
+    $reference: String
+    $executePayment: Boolean!
+  ) {
+    changeDate: update_booking(
+      where: { id: { _eq: $id } }
+      _set: {
+        start: $startDate
+        end: $endDate
+        cost: $cost
+        vat: $vat
+        service_charge: $serviceCharge
+      }
+    ) {
+      affected_rows
+    }
+    createPayment: insert_payment_one(
+      object: {
+        transaction_id: $transaction_id
+        booking_id: $id
+        amount: $amount
+        status: $status
+        reference: $reference
+        comment: "Payment for Changing booking date"
+      }
+    ) @include(if: $executePayment) {
+      id
+    }
+  }
+`;
+
+export const CREATE_PAYMENT = gql`
+  mutation CreatePayment(
+    $transaction_id: bigint!
+    $booking_id: bigint!
+    $amount: numeric!
+    $status: String!
+    $reference: String!
+    $comment: String
+  ) {
+    insert_payment_one(
+      object: {
+        transaction_id: $transaction_id
+        booking_id: $booking_id
+        amount: $amount
+        status: $status
+        reference: $reference
+        comment: $comment
+      }
+    ) {
+      id
     }
   }
 `;

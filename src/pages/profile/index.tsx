@@ -22,6 +22,7 @@ import {
 import { Widget, WidgetAPI } from "@uploadcare/react-widget";
 import { RiImageEditFill } from "react-icons/ri";
 import Button from "../../components/UI/Button";
+import router from "next/router";
 
 const { TabPane } = Tabs;
 
@@ -171,7 +172,10 @@ const Profile = () => {
       <div className="border-b"></div>
       <main className="container mt-5">
         <div className="">
-          <button className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center">
+          <button
+            onClick={router.back}
+            className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
+          >
             <span className="mr-2 text-secondary">
               <BsArrowLeftCircle />
             </span>

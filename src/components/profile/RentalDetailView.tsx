@@ -1,4 +1,4 @@
-import { useMutation } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import { Avatar, Collapse, notification, Spin } from "antd";
 import {
   addDays,
@@ -14,6 +14,8 @@ import { DateRange, Matcher } from "react-day-picker";
 import { BsPlus, BsX } from "react-icons/bs";
 import {
   CANCEL_BOOKING,
+  CHANGE_BOOKING_DATE,
+  CHECK_AVAILABILITY_QUERY,
   EXTEND_REQUEST,
   EXTENSION_PAYMENT,
 } from "../../graphql/query_mutations";
@@ -22,6 +24,8 @@ import { useGlobalState } from "../../hooks/useGlobalState";
 import { PayButton } from "../../pages/transaction-summary";
 import { checkDateOverlaps, roundBy, turnicate } from "../../utils/utils";
 import DatePicker from "../DatePicker";
+import Button from "../UI/Button";
+import Modal from "../UI/Modal";
 
 const ShortListingInfo = ({
   booking,
@@ -105,6 +109,9 @@ const RentalDetailView = ({
   const [selectedDate, setSelectedDate] = useState<DateRange>();
   const [extend, setExtend] = useState(false);
   const [extensionCost, setExtensionCost] = useState<number>(0);
+  const [showChangeDateModal, setShowChangeDateModal] = useState(false);
+  const [availabilityData, setAvailabilityData] =
+    useState<Record<string, any>>();
   const [extendBooking, { loading }] = useMutation(EXTEND_REQUEST, {
     onError(error) {
       notification.error({
@@ -153,11 +160,56 @@ const RentalDetailView = ({
       },
     }
   );
+  const [checkAvailability, { loading: checkInProgress }] = useLazyQuery(
+    CHECK_AVAILABILITY_QUERY,
+    {
+      onCompleted(data) {
+        setAvailabilityData(data);
+      },
+      onError(error) {
+        notification.error({
+          message: error.message,
+        });
+      },
+    }
+  );
+  const [changeBookingDate, { loading: changeLoading }] = useMutation(
+    CHANGE_BOOKING_DATE,
+    {
+      onError({ message }) {
+        notification.error({
+          message,
+        });
+      },
+    }
+  );
 
   const isRented =
     activeFilter === "handin-today" ||
     activeFilter === "handin-tomorrow" ||
     activeFilter === "rented";
+  const totalBookingDays = selectedBooking
+    ? differenceInCalendarDays(
+        new Date(selectedBooking.end),
+        new Date(selectedBooking.start)
+      )
+    : 0;
+
+  const totalSelectedDays =
+    selectedDate?.from && selectedDate.to
+      ? differenceInCalendarDays(selectedDate.to, selectedDate.from)
+      : 0;
+  const serviceChargeAmount = extensionCost
+    ? extensionCost * SERVICE_CHARGE
+    : 0;
+  const vat = extensionCost
+    ? (extensionCost + serviceChargeAmount) * SERVICE_VAT
+    : 0;
+  const amountPaid = selectedBooking
+    ? selectedBooking.cost +
+      selectedBooking.vat +
+      selectedBooking.service_charge
+    : 0;
 
   useEffect(() => {
     if (selectedBooking?.listing?.bookings) {
@@ -218,10 +270,10 @@ const RentalDetailView = ({
       }
 
       setDisabledDays([...blockedDays, ...overlapsed]);
-      setSelectedDate({
-        ...selectedDate,
-        from: addDays(new Date(selectedBooking.end), 1),
-      });
+      // setSelectedDate({
+      //   ...selectedDate,
+      //   from: addDays(new Date(selectedBooking.end), 1),
+      // });
     }
   }, [selectedBooking]);
 
@@ -253,8 +305,20 @@ const RentalDetailView = ({
   };
 
   useEffect(() => {
-    if (selectedDate?.from && selectedDate.to) {
-      switch (selectedBooking?.pricing_option) {
+    if (selectedDate?.from && selectedDate.to && selectedBooking) {
+      const totalDays = differenceInCalendarDays(
+        selectedDate.to,
+        selectedDate.from
+      );
+      const pricing = showChangeDateModal
+        ? totalDays % 30 === 0
+          ? "monthly"
+          : totalDays % 7 === 0
+          ? "weekly"
+          : "daily"
+        : selectedBooking?.pricing_option;
+
+      switch (pricing) {
         case "weekly":
           const weeks = differenceInCalendarWeeks(
             selectedDate.to,
@@ -270,16 +334,12 @@ const RentalDetailView = ({
           setExtensionCost(months * selectedBooking.listing.montly_price);
           break;
         case "daily":
-          const days = differenceInCalendarDays(
-            selectedDate.to,
-            selectedDate.from
-          );
-          setExtensionCost(days * selectedBooking?.listing?.daily_price);
+          setExtensionCost(totalDays * selectedBooking?.listing?.daily_price);
         default:
           break;
       }
     }
-  }, [selectedDate, selectedBooking]);
+  }, [selectedDate, selectedBooking, showChangeDateModal]);
 
   useEffect(() => {
     if (
@@ -306,13 +366,13 @@ const RentalDetailView = ({
   };
 
   const onPaymentSuccess = async (ref: any) => {
-    const service_charge = extensionCost * Number(SERVICE_CHARGE);
-    const vat = (extensionCost + service_charge) * Number(SERVICE_VAT);
-    const amount = extensionCost + service_charge + vat;
+    // const service_charge = extensionCost * Number(SERVICE_CHARGE);
+    // const vat = (extensionCost + service_charge) * Number(SERVICE_VAT);
+    const amount = extensionCost + serviceChargeAmount + vat;
     await extensionPayment({
       variables: {
         vat: selectedBooking?.vat + vat,
-        service_charge: selectedBooking?.service_charge + service_charge,
+        service_charge: selectedBooking?.service_charge + serviceChargeAmount,
         cost: selectedBooking?.cost + amount,
         booking_id: selectedBooking?.id,
         amount: amount,
@@ -332,6 +392,46 @@ const RentalDetailView = ({
       "inbox"
     );
   };
+
+  function getValueWithCharges(value: number) {
+    return (value + value * SERVICE_CHARGE) * (1 + SERVICE_VAT);
+  }
+
+  async function handleChangeDate(ref?: Record<string, any>) {
+    const amount = extensionCost + serviceChargeAmount + vat;
+    let params: Record<string, any> = {
+      id: selectedBooking?.id,
+      startDate: format(selectedDate?.from as Date, "yyyy-MM-dd"),
+      endDate: format(selectedDate?.to as Date, "yyyy-MM-dd"),
+      cost: extensionCost,
+      vat: vat,
+      serviceCharge: serviceChargeAmount,
+      transaction_id: selectedBooking?.transaction_id,
+      amount: amount,
+      status: "",
+      reference: "",
+      executePayment: false,
+    };
+
+    if (ref) {
+      params = {
+        ...params,
+        status: ref.status,
+        reference: ref.reference,
+        executePayment: true,
+      };
+    }
+    console.log("prams ", params);
+    await changeBookingDate({
+      variables: {
+        ...params,
+      },
+    });
+    notification.success({
+      message: "successfully changed booking date",
+    });
+    resetView?.("request");
+  }
   return (
     <div className="font-lota">
       <h1 className="text-[32px] text-primary">
@@ -567,11 +667,13 @@ const RentalDetailView = ({
                         <a className="">Contact Support</a>
                       </Link>
                     </li>
-                    <li className="">
-                      <Link href={"/item"}>
-                        <a className="">Change Date</a>
-                      </Link>
-                    </li>
+                    {selectedBooking?.state === "PENDING" ? (
+                      <li className="">
+                        <button onClick={() => setShowChangeDateModal(true)}>
+                          Change Date
+                        </button>
+                      </li>
+                    ) : null}
                     <li className="">
                       <button
                         className="text-[#EB001B] bg-transparent border-0"
@@ -587,18 +689,16 @@ const RentalDetailView = ({
                   </ul>
                 </>
               )}
-              {selectedDate?.from && selectedDate?.to ? (
+              {selectedDate?.from &&
+              selectedDate?.to &&
+              selectedBooking?.state !== "PENDING" ? (
                 <div className="font-lota px-5 text-sm">
                   <h1 className="text-primary font-semibold">
                     Transaction Summary
                   </h1>
                   <div className="flex justify-between items-end mt-10">
                     <p className="text-[#677489]">
-                      {differenceInCalendarDays(
-                        selectedDate.to,
-                        selectedDate.from
-                      )}{" "}
-                      Days of extension
+                      {totalSelectedDays} Days of extension
                     </p>
                     <p className="text-[#111729]">
                       ₦{extensionCost?.toFixed(2)}
@@ -618,29 +718,18 @@ const RentalDetailView = ({
                   <div className="flex justify-between items-center py-4">
                     <p className="text-[#677489]">Total Rental Fee</p>
                     <p className="text-[#111729]">
-                      ₦{(extensionCost * Number(SERVICE_CHARGE))?.toFixed(2)}
+                      ₦{serviceChargeAmount?.toFixed(2)}
                     </p>
                   </div>
                   <div className="flex justify-between items-center">
                     <p className="text-[#677489]">VAT</p>
-                    <p className="text-[#111729]">
-                      ₦
-                      {(
-                        extensionCost * Number(SERVICE_CHARGE) +
-                        extensionCost * Number(SERVICE_VAT)
-                      )?.toFixed(2)}
-                    </p>
+                    <p className="text-[#111729]">₦{vat?.toFixed(2)}</p>
                   </div>
                   <div className="border-b mt-5 mb-2.5"></div>
                   <div className="flex justify-between items-center">
                     <p className="text-[#111729] text-sm">Total</p>
                     <p className="text-secondary text-sm font-semibold">
-                      ₦
-                      {(
-                        extensionCost +
-                        extensionCost * Number(SERVICE_CHARGE) +
-                        extensionCost * Number(SERVICE_VAT)
-                      )?.toFixed(2)}
+                      ₦{getValueWithCharges(extensionCost)?.toFixed(2)}
                     </p>
                   </div>
                 </div>
@@ -663,11 +752,7 @@ const RentalDetailView = ({
               extend ? (
                 <PayButton
                   email={user?.email as string}
-                  amount={
-                    extensionCost +
-                    extensionCost * Number(SERVICE_CHARGE) +
-                    extensionCost * Number(SERVICE_VAT)
-                  }
+                  amount={getValueWithCharges(extensionCost)}
                   loading={paymentLoading}
                   onSuccess={onPaymentSuccess}
                   onClose={() => {
@@ -679,6 +764,156 @@ const RentalDetailView = ({
           </div>
         </div>
       </div>
+
+      <Modal
+        onCancel={() => setShowChangeDateModal(false)}
+        open={showChangeDateModal}
+        width={750}
+      >
+        {selectedDate?.from &&
+        selectedDate?.to &&
+        totalBookingDays > totalSelectedDays ? (
+          <div className="text-center pt-10 font-sofia-pro font-medium text-lg text-red-500">
+            your previous booking was for{" "}
+            <strong>{totalBookingDays} days</strong>, now you are trying to book
+            for <strong>{totalSelectedDays} days</strong>, change date is not
+            allowed for booking less than previous
+          </div>
+        ) : null}
+        {availabilityData?.result && !availabilityData?.result?.available ? (
+          <div className="text-center pt-10 font-sofia-pro font-medium text-lg text-red-500">
+            this product is not available on selected date,{" "}
+            <strong>please check another date</strong>
+          </div>
+        ) : null}
+
+        {availabilityData?.result && availabilityData?.result?.available ? (
+          <div className="font-lota px-5 text-sm">
+            <h2 className="text-primary font-semibold text-xl my-4">
+              Booking Date Change Info
+            </h2>
+            <h3 className="text-primary font-semibold">Transaction Summary</h3>
+            <div className="flex justify-between items-end mt-5">
+              <p className="text-[#677489]">{totalSelectedDays} Days</p>
+              <p className="text-[#111729]">₦{extensionCost?.toFixed(2)}</p>
+            </div>
+            <hr className="my-8" />
+            <div className="flex justify-between items-center">
+              <h1 className="text-primary font-semibold">
+                Payment Information
+              </h1>
+              <h2 className="text-primary-100/30 underline">Invoice</h2>
+            </div>
+            <div className="flex justify-between items-center mt-10">
+              <p className="text-[#677489]">Cost of Service</p>
+              <p className="text-[#111729]">₦{extensionCost}</p>
+            </div>
+            <div className="flex justify-between items-center py-4">
+              <p className="text-[#677489]">Total Rental Fee</p>
+              <p className="text-[#111729]">
+                ₦{serviceChargeAmount?.toFixed(2)}
+              </p>
+            </div>
+            <div className="flex justify-between items-center">
+              <p className="text-[#677489]">VAT</p>
+              <p className="text-[#111729]">₦{vat?.toFixed(2)}</p>
+            </div>
+            <div className="border-b mt-5 mb-2.5"></div>
+            <div className="flex justify-between items-center">
+              <p className="text-[#111729] text-sm">Total</p>
+              <p className="text-secondary text-sm font-semibold">
+                ₦{getValueWithCharges(extensionCost)?.toFixed(2)}
+              </p>
+            </div>
+            {totalSelectedDays > totalBookingDays ? (
+              <>
+                <div className="border-b mt-5 mb-2.5"></div>
+                <div className="flex justify-between items-center">
+                  <p className="text-[#111729] text-sm">Previously paid</p>
+                  <p className="text-secondary text-sm font-semibold">
+                    ₦{amountPaid?.toFixed(2)}
+                  </p>
+                </div>
+                <div className="border-b mt-5 mb-2.5"></div>
+                <div className="flex justify-between items-center">
+                  <p className="text-[#111729] text-sm">You Have to pay</p>
+                  <p className="text-secondary text-sm font-semibold">
+                    ₦
+                    {(getValueWithCharges(extensionCost) - amountPaid).toFixed(
+                      2
+                    )}
+                  </p>
+                </div>
+              </>
+            ) : null}
+          </div>
+        ) : (
+          <div className="w-full flex justify-center items-center px-10 pt-10">
+            <div className="shadow rounded-lg px-5">
+              <DatePicker
+                disableBefore={true}
+                selected={selectedDate}
+                onChange={setSelectedDate}
+                disabled={disabledDays}
+              />
+            </div>
+          </div>
+        )}
+        <div className="mt-6 flex justify-end gap-5 py-2">
+          <button
+            onClick={() => {
+              setSelectedDate(undefined);
+              setShowChangeDateModal(false);
+              setAvailabilityData(undefined);
+            }}
+            className="px-8 font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
+          >
+            Clear
+          </button>
+          {totalSelectedDays > totalBookingDays &&
+          availabilityData?.result?.available ? (
+            <PayButton
+              email={user?.email as string}
+              amount={getValueWithCharges(extensionCost) - amountPaid}
+              loading={changeLoading}
+              onSuccess={handleChangeDate}
+              onClose={() => {
+                console.log("payment cancelled");
+              }}
+            />
+          ) : (
+            <Button
+              loading={checkInProgress || changeLoading}
+              disabled={
+                !selectedDate?.from ||
+                !selectedDate?.to ||
+                totalBookingDays > totalSelectedDays
+              }
+              onClick={() => {
+                if (
+                  totalSelectedDays == totalBookingDays &&
+                  availabilityData?.result?.available
+                ) {
+                  return handleChangeDate();
+                }
+                checkAvailability({
+                  variables: {
+                    listing_id: selectedBooking?.listing?.id,
+                    start: format(selectedDate?.from as Date, "yyyy-MM-dd"),
+                    end: format(selectedDate?.to as Date, "yyyy-MM-dd"),
+                    quantity: selectedBooking?.quantity,
+                  },
+                });
+              }}
+              className="w-[244px] purple-button font-sofia-pro bg-secondary hover:bg-primary disabled:bg-primary disabled:cursor-not-allowed rounded-md text-white h-12 items-center text-lg font-semibold"
+            >
+              {availabilityData?.result?.available
+                ? "Change Date"
+                : "Check Availabiltiy"}
+            </Button>
+          )}
+        </div>
+      </Modal>
     </div>
   );
 };

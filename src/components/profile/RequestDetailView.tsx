@@ -11,6 +11,7 @@ import React, { useEffect, useState } from "react";
 import { BsPlus, BsX } from "react-icons/bs";
 import { useGlobalState } from "../../hooks/useGlobalState";
 import { turnicate } from "../../utils/utils";
+import Pagination from "./Pagination";
 
 const ShortListingInfo = ({
   booking,
@@ -92,6 +93,9 @@ const RequestDetailView = ({
   >(activeItem);
   const { SERVICE_CHARGE, SERVICE_VAT } = useGlobalState();
   const [extensionCost, setExtensionCost] = useState(0);
+  const [paginatedBookings, setPaginatedBookings] = useState<
+    Record<string, any>[]
+  >([]);
 
   useEffect(() => {
     if (selectedBooking?.state === "EXTEND") {
@@ -115,7 +119,6 @@ const RequestDetailView = ({
             new Date(selectedBooking.extend_to),
             new Date(selectedBooking.end)
           );
-          console.log("days ", days);
           setExtensionCost(days * selectedBooking?.listing?.daily_price);
         default:
           break;
@@ -135,22 +138,21 @@ const RequestDetailView = ({
       <div className="mt-5">
         <div className="grid lg:grid-cols-2 grid-cols-1 gap-10 items-start">
           <div>
-            <ShortListingInfo
-              key={activeItem?.id}
-              booking={activeItem as Record<string, any>}
+            {paginatedBookings.map((booking) => (
+              <ShortListingInfo
+                key={booking.id}
+                booking={booking}
+                onClick={() => {
+                  setSelectedBooking(booking);
+                }}
+              />
+            ))}
+
+            <Pagination
+              items={bookings}
+              pageSize={3}
+              onPageChange={setPaginatedBookings}
             />
-            {bookings
-              .filter((b) => b.id !== activeItem?.id)
-              .map((booking) => (
-                <ShortListingInfo
-                  key={booking.id}
-                  booking={booking}
-                  onClick={() => {
-                    setSelectedBooking(booking);
-                    console.log("booking: ", booking);
-                  }}
-                />
-              ))}
           </div>
 
           <div className="bg-[#F8F8F8] rounded-[5px] border p-5">
@@ -407,7 +409,7 @@ const RequestDetailView = ({
                       <a className="">Go To Item</a>
                     </Link>
                   </li>
-                  <li className="">
+                  {/* <li className="">
                     <Link href={"/contact-support"}>
                       <a className="">Contact Support</a>
                     </Link>
@@ -421,7 +423,7 @@ const RequestDetailView = ({
                     <Link href={"/item"}>
                       <a className="text-[#EB001B]">Cancel</a>
                     </Link>
-                  </li>
+                  </li> */}
                 </ul>
               </>
             )}

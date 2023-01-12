@@ -1,16 +1,14 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Footer, NavBar } from "../components";
 import { BsArrowLeftCircle } from "react-icons/bs";
-import { notification, Rate, Row, Spin } from "antd";
+import { notification, Rate, Spin } from "antd";
 import { useRouter } from "next/router";
 import AuthGuard from "../components/auth-guard/AuthGuard";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useLazyQuery, useMutation } from "@apollo/client";
 import {
   ADD_TO_CART,
   CONFIRM_TRANSACTION,
   CREATE_TRANSACTION,
-  DELETE_CART_ITEM,
-  GET_MY_ADDRESSES,
   GET_TRANSACTION_SUMMARY,
 } from "../graphql/query_mutations";
 import Link from "next/link";
@@ -23,8 +21,6 @@ import { turnicate } from "../utils/utils";
 import { differenceInCalendarDays } from "date-fns";
 import AddressForm from "../components/listing/AddressForm";
 import { useGlobalState } from "../hooks/useGlobalState";
-import { FaTimes } from "react-icons/fa";
-import { RiCloseLine } from "react-icons/ri";
 import { AiOutlineCloseCircle } from "react-icons/ai";
 
 export const PayButton = ({
@@ -53,7 +49,7 @@ export const PayButton = ({
   return <PaystackButton {...config} />;
 };
 
-const Payment = () => {
+const TransactionSummaryPage = () => {
   const ref = useRef<boolean>();
   const router = useRouter();
   const { user } = useAuth();
@@ -393,4 +389,4 @@ const Payment = () => {
   );
 };
 
-export default Payment;
+export default TransactionSummaryPage;
