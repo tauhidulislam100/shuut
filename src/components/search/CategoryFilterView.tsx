@@ -33,9 +33,9 @@ const CategoryFilterView = ({
               }`}
             >
               <img
-                src={category.icon}
+                src={category.image}
                 alt={category.name}
-                className="object-cover md:w-[43px] sm:w-[35px] w-[25px] max-w-full"
+                className="object-cover w-full h-full rounded-full  max-w-full"
               />
             </div>
             <h4

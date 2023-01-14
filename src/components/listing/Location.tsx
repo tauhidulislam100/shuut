@@ -21,13 +21,13 @@ const Location = ({
         selectedAddressId={data?.address_id}
         onChange={(addr) => onChange?.("address_id", addr?.id)}
       />
-      {isInvalid && !data?.delivery_option ? (
+      {isInvalid && !data?.address_id ? (
         <div className="my-1 text-red-500">
           please select the delivery option
         </div>
       ) : null}
       <h1 className="mt-12 text-2xl font-lota font-semibold text-primary">
-        Read Our Logistics Terms & Condiotions
+        Read Our Logistics Terms & Conditions
       </h1>
       <div className="mt-10 h-96 bg-[#FBFBFB] p-10">
         <h2 className="text-2xl font-lota">Terms &amp; Conditions</h2>

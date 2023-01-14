@@ -1336,3 +1336,25 @@ export const CREATE_PAYMENT = gql`
     }
   }
 `;
+
+export const UPDATE_COVER_PHOTO = gql`
+  mutation UpdateCoverPhoto($userId: Int!, $url: String!) {
+    update_profiles(
+      where: { user_id: { _eq: $userId } }
+      _set: { cover_photo: $url }
+    ) {
+      affected_rows
+    }
+  }
+`;
+
+export const UPDATE_PROFILE_PHOTO = gql`
+  mutation UpdateProfilePhoto($userId: Int!, $url: String!) {
+    update_user(
+      where: { id: { _eq: $userId } }
+      _set: { profile_photo: $url }
+    ) {
+      affected_rows
+    }
+  }
+`;
