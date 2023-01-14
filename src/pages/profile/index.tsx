@@ -9,19 +9,20 @@ import {
   EditProfile,
 } from "../../components";
 import { BsArrowLeftCircle } from "react-icons/bs";
-import { Avatar, notification, Tabs } from "antd";
+import { Avatar, notification, Spin, Tabs } from "antd";
 import AuthGuard from "../../components/auth-guard/AuthGuard";
 import { useAuth } from "../../hooks/useAuth";
-import { useLazyQuery, useMutation, useQuery } from "@apollo/client";
+import { useMutation, useQuery } from "@apollo/client";
 import {
   CREATE_ADDRESS,
   GET_USER_INFO_BY_ID,
+  UPDATE_COVER_PHOTO,
+  UPDATE_PROFILE_PHOTO,
   UPDTAE_ADDRESS,
   UPSERT_PROFILE,
 } from "../../graphql/query_mutations";
 import { Widget, WidgetAPI } from "@uploadcare/react-widget";
 import { RiImageEditFill } from "react-icons/ri";
-import Button from "../../components/UI/Button";
 import router from "next/router";
 
 const { TabPane } = Tabs;
@@ -32,6 +33,10 @@ const Profile = () => {
   const coverRef = useRef<WidgetAPI | null>(null);
   const { user } = useAuth();
   const [editMode, setEditMode] = useState(false);
+  const [photoUpdate, setPhotoUpdate] = useState({
+    profileLoading: false,
+    coverLoading: false,
+  });
   const [editProfileForm, setEditProfileForm] = useState({
     cover_photo: null,
     description: "",
@@ -47,6 +52,7 @@ const Profile = () => {
   });
   const [address, setAddress] = useState<Record<string, any>>({});
   const { data: profileData } = useQuery(GET_USER_INFO_BY_ID, {
+    fetchPolicy: "cache-and-network",
     variables: {
       id: user?.id,
     },
@@ -88,6 +94,22 @@ const Profile = () => {
       },
     }
   );
+
+  const [updatePorfilePhoto] = useMutation(UPDATE_PROFILE_PHOTO, {
+    onError(err) {
+      notification.error({
+        message: err.message,
+      });
+    },
+  });
+
+  const [updateCoverPhoto] = useMutation(UPDATE_COVER_PHOTO, {
+    onError(err) {
+      notification.error({
+        message: err.message,
+      });
+    },
+  });
 
   useEffect(() => {
     if (profileData) {
@@ -201,12 +223,25 @@ const Profile = () => {
             </div>
             <span className="hidden">
               <Widget
-                value={editProfileForm?.cover_photo as any}
-                doNotStore={false}
-                onDialogClose={async (info: any) => {
-                  const url = (await info.promise()).cdnUrl;
-                  setEditProfileForm((p) => ({ ...p, cover_photo: url }));
+                onFileSelect={(file: any) => {
+                  if (file) {
+                    setPhotoUpdate((p) => ({ ...p, coverLoading: true }));
+                    file.done(async ({ cdnUrl }: any) => {
+                      setEditProfileForm((p) => ({
+                        ...p,
+                        cover_photo: cdnUrl,
+                      }));
+                      await updateCoverPhoto({
+                        variables: {
+                          userId: user?.id,
+                          url: cdnUrl,
+                        },
+                      });
+                      setPhotoUpdate((p) => ({ ...p, coverLoading: false }));
+                    });
+                  }
                 }}
+                doNotStore={false}
                 imagesOnly={true}
                 multiple={false}
                 ref={coverRef}
@@ -216,12 +251,25 @@ const Profile = () => {
             </span>
             <span className="hidden">
               <Widget
-                value={editProfileForm?.profile_photo as any}
-                doNotStore={false}
-                onDialogClose={async (info: any) => {
-                  const url = (await info.promise()).cdnUrl;
-                  setEditProfileForm((p) => ({ ...p, profile_photo: url }));
+                onFileSelect={(file: any) => {
+                  if (file) {
+                    setPhotoUpdate((p) => ({ ...p, profileLoading: true }));
+                    file.done(async ({ cdnUrl }: any) => {
+                      setEditProfileForm((p) => ({
+                        ...p,
+                        profile_photo: cdnUrl,
+                      }));
+                      await updatePorfilePhoto({
+                        variables: {
+                          userId: user?.id,
+                          url: cdnUrl,
+                        },
+                      });
+                      setPhotoUpdate((p) => ({ ...p, profileLoading: false }));
+                    });
+                  }
                 }}
+                doNotStore={false}
                 imagesOnly={true}
                 multiple={false}
                 ref={profileRef}
@@ -231,13 +279,17 @@ const Profile = () => {
             </span>
             <button
               onClick={() => coverRef?.current?.openDialog("")}
-              className="w-10 h-10 rounded-full bg-gray-300 text-black text-xl grid place-items-center absolute bottom-0 right-0"
+              className={`w-10 h-10 rounded-full bg-gray-300 text-black text-xl grid place-items-center absolute bottom-0 right-0 ${
+                photoUpdate.coverLoading ? "animate-spin" : ""
+              }`}
             >
               <RiImageEditFill />
             </button>
             <button
               onClick={() => profileRef?.current?.openDialog("")}
-              className="w-10 h-10 rounded-full bg-gray-300 text-xl text-black grid place-items-center absolute -bottom-10 xl:right-[44%] md:right-[40%] right-[32%]"
+              className={`w-10 h-10 rounded-full bg-gray-300 text-xl text-black grid place-items-center absolute -bottom-10 xl:right-[44%] md:right-[40%] right-[32%] ${
+                photoUpdate.profileLoading ? "animate-spin" : ""
+              }`}
             >
               <RiImageEditFill />
             </button>
@@ -251,7 +303,7 @@ const Profile = () => {
             activeKey={activeTab}
             tabPosition="top"
           >
-            <TabPane key={"1"} tab="Edit Profile">
+            <TabPane key={"1"} tab="My profile">
               {!editMode ? (
                 <div className="bg-[#FCFCFD] border border-[#DFDFE6] rounded-[10px] p-4">
                   <div className="flex justify-end mb-4">

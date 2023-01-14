@@ -935,3 +935,19 @@ input[data-autocompleted] {
         height: 30px;
     }
 }
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+/* Apply the animation to the element */
+.loading-border {
+    /* Divide the border into slices */
+    animation: spin 1s ease-in-out infinite;
+}

@@ -15,6 +15,7 @@ import {
   BsInstagram,
   BsTelephone,
   BsTwitter,
+  BsWhatsapp,
 } from "react-icons/bs";
 import { ImFacebook } from "react-icons/im";
 import { BiMinus } from "react-icons/bi";
@@ -48,6 +49,7 @@ import {
   FacebookShareButton,
   TelegramShareButton,
   TwitterShareButton,
+  WhatsappShareButton,
 } from "react-share";
 
 const { useBreakpoint } = Grid;
@@ -813,18 +815,11 @@ const ProductView = () => {
                               <BsTwitter />
                             </button>
                           </TwitterShareButton>
-                          <a
-                            href={`mailto:${user?.email}`}
-                            className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm"
-                          >
-                            <TbMail />
-                          </a>
-                          <a
-                            href={`tel:${user?.phone}`}
-                            className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm"
-                          >
-                            <BsTelephone />
-                          </a>
+                          <WhatsappShareButton url={window.location.href}>
+                            <button className="inline-grid place-items-center w-[25px] h-[25px] rounded-full social-bg-gradient text-white text-sm">
+                              <BsWhatsapp />
+                            </button>
+                          </WhatsappShareButton>
                         </div>
                       </div>
                     </div>
