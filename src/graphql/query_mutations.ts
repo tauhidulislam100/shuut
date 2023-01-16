@@ -1358,3 +1358,325 @@ export const UPDATE_PROFILE_PHOTO = gql`
     }
   }
 `;
+
+export const GET_MY_BOOKINGS = gql`
+  query GetBookings(
+    $state: [booking_bool_exp!]
+    $customer: bigint!
+    $start: date
+  ) {
+    booking(
+      where: {
+        _or: $state
+        _and: { transaction: { customer: { _eq: $customer } } }
+      }
+    ) {
+      id
+      start
+      end
+      cost
+      discount
+      vat
+      service_charge
+      state
+      pricing_option
+      extend_to
+      extend_from
+      is_extension_paid
+      transaction_id
+      listing {
+        id
+        slug
+        title
+        daily_price
+        weekly_price
+        monthly_price
+        location_name
+        availability_exceptions
+        quantity
+        images {
+          url
+          id
+        }
+        user {
+          firstName
+          lastName
+          id
+          profile_photo
+        }
+        bookings(
+          where: {
+            _or: [{ start: { _gte: $start } }, { end: { _gte: $start } }]
+            _and: [
+              { state: { _neq: "PROPOSED" } }
+              { state: { _neq: "CANCELLED" } }
+              { state: { _neq: "DECLINED" } }
+            ]
+          }
+        ) {
+          start
+          end
+          quantity
+        }
+      }
+    }
+  }
+`;
+
+export const GET_HAND_IN_LISTINGS = gql`
+  query GetBookings($state: String!, $customer: bigint!, $start: date!) {
+    booking(
+      where: {
+        state: { _eq: $state }
+        _and: {
+          transaction: { customer: { _eq: $customer } }
+          start: { _eq: $start }
+        }
+      }
+    ) {
+      id
+      start
+      end
+      cost
+      discount
+      vat
+      service_charge
+      state
+      pricing_option
+      extend_from
+      is_extension_paid
+      transaction_id
+      listing {
+        id
+        slug
+        title
+        daily_price
+        weekly_price
+        monthly_price
+        location_name
+        availability_exceptions
+        quantity
+        images {
+          url
+          id
+        }
+        user {
+          firstName
+          lastName
+          id
+          profile_photo
+        }
+        bookings(
+          where: {
+            _or: [{ start: { _gte: $start } }, { end: { _gte: $start } }]
+            _and: [
+              { state: { _neq: "PROPOSED" } }
+              { state: { _neq: "CANCELLED" } }
+              { state: { _neq: "DECLINED" } }
+            ]
+          }
+        ) {
+          start
+          end
+          quantity
+        }
+      }
+    }
+  }
+`;
+export const BOOKING_REQUEST_QUERY = gql`
+  query GetBookings($userId: bigint!) {
+    booking(
+      where: {
+        _or: [{ state: { _eq: "PENDING" } }, { state: { _eq: "EXTEND" } }]
+        _and: { listing: { user_id: { _eq: $userId } } }
+      }
+    ) {
+      id
+      start
+      end
+      cost
+      discount
+      vat
+      service_charge
+      state
+      pricing_option
+      extend_to
+      extend_from
+      is_extension_paid
+      transaction {
+        id
+        user {
+          id
+          firstName
+          lastName
+          profile_photo
+          phone
+        }
+      }
+      listing {
+        id
+        slug
+        title
+        daily_price
+        weekly_price
+        monthly_price
+        location_name
+        availability_exceptions
+        quantity
+        images {
+          url
+          id
+        }
+      }
+    }
+  }
+`;
+
+export const GET_MY_UNAVAILABLE_ITEMS = gql`
+  query ($startdate: date!, $enddate: date!, $user_id: Int!) {
+    listing: get_unavailable_listing(
+      args: { startdate: $startdate, enddate: $enddate }
+      where: { user_id: { _eq: $user_id } }
+    ) {
+      id
+      slug
+      title
+      daily_price
+      location_name
+      images {
+        url
+        id
+      }
+      user {
+        firstName
+        lastName
+        id
+      }
+    }
+  }
+`;
+
+export const APPROVE_BOOKING_REQUEST = gql`
+  mutation UpdateBookingState($id: bigint!, $state: String!) {
+    result: update_booking_by_pk(
+      pk_columns: { id: $id }
+      _set: { state: $state }
+    ) {
+      id
+      state
+    }
+  }
+`;
+
+export const APPROVE_EXTEND_REQUEST = gql`
+  mutation UpdateBookingState($id: bigint!, $state: String!, $extendTo: date) {
+    result: update_booking_by_pk(
+      pk_columns: { id: $id }
+      _set: { state: $state, end: $extendTo }
+    ) {
+      id
+      state
+    }
+  }
+`;
+
+export const GET_MY_LISTINGS = gql`
+  query GetMyListings($userId: bigint!, $start: date!) {
+    listing(where: { user_id: { _eq: $userId } }) {
+      id
+      slug
+      title
+      daily_price
+      location_name
+      quantity
+      availability_exceptions
+      images {
+        url
+        id
+      }
+      user {
+        firstName
+        lastName
+        id
+      }
+      bookings(
+        where: {
+          _or: [{ start: { _gte: $start } }, { end: { _gte: $start } }]
+          _and: [
+            { state: { _neq: "PROPOSED" } }
+            { state: { _neq: "CANCELLED" } }
+            { state: { _neq: "DECLINED" } }
+          ]
+        }
+      ) {
+        start
+        end
+        state
+        quantity
+      }
+    }
+  }
+`;
+
+export const CHECK_DATE_QUERY = gql`
+  query GetBookings($start: date!, $end: date!, $userId: bigint!) {
+    booking(
+      where: {
+        _and: [
+          { listing: { user_id: { _eq: $userId } } }
+          {
+            _or: [
+              { state: { _eq: "ACCEPTED" } }
+              { state: { _eq: "EXTEND" } }
+              { state: { _eq: "EXTENDED" } }
+            ]
+          }
+          { _and: [{ start: { _gte: $start } }, { end: { _lte: $end } }] }
+        ]
+      }
+    ) {
+      id
+      start
+      end
+      cost
+      discount
+      vat
+      service_charge
+      state
+      pricing_option
+      listing {
+        id
+        slug
+        title
+        daily_price
+        weekly_price
+        monthly_price
+        location_name
+        availability_exceptions
+        quantity
+        images {
+          url
+          id
+        }
+        user {
+          firstName
+          lastName
+          id
+          profile_photo
+        }
+      }
+    }
+  }
+`;
+
+export const ADD_UNAVAILABILITY = gql`
+  mutation AddUnavailability($exceptions: jsonb!, $listing_id: bigint!) {
+    update_listing(
+      where: { id: { _eq: $listing_id } }
+      _set: { availability_exceptions: $exceptions }
+    ) {
+      affected_rows
+    }
+  }
+`;

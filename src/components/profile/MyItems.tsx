@@ -11,7 +11,13 @@ import loadingAnimation from "../lottie/loading.json";
 import Lottie from "lottie-react";
 import { addDays, format } from "date-fns";
 import RequestDetailView from "./RequestDetailView";
-import { GET_USER_LISTINGS } from "../../graphql/query_mutations";
+import {
+  APPROVE_BOOKING_REQUEST,
+  APPROVE_EXTEND_REQUEST,
+  BOOKING_REQUEST_QUERY,
+  GET_MY_UNAVAILABLE_ITEMS,
+  GET_USER_LISTINGS,
+} from "../../graphql/query_mutations";
 
 type FilterType = "request" | "unavailable" | "my-items" | "";
 
@@ -44,102 +50,6 @@ export const FilterMenu = ({
     </li>
   </Radio.Group>
 );
-const BOOKING_REQUEST_QUERY = gql`
-  query GetBookings($userId: bigint!) {
-    booking(
-      where: {
-        _or: [{ state: { _eq: "PENDING" } }, { state: { _eq: "EXTEND" } }]
-        _and: { listing: { user_id: { _eq: $userId } } }
-      }
-    ) {
-      id
-      start
-      end
-      cost
-      discount
-      vat
-      service_charge
-      state
-      pricing_option
-      extend_to
-      extend_from
-      is_extension_paid
-      transaction {
-        id
-        user {
-          id
-          firstName
-          lastName
-          profile_photo
-          phone
-        }
-      }
-      listing {
-        id
-        slug
-        title
-        daily_price
-        weekly_price
-        monthly_price
-        location_name
-        availability_exceptions
-        quantity
-        images {
-          url
-          id
-        }
-      }
-    }
-  }
-`;
-
-const GET_MY_UNAVAILABLE_ITEMS = gql`
-  query ($startdate: date!, $enddate: date!, $user_id: Int!) {
-    listing: get_unavailable_listing(
-      args: { startdate: $startdate, enddate: $enddate }
-      where: { user_id: { _eq: $user_id } }
-    ) {
-      id
-      slug
-      title
-      daily_price
-      location_name
-      images {
-        url
-        id
-      }
-      user {
-        firstName
-        lastName
-        id
-      }
-    }
-  }
-`;
-
-const APPROVE_BOOKING_REQUEST = gql`
-  mutation UpdateBookingState($id: bigint!, $state: String!) {
-    result: update_booking_by_pk(
-      pk_columns: { id: $id }
-      _set: { state: $state }
-    ) {
-      id
-      state
-    }
-  }
-`;
-
-const APPROVE_EXTEND_REQUEST = gql`
-  mutation UpdateBookingState($id: bigint!, $state: String!, $extendTo: date) {
-    result: update_booking_by_pk(
-      pk_columns: { id: $id }
-      _set: { state: $state, end: $extendTo }
-    ) {
-      id
-      state
-    }
-  }
-`;
 
 const MyItems = () => {
   const { user } = useAuth();

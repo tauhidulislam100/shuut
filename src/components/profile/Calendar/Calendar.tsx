@@ -14,105 +14,11 @@ import ActionButton from "./ActionButton";
 import OutlinedButton from "./OutlinedButton";
 import { notification, Spin } from "antd";
 import { GoPlusSmall } from "react-icons/go";
-
-const CHECK_DATE_QUERY = gql`
-  query GetBookings($start: date!, $end: date!, $userId: bigint!) {
-    booking(
-      where: {
-        _and: [
-          { listing: { user_id: { _eq: $userId } } }
-          {
-            _or: [
-              { state: { _eq: "ACCEPTED" } }
-              { state: { _eq: "EXTEND" } }
-              { state: { _eq: "EXTENDED" } }
-            ]
-          }
-          { _and: [{ start: { _gte: $start } }, { end: { _lte: $end } }] }
-        ]
-      }
-    ) {
-      id
-      start
-      end
-      cost
-      discount
-      vat
-      service_charge
-      state
-      pricing_option
-      listing {
-        id
-        slug
-        title
-        daily_price
-        weekly_price
-        monthly_price
-        location_name
-        availability_exceptions
-        quantity
-        images {
-          url
-          id
-        }
-        user {
-          firstName
-          lastName
-          id
-          profile_photo
-        }
-      }
-    }
-  }
-`;
-const GET_MY_LISTINGS = gql`
-  query GetMyListings($userId: bigint!, $start: date!) {
-    listing(where: { user_id: { _eq: $userId } }) {
-      id
-      slug
-      title
-      daily_price
-      location_name
-      quantity
-      availability_exceptions
-      images {
-        url
-        id
-      }
-      user {
-        firstName
-        lastName
-        id
-      }
-      bookings(
-        where: {
-          _or: [{ start: { _gte: $start } }, { end: { _gte: $start } }]
-          _and: [
-            { state: { _neq: "PROPOSED" } }
-            { state: { _neq: "CANCELLED" } }
-            { state: { _neq: "DECLINED" } }
-          ]
-        }
-      ) {
-        start
-        end
-        state
-        quantity
-      }
-    }
-  }
-`;
-
-const ADD_UNAVAILABILITY = gql`
-  mutation AddUnavailability($exceptions: jsonb!, $listing_id: bigint!) {
-    update_listing(
-      where: { id: { _eq: $listing_id } }
-      _set: { availability_exceptions: $exceptions }
-    ) {
-      affected_rows
-    }
-  }
-`;
+import {
+  ADD_UNAVAILABILITY,
+  CHECK_DATE_QUERY,
+  GET_MY_LISTINGS,
+} from "../../../graphql/query_mutations";
 
 type FilterType = "today" | "check-date" | "add-unavailability";
 
