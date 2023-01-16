@@ -11,6 +11,10 @@ import useAsyncEffect from "use-async-effect";
 import loadingAnimation from "../lottie/loading.json";
 import Lottie from "lottie-react";
 import { addDays, format } from "date-fns";
+import {
+  GET_HAND_IN_LISTINGS,
+  GET_MY_BOOKINGS,
+} from "../../graphql/query_mutations";
 
 type FilterType =
   | "request"
@@ -49,132 +53,6 @@ export const FilterMenu = ({
   </Radio.Group>
 );
 
-const GET_MY_BOOKINGS = gql`
-  query GetBookings(
-    $state: [booking_bool_exp!]
-    $customer: bigint!
-    $start: date
-  ) {
-    booking(
-      where: {
-        _or: $state
-        _and: { transaction: { customer: { _eq: $customer } } }
-      }
-    ) {
-      id
-      start
-      end
-      cost
-      discount
-      vat
-      service_charge
-      state
-      pricing_option
-      extend_to
-      extend_from
-      is_extension_paid
-      transaction_id
-      listing {
-        id
-        slug
-        title
-        daily_price
-        weekly_price
-        monthly_price
-        location_name
-        availability_exceptions
-        quantity
-        images {
-          url
-          id
-        }
-        user {
-          firstName
-          lastName
-          id
-          profile_photo
-        }
-        bookings(
-          where: {
-            _or: [{ start: { _gte: $start } }, { end: { _gte: $start } }]
-            _and: [
-              { state: { _neq: "PROPOSED" } }
-              { state: { _neq: "CANCELLED" } }
-              { state: { _neq: "DECLINED" } }
-            ]
-          }
-        ) {
-          start
-          end
-          quantity
-        }
-      }
-    }
-  }
-`;
-
-const queryHandOverListing = gql`
-  query GetBookings($state: String!, $customer: bigint!, $start: date!) {
-    booking(
-      where: {
-        state: { _eq: $state }
-        _and: {
-          transaction: { customer: { _eq: $customer } }
-          start: { _eq: $start }
-        }
-      }
-    ) {
-      id
-      start
-      end
-      cost
-      discount
-      vat
-      service_charge
-      state
-      pricing_option
-      extend_from
-      is_extension_paid
-      transaction_id
-      listing {
-        id
-        slug
-        title
-        daily_price
-        weekly_price
-        monthly_price
-        location_name
-        availability_exceptions
-        quantity
-        images {
-          url
-          id
-        }
-        user {
-          firstName
-          lastName
-          id
-          profile_photo
-        }
-        bookings(
-          where: {
-            _or: [{ start: { _gte: $start } }, { end: { _gte: $start } }]
-            _and: [
-              { state: { _neq: "PROPOSED" } }
-              { state: { _neq: "CANCELLED" } }
-              { state: { _neq: "DECLINED" } }
-            ]
-          }
-        ) {
-          start
-          end
-          quantity
-        }
-      }
-    }
-  }
-`;
-
 const Rental = () => {
   const { user } = useAuth();
   const [getMyBookings, { loading, data }] = useLazyQuery(GET_MY_BOOKINGS, {
@@ -182,9 +60,9 @@ const Rental = () => {
   });
 
   const [
-    getHandOverListing,
+    getHandInListing,
     { loading: handoverItemLoading, data: handOverItems },
-  ] = useLazyQuery(queryHandOverListing, {
+  ] = useLazyQuery(GET_HAND_IN_LISTINGS, {
     onError(error) {
       notification.error({
         message: error.message,
@@ -210,7 +88,7 @@ const Rental = () => {
         return;
       case "handin-today":
         start = format(addDays(new Date(), 1), "yyyy-MM-dd");
-        await getHandOverListing({
+        await getHandInListing({
           variables: {
             customer: user?.id,
             state: "ACCEPTED",
@@ -220,7 +98,7 @@ const Rental = () => {
         return;
       case "handin-tomorrow":
         start = format(addDays(new Date(), 2), "yyyy-MM-dd");
-        await getHandOverListing({
+        await getHandInListing({
           variables: {
             customer: user?.id,
             state: "ACCEPTED",

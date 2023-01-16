@@ -126,7 +126,7 @@ const GeneralInfo = ({
         selectedRanges[selectedRanges.length - 1].to
       ) {
         // If there are no ranges selected or the current range is full, start a new range
-        const r = [...selectedRanges, { from: day, to: undefined }];
+        const r = [...selectedRanges, { from: day, to: day }];
         setSelectedRanges(r);
         onChange?.("availability_exceptions", r);
       } else {
