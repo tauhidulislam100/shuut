@@ -224,10 +224,13 @@ const Message = () => {
                         type="checkbox"
                         className="cursor-pointer"
                       />
-                      <RiDeleteBinFill
+                      <button
                         onClick={onDeleteInboxes}
-                        className="w-full text-xl cursor-pointer text-red-500"
-                      />
+                        disabled={!selectedInboxes?.length}
+                        className={`text-red-500 disabled:text-gray-500 text-xl`}
+                      >
+                        <RiDeleteBinFill />
+                      </button>
                     </div>
                   ) : null}
                 </div>
