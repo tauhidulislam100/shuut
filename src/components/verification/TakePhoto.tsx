@@ -43,8 +43,8 @@ const TakePhoto = ({
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
-    } catch (error) {
-      setLocalError(error as string);
+    } catch (error: any) {
+      setLocalError("please check your camera permission");
     }
   };
 
