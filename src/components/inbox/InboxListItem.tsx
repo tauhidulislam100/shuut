@@ -1,8 +1,10 @@
 import { Avatar, Grid } from "antd";
 import { format } from "date-fns";
+import { RiDeleteBinFill } from "react-icons/ri";
 import { IUser } from "../../contexts/AuthProvider";
 import { InboxType } from "../../contexts/GlobalStateProvider";
-import { getSender } from "../../utils/utils";
+import { useGlobalState } from "../../hooks/useGlobalState";
+import { getSender, sortByDateString } from "../../utils/utils";
 
 const { useBreakpoint } = Grid;
 
@@ -10,24 +12,40 @@ const InboxListItem = ({
   selected,
   inbox,
   user,
+  canSelectMulitple,
+  onDelete,
 }: {
   selected?: boolean;
   inbox?: InboxType;
   user: IUser | null;
+  canSelectMulitple?: boolean;
+  onDelete?: () => void;
 }) => {
+  const { messages } = useGlobalState();
   const screen = useBreakpoint();
   const sender = getSender(inbox, user);
 
-  const undread = inbox?.messages?.filter(
+  const _messages = sortByDateString(
+    messages?.filter((msg) => msg.inbox_id === inbox?.id)
+  );
+  const undread = _messages.filter(
     (msg) => msg.sender.id !== user?.id && !msg.receiver_has_read
   ).length;
 
   return (
     <div
-      className={`flex items-start cursor-pointer lg:p-2 md:pr-0 p-2 xxs:px-0 rounded-[4px] ${
+      className={`group flex items-start cursor-pointer lg:p-2 md:pr-0 p-2 xxs:px-0 rounded-[4px] ${
         selected ? "bg-[#090F4730]" : ""
       }`}
     >
+      {!canSelectMulitple ? (
+        <button
+          onClick={onDelete}
+          className="mr-1 self-center group-hover:block hidden"
+        >
+          <RiDeleteBinFill className="w-full text-xl cursor-pointer text-red-500" />
+        </button>
+      ) : null}
       <Avatar
         size={!screen.lg ? 40 : 50}
         src={sender?.profile_photo}
@@ -52,10 +70,8 @@ const InboxListItem = ({
             }`}
           >
             {format(
-              inbox?.messages?.[inbox?.messages?.length - 1]?.created_at
-                ? new Date(
-                    inbox?.messages?.[inbox?.messages?.length - 1]?.created_at
-                  )
+              _messages?.[_messages?.length - 1]?.created_at
+                ? new Date(_messages?.[_messages?.length - 1]?.created_at)
                 : new Date(),
               "MMM dd yyyy, hh:mm"
             )}
@@ -66,7 +82,7 @@ const InboxListItem = ({
             selected ? "text-[#090F47]" : "text-[#0A2429] text-opacity-50"
           }`}
         >
-          {inbox?.messages?.[inbox?.messages?.length - 1]?.content ??
+          {_messages?.[_messages?.length - 1]?.content ??
             "You can now send message to each other"}
         </p>
       </div>

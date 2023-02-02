@@ -54,8 +54,8 @@ const Home: NextPage = () => {
               Rent on the go whatever, whenever and wherever.
             </h2>
             <p className="text-lg mdMax:text-center md:text-2xl text-body font-normal text-opacity-80 mt-7 mb-8 max-w-[545px]">
-              Find and hire all your creative project&pos;s needs from people in
-              your community.
+              Find and hire all your creative project&apos;s needs from people
+              in your community.
             </p>
 
             <div className="flex items-center md:w-[430px] w-full max-w-full border border-body-light rounded-lg p-[2px] relative">

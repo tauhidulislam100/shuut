@@ -968,7 +968,7 @@ export const MY_INBOXES_SUBSCRIPTION_STREAM = gql`
         lastName
         profile_photo
       }
-      messages(order_by: { created_at: desc }, limit: 10) {
+      messages(order_by: { created_at: desc }, limit: 1) {
         id
         inbox_id
         content
@@ -1680,3 +1680,5 @@ export const ADD_UNAVAILABILITY = gql`
     }
   }
 `;
+
+//start=2023-02-001&end=2023-02-008&listingId=3&quantity=1&pricing_option=weekly

@@ -125,15 +125,17 @@ const NewListing = () => {
       <div className="border-b"></div>
       <main className="container mt-5">
         <div className="">
-          <button
-            onClick={() => router.back()}
-            className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
-          >
-            <span className="mr-2 text-secondary">
-              <BsArrowLeftCircle />
-            </span>
-            back
-          </button>
+          {step === 0 ? (
+            <button
+              onClick={() => router.back()}
+              className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
+            >
+              <span className="mr-2 text-secondary">
+                <BsArrowLeftCircle />
+              </span>
+              back
+            </button>
+          ) : null}
         </div>
         <div className="lg:px-[10%] create-listing">
           <h1 className="mt-[74px] text-[32px] font-lota font-semibold text-primary">

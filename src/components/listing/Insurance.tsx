@@ -89,7 +89,7 @@ const Insurance = ({
           onClick={onCancel}
           className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
         >
-          Cancel
+          Previous
         </button>
         <button
           onClick={onSubmit}

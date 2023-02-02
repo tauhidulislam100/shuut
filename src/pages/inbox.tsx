@@ -1,14 +1,12 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { RiDeleteBinFill } from "react-icons/ri";
-import { groupBy } from "lodash";
 import { NavBar } from "../components";
 import { Button, Input, notification, Grid } from "antd";
 import { useRouter } from "next/router";
 import AuthGuard from "../components/auth-guard/AuthGuard";
 import { useGlobalState } from "../hooks/useGlobalState";
 import { useAuth } from "../hooks/useAuth";
-import { format } from "date-fns";
 import { IMessage, InboxType } from "../contexts/GlobalStateProvider";
 import { useMutation } from "@apollo/client";
 import {
@@ -18,7 +16,7 @@ import {
 } from "../graphql/query_mutations";
 import useAsyncEffect from "use-async-effect";
 import { EmptyInbox, InboxSidebar, MessageBox } from "../components/inbox";
-import { getSender } from "../utils/utils";
+import { getSender, sortByDateString } from "../utils/utils";
 
 const { useBreakpoint } = Grid;
 
@@ -28,10 +26,15 @@ const Message = () => {
   const trackUserRef = useRef<number>();
 
   const { user } = useAuth();
-  const { inboxes, updateSelectedInbox, removeInboxes, markMessageAsRead } =
-    useGlobalState();
+  const {
+    inboxes,
+    messages,
+    updateSelectedInbox,
+    removeInboxes,
+    markMessageAsRead,
+  } = useGlobalState();
   const [selectedInbox, setSelectedInbox] = useState<InboxType>();
-  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [localMessages, setLocalMessages] = useState<IMessage[]>([]);
   const [msgText, setMsgText] = useState<string>();
   const [creatingInbox, setCreatingInbox] = useState(false);
   const [canSelectInboxes, setCanSelectInboxes] = useState(false);
@@ -74,15 +77,11 @@ const Message = () => {
   });
 
   useAsyncEffect(async () => {
-    if (
-      selectedInbox &&
-      inboxes &&
-      inboxes.find((inb) => inb.id === selectedInbox?.id)
-    ) {
-      const msg = inboxes.find((inb) => inb.id === selectedInbox?.id)?.messages;
-      setMessages([...(msg as IMessage[])]);
+    if (selectedInbox && messages?.length) {
+      let msg = messages.filter((msg) => msg.inbox_id === selectedInbox.id);
+      setLocalMessages([...sortByDateString(msg)]);
     }
-  }, [inboxes, selectedInbox]);
+  }, [messages, selectedInbox]);
 
   useAsyncEffect(async () => {
     // this will select a inbox or create new inbox if already does not exist
@@ -113,8 +112,8 @@ const Message = () => {
   const onSendMessage = async () => {
     if (!msgText?.trim().length) return;
     const text = msgText;
-    setMessages([
-      ...messages,
+    setLocalMessages([
+      ...localMessages,
       {
         content: text,
         id: Date.now(),
@@ -244,6 +243,14 @@ const Message = () => {
                       markMessageAsRead?.(inb);
                     }}
                     updateMultipleSelection={setSelectedInboxes}
+                    onDelete={(id) => {
+                      removeInboxes?.([id]);
+                      deleteInboxes({
+                        variables: {
+                          inboxes: [id],
+                        },
+                      });
+                    }}
                   />
                 ) : null}
                 {screen.md || selectedInbox ? (
@@ -251,7 +258,7 @@ const Message = () => {
                     {selectedInbox ? (
                       <>
                         <MessageBox
-                          messages={messages}
+                          messages={localMessages}
                           updateScrollPosition={updateScroll}
                           selectedInbox={selectedInbox}
                         />
@@ -289,7 +296,7 @@ const Message = () => {
               </div>
             </div>
           ) : (
-            <EmptyInbox />
+            <EmptyInbox onClick={() => router.push("/")} />
           )}
         </main>
       </div>

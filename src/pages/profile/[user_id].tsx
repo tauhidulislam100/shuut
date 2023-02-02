@@ -63,7 +63,7 @@ const LenderProfile = () => {
             </div>
           </div>
           <h3 className="mt-[88px] font-lota text-lg text-center text-[#23262F]">
-            Videographer by day, night watcher by night
+            {data?.user?.profile?.description}
           </h3>
           <Tabs
             className="profile-tabs mt-[121px]"
@@ -78,21 +78,17 @@ const LenderProfile = () => {
                     {data?.user?.firstName} {data?.user?.lastName}
                   </span>
                 </div>
-                <div className="flex justify-between items-start mb-4 last:mb-0">
+                {/* <div className="flex justify-between items-start mb-4 last:mb-0">
                   <strong>Email Address:</strong>
                   <span>{data?.user?.email}</span>
                 </div>
                 <div className="flex justify-between items-start mb-4 last:mb-0">
                   <strong>Phone Number:</strong>
                   <span>{data?.user?.phone}</span>
-                </div>
+                </div> */}
                 <div className="flex justify-between items-start mb-4 last:mb-0">
                   <strong>Address:</strong>
                   <span>{data?.user?.addresses?.[0]?.delivery_address}</span>
-                </div>
-                <div className="flex justify-between items-start mb-4 last:mb-0">
-                  <strong>Business Name:</strong>
-                  <span>{data?.user?.profile?.business_name}</span>
                 </div>
                 <div className="flex justify-between items-start mb-4 last:mb-0">
                   <strong>Store Location:</strong>
@@ -105,10 +101,6 @@ const LenderProfile = () => {
                 <div className="flex justify-between items-start mb-4 last:mb-0">
                   <strong>Closing Hours:</strong>
                   <span>{data?.user?.profile?.closing_hours}</span>
-                </div>
-                <div className="flex justify-between items-start mb-4 last:mb-0">
-                  <strong>Descrption:</strong>
-                  <span>{data?.user?.profile?.description}</span>
                 </div>
               </div>
             </TabPane>

@@ -111,7 +111,7 @@ const ProductView = () => {
       onCompleted: (data) => onAvailabilityCheckComplete(data),
       onError(error) {
         notification.error({
-          message: error.message,
+          message: error.message + "i am responsible",
         });
       },
     }
@@ -306,8 +306,8 @@ const ProductView = () => {
       variables: {
         listing_id: listing?.id,
         quantity: quantity,
-        start: format(selectedDate?.from as Date, "yyyy-MM-ddd"),
-        end: format(selectedDate?.to as Date, "yyyy-MM-ddd"),
+        start: format(selectedDate?.from as Date, "yyyy-MM-dd"),
+        end: format(selectedDate?.to as Date, "yyyy-MM-dd"),
         pricing_option: priceOption,
       },
     });
@@ -317,8 +317,8 @@ const ProductView = () => {
     router.push({
       pathname: "/transaction-summary",
       query: {
-        start: format(selectedDate?.from as Date, "yyyy-MM-ddd"),
-        end: format(selectedDate?.to as Date, "yyyy-MM-ddd"),
+        start: format(selectedDate?.from as Date, "yyyy-MM-dd"),
+        end: format(selectedDate?.to as Date, "yyyy-MM-dd"),
         listingId: listing?.id,
         quantity,
         pricing_option: priceOption,
