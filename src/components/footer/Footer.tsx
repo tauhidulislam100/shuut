@@ -141,7 +141,7 @@ const Footer = ({ className = "" }: { className?: string }) => {
       <div className="container">
         <div className="border-t border-[#C6CACC] border-opacity-20 py-4 md:mx-20">
           <p className="text-center text-primary-100 text-sm sm:text-base font-[450]">
-            Copyright @SHUUT 2022. All Rights Reserved.
+            Copyright @SHUUT 2023. All Rights Reserved.
           </p>
         </div>
       </div>
