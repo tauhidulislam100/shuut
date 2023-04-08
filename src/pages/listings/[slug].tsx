@@ -51,6 +51,7 @@ import {
   TwitterShareButton,
   WhatsappShareButton,
 } from "react-share";
+import Back from "../../components/Back";
 
 const { useBreakpoint } = Grid;
 
@@ -363,6 +364,7 @@ const ProductView = () => {
     <>
       <div className="bg-[#F8F8F8] min-h-screen">
         <NavBar />
+        <Back />
         <Modal
           onCancel={() => setShowAvailabilityCalendar(false)}
           open={showAvailabilityCalendar}
@@ -403,17 +405,8 @@ const ProductView = () => {
           </div>
         ) : (
           <>
-            <section className="border-t border-[#D0CFD8] border-opacity-30 pt-5 mb-14">
+            <section className=" pt-5 mb-14">
               <div className="container">
-                <button
-                  onClick={() => router.back()}
-                  className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
-                >
-                  <span className="mr-2 text-secondary">
-                    <BsArrowLeftCircle />
-                  </span>
-                  back
-                </button>
                 <div className="md:grid xl:grid-cols-3 grid-cols-2 xl:gap-8 gap-4  xl:mt-14 place-items-start">
                   <div className="xl:col-span-2 w-full">
                     <div className="flex gap-x-8 xl:h-[660px] py-6 relative">

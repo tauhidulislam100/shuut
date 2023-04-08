@@ -10,6 +10,7 @@ import {
 } from "@uploadcare/react-widget";
 import { FaCloudUploadAlt } from "react-icons/fa";
 import { isDayInRange } from "../../utils/utils";
+import { useRouter } from "next/router";
 
 const { useBreakpoint } = Grid;
 interface IProps {
@@ -27,6 +28,7 @@ const GeneralInfo = ({
   data,
   isInvalid,
 }: IProps) => {
+  const router = useRouter();
   const screen = useBreakpoint();
   const [selectedRanges, setSelectedRanges] = React.useState<
     { from: Date | undefined; to: Date | undefined }[]
@@ -388,7 +390,10 @@ const GeneralInfo = ({
         </Checkbox>
       </Form.Item>
       <div className="mt-6 flex justify-end gap-5">
-        <button className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold">
+        <button
+          onClick={() => router.push("/")}
+          className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
+        >
           Cancel
         </button>
         <button

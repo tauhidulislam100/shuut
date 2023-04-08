@@ -17,6 +17,7 @@ import {
 import useAsyncEffect from "use-async-effect";
 import { EmptyInbox, InboxSidebar, MessageBox } from "../components/inbox";
 import { getSender, sortByDateString } from "../utils/utils";
+import Back from "../components/Back";
 
 const { useBreakpoint } = Grid;
 
@@ -165,19 +166,8 @@ const Message = () => {
     <AuthGuard>
       <div className="bg-[#F8FAFC]">
         <NavBar />
-        <div className="border-b"></div>
+        <Back />
         <main className="container mt-5 pb-10">
-          <div className="">
-            <button
-              onClick={router.back}
-              className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center md:mb-20 mb-16"
-            >
-              <span className="mr-2 text-secondary">
-                <BsArrowLeftCircle />
-              </span>
-              back
-            </button>
-          </div>
           {creatingInbox ? (
             <div className="w-full">
               <p className="text-secondary font-medium text-base">

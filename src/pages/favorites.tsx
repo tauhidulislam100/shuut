@@ -3,6 +3,7 @@ import Image from "next/image";
 import { NavBar, SingleProduct } from "../components";
 import { BsArrowLeftCircle } from "react-icons/bs";
 import { useGlobalState } from "../hooks/useGlobalState";
+import Back from "../components/Back";
 
 const Favorite = () => {
   // const [favorite, setFavorite] = useState(false);
@@ -32,14 +33,8 @@ const Favorite = () => {
   return (
     <div className="bg-[#F8FAFC4D] min-h-screen">
       <NavBar />
-      <div className="border-b" />
+      <Back />
       <main className="container mt-5 mb-10">
-        <button className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center">
-          <span className="mr-2 text-secondary">
-            <BsArrowLeftCircle />
-          </span>
-          back
-        </button>
         <div className="mt-20">
           <h1 className="text-primary text-[32px] font-semibold">Favorites</h1>
         </div>

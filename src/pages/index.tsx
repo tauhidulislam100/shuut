@@ -50,7 +50,7 @@ const Home: NextPage = () => {
       <div className="container">
         <section className="flex flex-col lg:flex-row gap-5 md:gap-10 pt-20">
           <div className="mdMax:flex mdMax:flex-col mdMax:items-center">
-            <h2 className="text-4xl mdMax:text-center leading-[40px] md:text-[50px] md:leading-[60px] font-semibold text-primary max-w-[580px]">
+            <h2 className="text-4xl mdMax:text-center leading-[40px] md:text-[50px] md:leading-[60px] font-semibold text-primary max-w-[580px] font-lota">
               Rent on the go whatever, whenever and wherever.
             </h2>
             <p className="text-lg mdMax:text-center md:text-2xl text-body font-normal text-opacity-80 mt-7 mb-8 max-w-[545px]">
