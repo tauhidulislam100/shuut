@@ -14,11 +14,14 @@ import { VERIFY_USER_KYC } from "../graphql/query_mutations";
 import { notification } from "antd";
 import AuthGuard from "../components/auth-guard/AuthGuard";
 import { useAuth } from "../hooks/useAuth";
+import { useRouter } from "next/router";
 
 export const supportedDocuments: Record<string, any> = {
   NG: {
-    passport: "PASSPORT-FACE-MATCH-VERIFICATION",
-    nid: "VIN-FACE-MATCH-VERIFICATION",
+    // passport: "PASSPORT-FACE-MATCH-VERIFICATION",
+    passport: "PASSPORT-FULL-DETAILS",
+    // nid: "VIN-FACE-MATCH-VERIFICATION",
+    nid: "VIN-FULL-DETAILS-VERIFICATION",
     license: "DRIVER-LICENSE-FULL-DETAIL-VERIFICATION",
   },
   GH: {
@@ -39,6 +42,7 @@ export const supportedDocuments: Record<string, any> = {
 
 const KYC = () => {
   const { refetchCurrentUser } = useAuth();
+  const router = useRouter();
   const [step, setStep] = useState(0);
   const [kycForm, setKycForm] = useState({
     documentType: "",
@@ -89,7 +93,10 @@ const KYC = () => {
         step === 1 &&
         kycForm.countryCode === "NG" &&
         kycForm.documentType === "passport" &&
-        (!kycForm.searchParameter || !kycForm.firstName || !kycForm.lastName)
+        (!kycForm.searchParameter ||
+          !kycForm.lastName ||
+          !kycForm.firstName ||
+          !kycForm.dob)
       ) {
         setErrorMessage("please fill all form fields accordingly");
         return;
@@ -109,9 +116,14 @@ const KYC = () => {
     };
 
     const onSubmitKyc = async () => {
+      let verificationType = kycForm.verificationType;
+      if (kycForm.countryCode === "GH" && kycForm.documentType === "license") {
+        verificationType = "GH-DRIVER-LICENSE-VERIFICATION";
+      }
       await verifyUserKyc({
         variables: {
           ...kycForm,
+          verificationType,
         },
       });
     };
@@ -123,6 +135,7 @@ const KYC = () => {
             errorMessage={errorMessage}
             kycForm={kycForm}
             onChange={(name, v) => {
+              console.log(`${name}:${v}`);
               setKycForm((p) => ({ ...p, [name]: v }));
             }}
             handleNext={nextHandler}
@@ -137,13 +150,7 @@ const KYC = () => {
             onChange={(name, v) => {
               setKycForm((p) => ({ ...p, [name]: v }));
             }}
-            handleNext={
-              (kycForm.countryCode === "NG" &&
-                kycForm.documentType === "license") ||
-              kycForm.countryCode !== "NG"
-                ? onSubmitKyc
-                : nextHandler
-            }
+            handleNext={onSubmitKyc}
             handlePrev={() => setStep((p) => p - 1)}
           />
         );
@@ -179,14 +186,19 @@ const KYC = () => {
       <NavBar />
       <div className="border-b"></div>
       <main className="container mt-5">
-        <div className="">
-          <button className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center">
-            <span className="mr-2 text-secondary">
-              <BsArrowLeftCircle />
-            </span>
-            back
-          </button>
-        </div>
+        {step === 0 ? (
+          <div className="">
+            <button
+              onClick={router.back}
+              className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
+            >
+              <span className="mr-2 text-secondary">
+                <BsArrowLeftCircle />
+              </span>
+              back
+            </button>
+          </div>
+        ) : null}
         <div className="max-w-[1080px] mx-auto">{getStep}</div>
       </main>
       <Footer />

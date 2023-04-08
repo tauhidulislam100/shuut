@@ -968,7 +968,7 @@ export const MY_INBOXES_SUBSCRIPTION_STREAM = gql`
         lastName
         profile_photo
       }
-      messages(order_by: { created_at: desc }, limit: 10) {
+      messages(order_by: { created_at: desc }, limit: 1) {
         id
         inbox_id
         content
@@ -1676,6 +1676,14 @@ export const ADD_UNAVAILABILITY = gql`
       where: { id: { _eq: $listing_id } }
       _set: { availability_exceptions: $exceptions }
     ) {
+      affected_rows
+    }
+  }
+`;
+
+export const SUBSCRIBE_NEWSLETTER = gql`
+  mutation SubscribeNewsLetter($email: String!) {
+    insert_newsletters(objects: { email: $email }) {
       affected_rows
     }
   }

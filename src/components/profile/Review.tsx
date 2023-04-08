@@ -186,7 +186,7 @@ const Review = () => {
       </div>
       <div className="mt-[60px]">
         {reviews?.map((review: Record<string, any>) => (
-          <div className="flex" key={review?.id}>
+          <div className="flex mb-6" key={review?.id}>
             <div className="pr-5">
               <Avatar
                 size={screen.xs ? 40 : 80}

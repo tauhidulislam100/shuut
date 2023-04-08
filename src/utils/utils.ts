@@ -11,7 +11,7 @@ import _, {
   isEmpty,
   each,
 } from "lodash";
-import { InboxType } from "../contexts/GlobalStateProvider";
+import { IMessage, InboxType } from "../contexts/GlobalStateProvider";
 
 export function parseJwt(token: string) {
   var base64Url = token.split(".")[1];
@@ -131,4 +131,12 @@ export function isDayInRange(
     (to && isSameDay(day, to)) ||
     (from && to && day > from && day < to)
   );
+}
+
+export function sortByDateString(messages: IMessage[]) {
+  return messages.sort((a, b) => {
+    const dateA = new Date(a.created_at) as any;
+    const dateB = new Date(b.created_at) as any;
+    return dateA - dateB;
+  });
 }

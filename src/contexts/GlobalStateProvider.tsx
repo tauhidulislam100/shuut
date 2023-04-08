@@ -10,10 +10,23 @@ import {
   MY_MESSAGES_SUBSCRIPTION,
 } from "../graphql/query_mutations";
 import { useAuth } from "../hooks/useAuth";
-import { groupBy, sortBy, unionBy } from "lodash";
+import { unionBy } from "lodash";
 import { format } from "date-fns";
-import { mergeUnionByKey } from "../utils/utils";
 import { notification } from "antd";
+
+function removeDuplicateMessages(messages: IMessage[]): IMessage[] {
+  const uniqueMessages = new Map<number, IMessage>();
+
+  messages.forEach((message) => {
+    if (!uniqueMessages.has(message.id)) {
+      uniqueMessages.set(message.id, message);
+    } else if (message.receiver_has_read) {
+      uniqueMessages.set(message.id, message);
+    }
+  });
+
+  return Array.from(uniqueMessages.values());
+}
 
 interface IProps {
   children: React.ReactNode;
@@ -48,6 +61,7 @@ export type StateType = {
   SERVICE_CHARGE: number;
   SERVICE_VAT: number;
   inboxes: InboxType[];
+  messages: IMessage[];
   inboxesLoading: boolean;
   messagesLoading: boolean;
   favorites: Record<string, any>[];
@@ -65,6 +79,7 @@ const initalState: StateType = {
   SERVICE_CHARGE: 0,
   SERVICE_VAT: 0,
   inboxes: [],
+  messages: [],
   inboxesLoading: false,
   messagesLoading: false,
   favorites: [],
@@ -88,11 +103,8 @@ const GlobalStateProvider = ({ children }: IProps) => {
   const [favorites, setFavorites] = useState<Record<string, any>[]>([]);
   const [selectedInbox, setSelectedInbox] = useState<InboxType>();
   let [inboxes, setInboxes] = useState<InboxType[]>([]);
-  const [latestInboxes, setLatestInboxes] = useState<InboxType[]>([]);
-  const [messagesByInbox, setMessagesByInbox] = useState<
-    Record<number, IMessage[]>
-  >({});
   const [checkoutItems, setCheckoutItems] = useState<number[]>([]);
+  const [messages, setMessages] = useState<IMessage[]>([]);
 
   const [getFavorites, { refetch: reFetchFavorites }] = useLazyQuery(
     GET_FAVORITES,
@@ -110,8 +122,11 @@ const GlobalStateProvider = ({ children }: IProps) => {
 
   const [
     getMyInboxes,
-    { fetchMore: fetchMoreInboxes, data: inboxesData, loading: inboxesLoading },
+    { fetchMore: fetchMoreInboxes, loading: inboxesLoading, data: inboxesData },
   ] = useLazyQuery(GET_MY_INBOXES, {
+    onCompleted(data) {
+      setInboxes((prev) => [...(unionBy(prev, data.inbox, "id") as any)]);
+    },
     onError(error) {
       console.log(error.message);
     },
@@ -130,18 +145,31 @@ const GlobalStateProvider = ({ children }: IProps) => {
     },
   });
 
-  const { data: inboxesStream } = useSubscription(
-    MY_INBOXES_SUBSCRIPTION_STREAM,
-    {
-      variables: {
-        userId: user?.id,
-        createdAt: format(new Date(), "yyyy-MM-dd"),
-      },
-    }
-  );
-  const { data: messagesStream } = useSubscription(MY_MESSAGES_SUBSCRIPTION, {
+  useSubscription(MY_INBOXES_SUBSCRIPTION_STREAM, {
+    onData({ data: { data } }) {
+      console.log(data);
+      if (data.inbox_stream) {
+        setInboxes((prev) => [
+          ...(unionBy(prev, data.inbox_stream, "id") as any),
+        ]);
+      }
+    },
     variables: {
       userId: user?.id,
+      createdAt: format(new Date(), "yyyy-MM-dd"),
+    },
+  });
+
+  useSubscription(MY_MESSAGES_SUBSCRIPTION, {
+    variables: {
+      userId: user?.id,
+    },
+    onData({ data: { data } }) {
+      if (data?.messages) {
+        setMessages((prev) =>
+          removeDuplicateMessages([...prev, ...data.messages])
+        );
+      }
     },
     onError(error) {
       if (user) {
@@ -183,59 +211,13 @@ const GlobalStateProvider = ({ children }: IProps) => {
     });
   }, []);
 
-  //merging websocket and http data
-  useEffect(() => {
-    if (inboxesData) {
-      setInboxes([...(unionBy(inboxesData.inbox, latestInboxes, "id") as any)]);
-    }
-  }, [inboxesData, latestInboxes]);
-
-  //if new inbox created then data received by websocket
-  useEffect(() => {
-    if (inboxesStream?.inbox_stream) {
-      setLatestInboxes((p) => [...p, ...inboxesStream.inbox_stream]);
-    }
-  }, [inboxesStream]);
-
-  useEffect(() => {
-    if (messagesStream?.messages) {
-      setMessagesByInbox((prev) => {
-        const msgGroup = groupBy(messagesStream?.messages, "inbox_id");
-        for (let key in msgGroup) {
-          if (prev[key as unknown as number]) {
-            prev[key as unknown as number] = [
-              ...prev[key as unknown as number],
-              ...msgGroup[key],
-            ];
-          } else {
-            prev[key as unknown as number] = msgGroup[key];
-          }
-        }
-        return { ...prev };
-      });
-    }
-  }, [messagesStream]);
-
   useEffect(() => {
     if (selectedInbox && messagesData) {
-      setMessagesByInbox((p) => {
-        p[selectedInbox.id] = [
-          ...(p[selectedInbox.id] ?? []),
-          ...messagesData.my_messages,
-        ];
-        return { ...p };
-      });
+      setMessages((prev) =>
+        removeDuplicateMessages([...prev, ...messagesData?.my_messages])
+      );
     }
   }, [selectedInbox, messagesData]);
-
-  useEffect(() => {
-    if (messagesByInbox && Object.keys(messagesByInbox).length) {
-      //updating messages as read
-      setInboxes((prev) => {
-        return [...combineMessagesWithInbox(prev, messagesByInbox)];
-      });
-    }
-  }, [messagesByInbox]);
 
   const onFetchMoreInboxes = async () => {
     inboxPage += 1;
@@ -307,44 +289,6 @@ const GlobalStateProvider = ({ children }: IProps) => {
     });
   };
 
-  function combineMessagesWithInbox(
-    inboxes: InboxType[],
-    messagesByInbox: Record<number, IMessage[]>
-  ) {
-    for (const index in inboxes) {
-      let inbox = { ...inboxes[index], messages: [...inboxes[index].messages] };
-      if (messagesByInbox?.[inbox.id]) {
-        inboxes[index] = {
-          ...inbox,
-          messages: [
-            ...mergeUnionByKey(
-              inbox.messages,
-              messagesByInbox?.[inbox.id],
-              "id"
-            ),
-          ] as IMessage[],
-        };
-      }
-
-      inboxes[index] = {
-        ...inboxes[index],
-        messages: [...sortBy(inboxes[index].messages, (m) => m.created_at)],
-      };
-    }
-    return [
-      // ...sortBy(inboxes, (inb) => {
-      //   const r = inb?.messages?.length
-      //     ? Date.parse(inb.messages[inb.messages.length - 1].created_at) >
-      //       Date.parse(inb.created_at)
-      //       ? inb.messages[inb.messages.length - 1].created_at
-      //       : inb.created_at
-      //     : inb.created_at;
-      //   return Date.parse(r);
-      // }),
-      ...inboxes,
-    ];
-  }
-
   function removeInboxes(inboxIds: number[]) {
     setInboxes((inbx) => {
       return [...inbx.filter((item) => !inboxIds.includes(item.id))];
@@ -388,6 +332,7 @@ const GlobalStateProvider = ({ children }: IProps) => {
         messagesLoading,
         favorites,
         checkoutItems,
+        messages,
         fetchMoreInboxes: onFetchMoreInboxes,
         fetchMoreMessages: onFetchMoreMessages,
         updateSelectedInbox: setSelectedInbox,

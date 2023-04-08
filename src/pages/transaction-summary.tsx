@@ -62,6 +62,7 @@ const TransactionSummaryPage = () => {
     getSummary,
     { loading: summaryLoading, error, data: transactionData },
   ] = useLazyQuery(GET_TRANSACTION_SUMMARY, {
+    fetchPolicy: "network-only",
     variables: {
       bookings: checkoutItems,
     },
@@ -75,13 +76,18 @@ const TransactionSummaryPage = () => {
     onCompleted(data) {
       getSummary({
         fetchPolicy: "network-only",
+        variables: {
+          bookings: [data.AddToCart.id],
+        },
       });
+      updateCheckoutItems?.(data.AddToCart.id);
     },
   });
   const [confirmTransaction, { loading: confirmTransactionLoading }] =
     useMutation(CONFIRM_TRANSACTION, {
       onCompleted(data) {
         setCompleteTransaction(true);
+        updateCheckoutItems?.(undefined, []);
       },
       onError(error) {
         notification.error({
@@ -103,9 +109,6 @@ const TransactionSummaryPage = () => {
     async (isMounted) => {
       if (isMounted() && router && !ref.current) {
         ref.current = true;
-        await getSummary({
-          fetchPolicy: "cache-and-network",
-        });
         const { start, end, quantity, listingId, pricing_option } =
           router.query;
         if (listingId && start && end) {
@@ -123,6 +126,16 @@ const TransactionSummaryPage = () => {
     },
     [router, ref]
   );
+
+  useEffect(() => {
+    if (checkoutItems?.length) {
+      getSummary({
+        variables: {
+          bookings: checkoutItems,
+        },
+      });
+    }
+  }, [checkoutItems, getSummary]);
 
   const onPaymentSuccess = (resources?: any) => {
     createTransaction({
@@ -156,6 +169,14 @@ const TransactionSummaryPage = () => {
     console.log("close: ", e);
   };
 
+  function goBack(path?: string) {
+    updateCheckoutItems?.(undefined, []);
+    if (path) {
+      router.push(path);
+    } else {
+      router.back();
+    }
+  }
   return (
     <AuthGuard>
       <NavBar />
@@ -163,7 +184,7 @@ const TransactionSummaryPage = () => {
       <main className="container mt-5 mb-5">
         <div className="">
           <button
-            onClick={() => router.back()}
+            onClick={() => goBack()}
             className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
           >
             <span className="mr-2 text-secondary">
@@ -212,10 +233,12 @@ const TransactionSummaryPage = () => {
                       setSelectedAddress(addr);
                     }}
                   />
-                  {selectedAddress && transactionSummary ? (
+                  {selectedAddress &&
+                  transactionSummary &&
+                  transactionSummary?.items?.length ? (
                     <div className="mt-6 flex justify-end xs:gap-5 gap-3">
                       <button
-                        onClick={() => router.push("/listings/search")}
+                        onClick={() => goBack("/listings/search")}
                         className="w-[193px] font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 items-center text-lg font-semibold"
                       >
                         Cancel
@@ -273,16 +296,29 @@ const TransactionSummaryPage = () => {
                                               updateCheckoutItems?.(
                                                 listing.bookingId
                                               );
-                                              setTransactionSummary((p) => ({
-                                                ...p,
-                                                items: [
-                                                  ...p?.items.filter(
+
+                                              setTransactionSummary((p) => {
+                                                const items = p?.items
+                                                  .map((item: any) => {
+                                                    return {
+                                                      ...item,
+                                                      listings:
+                                                        item?.listings.filter(
+                                                          (item: any) =>
+                                                            item.bookingId !==
+                                                            listing.bookingId
+                                                        ),
+                                                    };
+                                                  })
+                                                  .filter(
                                                     (item: any) =>
-                                                      item.bookingId !==
-                                                      listing.bookingId
-                                                  ),
-                                                ],
-                                              }));
+                                                      item.listings.length !== 0
+                                                  );
+                                                return {
+                                                  ...p,
+                                                  items: [...items],
+                                                };
+                                              });
                                             }}
                                           >
                                             <AiOutlineCloseCircle />

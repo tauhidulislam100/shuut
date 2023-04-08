@@ -42,8 +42,8 @@ const ListItem: NextPage = () => {
                 <span className="uppercase block">Shuut</span>
               </h1>
               <p className="text-2xl text-body lg:mt-12 mt-6">
-                More than 1,000 listings available on shuut, and is the first
-                place to renters comes for all camera equipments
+                There are a wide ranging variety of listings available on Shuut,
+                and it is the first stop for renters to get items they need.
               </p>
               <Link href={"/create-item"}>
                 <a className="mt-7 bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">

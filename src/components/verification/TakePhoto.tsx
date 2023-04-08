@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { BiCamera } from "react-icons/bi";
 import Button from "../UI/Button";
+import { Checkbox } from "antd";
+import { useRouter } from "next/router";
 
 interface IProps {
   handleNext: () => void;
@@ -18,10 +20,12 @@ const TakePhoto = ({
   errorMessage,
   loading,
 }: IProps) => {
+  const router = useRouter();
   const [photo, setPhoto] = useState<string | null>(kycForm.selfie);
   const videoRef = useRef<HTMLVideoElement>(null);
   const rendered = useRef<boolean>(false);
   const [localError, setLocalError] = useState("");
+  const [agree, setAgree] = useState<boolean | undefined>(undefined);
 
   useEffect(() => {
     if (!rendered.current) {
@@ -43,8 +47,8 @@ const TakePhoto = ({
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
       }
-    } catch (error) {
-      setLocalError(error as string);
+    } catch (error: any) {
+      setLocalError("please check your camera permission");
     }
   };
 
@@ -97,13 +101,7 @@ const TakePhoto = ({
           {localError || errorMessage}
         </div>
       ) : null}
-      <div className="mt-12 flex flex-col md:flex-row justify-end gap-5">
-        <button
-          onClick={handlePrev}
-          className="min-w-[120px] flex justify-center items-center font-sofia-pro bg-[#FAFAFA] border border-[#DFDFE6] rounded-md text-[#263238] h-12 text-lg font-semibold"
-        >
-          Back
-        </button>
+      <div className="mt-12 flex flex-col md:flex-row justify-center gap-5">
         {photo ? (
           <button
             onClick={() => {
@@ -129,25 +127,39 @@ const TakePhoto = ({
             Take Photo
           </button>
         )}
+      </div>
+      <div
+        className={`border rounded-[5px] mt-10 bg-[#FCFCFD] font-lota flex p-6 ${
+          agree === false ? "border-red-500" : ""
+        }`}
+      >
+        <Checkbox
+          className="checkbox"
+          checked={agree}
+          onChange={(e) => setAgree(e.target.checked)}
+        />
+        <p className="ml-2">
+          I, Name, acknowledge that the information provided are true and
+          accurate. Thus, it can be used by SHUUT for the purpose of verifying
+          my identity and kept in storage for other security purposes.
+        </p>
+      </div>
+      <div className="flex gap-4 items-center justify-end mt-4">
+        <Button
+          onClick={() => router.push("/")}
+          className="min-w-[193px] px-8 font-sofia-pro bg-white border border-primary hover:bg-primary hover:text-white rounded-md text-secondary h-12 items-center text-lg font-semibold"
+        >
+          Cancel
+        </Button>
         {photo ? (
           <Button
             loading={loading}
-            onClick={handleNext}
-            className="min-w-[193px] px-8 font-sofia-pro bg-secondary/20 rounded-md text-secondary h-12 items-center text-lg font-semibold"
+            onClick={agree ? handleNext : () => setAgree(false)}
+            className="min-w-[193px] px-8 font-sofia-pro bg-secondary/20 hover:bg-secondary hover:text-white rounded-md text-secondary h-12 items-center text-lg font-semibold"
           >
-            Use This Photo
+            Submit
           </Button>
         ) : null}
-        {/* <button onClick={() => console.log("Button!")} className='min-w-[193px] px-8 font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold'>
-                Continue With Another Device
-            </button> */}
-      </div>
-      <div className="border rounded-[5px] mt-10 bg-[#FCFCFD] font-lota">
-        <p className="p-8">
-          By continuing i acknowledge that Matis biom, By continuing i
-          acknowledge that Matis biom, By continuing i acknowledge that Matis
-          biom,
-        </p>
       </div>
     </div>
   );

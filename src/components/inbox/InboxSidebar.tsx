@@ -1,6 +1,5 @@
 import { Spin } from "antd";
 import { useEffect, useRef } from "react";
-import scrollMonitor from "scrollmonitor";
 import { InboxType } from "../../contexts/GlobalStateProvider";
 import { useAuth } from "../../hooks/useAuth";
 import { useGlobalState } from "../../hooks/useGlobalState";
@@ -10,6 +9,7 @@ interface IProps {
   selectedInbox?: InboxType;
   selectedInboxes: number[];
   canSelectMulitple: boolean;
+  onDelete?: (id: number) => void;
   updateMultipleSelection?: React.Dispatch<React.SetStateAction<any>>;
   updateSelectedInbox: (inb: InboxType) => void;
 }
@@ -17,6 +17,7 @@ const InboxSidebar = ({
   selectedInbox,
   selectedInboxes,
   canSelectMulitple,
+  onDelete,
   updateMultipleSelection,
   updateSelectedInbox,
 }: IProps) => {
@@ -67,6 +68,8 @@ const InboxSidebar = ({
               selectedInbox?.id === inbox.id ||
               selectedInboxes?.includes(inbox.id)
             }
+            onDelete={() => onDelete?.(inbox.id)}
+            canSelectMulitple={canSelectMulitple}
           />
         </div>
       ))}
