@@ -24,6 +24,7 @@ import { DateRange } from "react-day-picker";
 import { getPosition } from "../../../utils/utils";
 import { useMediaQuery } from "react-responsive";
 import { FaList, FaMapMarkerAlt } from "react-icons/fa";
+import Back from "../../../components/Back";
 
 type dropItems = {
   label: string;
@@ -306,25 +307,15 @@ const ProductSearch = () => {
   return (
     <>
       <NavBar />
+      <Back />
       <button
         onClick={() => setShowMap((prev) => !prev)}
         className="md:hidden z-[5000] fixed bottom-5 left-10 text-white bg-secondary rounded-full h-8 w-16 grid place-items-center text-lg"
       >
         {showMap ? <FaList /> : <FaMapMarkerAlt />}
       </button>
-      <div className="bg-[#FFFFFF] border-t border-[#D0CFD8] border-opacity-30 pt-4 pb-10">
+      <div className="bg-[#FFFFFF] border-opacity-30 pt-4 pb-10">
         <div className="container">
-          <div className="mb-4">
-            <button
-              onClick={() => router.back()}
-              className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
-            >
-              <span className="mr-2 text-secondary">
-                <BsArrowLeftCircle />
-              </span>
-              back
-            </button>
-          </div>
           <div className="space-y-5 sm:space-y-0 lg:flex justify-between items-center">
             <div className="flex items-center lg:w-[430px] mdMax:mb-4 w-full max-w-full border border-body-light rounded-lg p-[2px] relative">
               <input

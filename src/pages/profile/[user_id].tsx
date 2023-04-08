@@ -8,6 +8,7 @@ import { GET_LENDER_DETAILS } from "../../graphql/query_mutations";
 import Rental from "../../components/profile/lender/Rental";
 import useAsyncEffect from "use-async-effect";
 import { useRouter } from "next/router";
+import Back from "../../components/Back";
 
 const { TabPane } = Tabs;
 
@@ -34,19 +35,8 @@ const LenderProfile = () => {
   return (
     <>
       <NavBar />
-      <div className="border-b"></div>
+      <Back />
       <main className="container mt-5">
-        <div className="">
-          <button
-            onClick={router.back}
-            className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
-          >
-            <span className="mr-2 text-secondary">
-              <BsArrowLeftCircle />
-            </span>
-            back
-          </button>
-        </div>
         <section className="lg:px-40 mt-10">
           <h1 className="font-lota font-semibold text-[32px]">Profile</h1>
           <div

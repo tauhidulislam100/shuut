@@ -9,6 +9,7 @@ import { useQuery } from "@apollo/client";
 import { GetCategoryWithImages } from "../../graphql/query_mutations";
 import { useRouter } from "next/router";
 import { Spin } from "antd";
+import Back from "../../components/Back";
 const ListItem: NextPage = () => {
   const router = useRouter();
   const { loading, data } = useQuery(GetCategoryWithImages, {
@@ -27,38 +28,31 @@ const ListItem: NextPage = () => {
   return (
     <div className="">
       <NavBar />
+      <Back />
       <div className="container">
-        <div className="">
-          <button className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center">
-            <span className="mr-2 text-secondary">
-              <BsArrowLeftCircle />
-            </span>
-            back
-          </button>
-          <div className="2xl:px-24 md:flex items-end pt-20">
-            <div className="lg:w-[450px] pb-20">
-              <h1 className="text-[50px] font-semibold text-primary leading-[60px]">
-                Start Earning On
-                <span className="uppercase block">Shuut</span>
-              </h1>
-              <p className="text-2xl text-body lg:mt-12 mt-6">
-                There are a wide ranging variety of listings available on Shuut,
-                and it is the first stop for renters to get items they need.
-              </p>
-              <Link href={"/create-item"}>
-                <a className="mt-7 bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
-                  List An Item
-                </a>
-              </Link>
-            </div>
+        <div className="2xl:px-24 md:flex items-end pt-20">
+          <div className="lg:w-[450px] pb-20">
+            <h1 className="text-[50px] font-semibold text-primary leading-[60px]">
+              Start Earning On
+              <span className="uppercase block">Shuut</span>
+            </h1>
+            <p className="text-2xl text-body lg:mt-12 mt-6">
+              There are a wide ranging variety of listings available on Shuut,
+              and it is the first stop for renters to get items they need.
+            </p>
+            <Link href={"/create-item"}>
+              <a className="mt-7 bg-secondary hover:bg-primary h-[48px] w-[193px]  !text-white hover:text-white text-lg font-semibold inline-flex justify-center items-center rounded-lg">
+                List An Item
+              </a>
+            </Link>
+          </div>
 
-            <div className="relative h-full">
-              <img
-                src="/images/list-item/money.png"
-                className="2xl:object-cover object-fit max-w-full lg:h-[450px] md:h-[350px] h-[280px]"
-                alt="Cover"
-              />
-            </div>
+          <div className="relative h-full">
+            <img
+              src="/images/list-item/money.png"
+              className="2xl:object-cover object-fit max-w-full lg:h-[450px] md:h-[350px] h-[280px]"
+              alt="Cover"
+            />
           </div>
         </div>
       </div>

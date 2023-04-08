@@ -11,6 +11,7 @@ import CartProduct, { CARTITEM } from "../components/products/CartProduct";
 import { DELETE_CART_ITEM, GET_CART_ITEMS } from "../graphql/query_mutations";
 import { useAuth } from "../hooks/useAuth";
 import { useGlobalState } from "../hooks/useGlobalState";
+import Back from "../components/Back";
 
 const Cart: NextPage = () => {
   const { user } = useAuth();
@@ -48,18 +49,8 @@ const Cart: NextPage = () => {
     <AuthGuard>
       <div className="bg-[#F8FAFC] min-h-screen">
         <NavBar />
+        <Back />
         <div className="container">
-          <div className="">
-            <button
-              onClick={() => router.back()}
-              className="text-primary-100 font-normal font-sofia-pro text-xs capitalize flex items-center"
-            >
-              <span className="mr-2 text-secondary">
-                <BsArrowLeftCircle />
-              </span>
-              back
-            </button>
-          </div>
           <div className="mt-20">
             <div className="flex items-center">
               <h1 className="font-lota text-[32px] font-semibold">Cart</h1>
