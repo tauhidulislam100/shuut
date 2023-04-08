@@ -1681,4 +1681,10 @@ export const ADD_UNAVAILABILITY = gql`
   }
 `;
 
-//start=2023-02-001&end=2023-02-008&listingId=3&quantity=1&pricing_option=weekly
+export const SUBSCRIBE_NEWSLETTER = gql`
+  mutation SubscribeNewsLetter($email: String!) {
+    insert_newsletters(objects: { email: $email }) {
+      affected_rows
+    }
+  }
+`;

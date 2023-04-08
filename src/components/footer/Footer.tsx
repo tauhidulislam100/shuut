@@ -1,8 +1,38 @@
-import React from "react";
+import { useMutation } from "@apollo/client";
+import React, { useState } from "react";
 import { BsMessenger, BsTwitter } from "react-icons/bs";
 import { TiInfinity, TiSocialLinkedin } from "react-icons/ti";
+import { SUBSCRIBE_NEWSLETTER } from "../../graphql/query_mutations";
+import { Spin, notification } from "antd";
 
 const Footer = ({ className = "" }: { className?: string }) => {
+  const [email, setEmail] = useState("");
+  const [subscribeNewsLetter, { loading }] = useMutation(SUBSCRIBE_NEWSLETTER, {
+    onCompleted() {
+      notification.success({
+        message: "Thanks for subscribing our newsletter",
+      });
+      setEmail("");
+    },
+    onError(error) {
+      notification.error({
+        message: "Unable to subscribe newsletter " + error.message,
+      });
+    },
+  });
+
+  const handleSubscribe = async () => {
+    if (!/\S+@\S+\.\S+/.test(email)) {
+      return notification.error({
+        message: "invalid email address",
+      });
+    }
+    subscribeNewsLetter({
+      variables: {
+        email,
+      },
+    });
+  };
   return (
     <footer className={className}>
       <div className="container py-20">
@@ -125,11 +155,16 @@ const Footer = ({ className = "" }: { className?: string }) => {
             </h3>
             <div className="flex items-center w-full max-w-full border border-body-light rounded-lg relative overflow-hidden">
               <input
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 placeholder="Your email address"
                 className="sm:min-w-max px-4 h-12 w-full focus:ring-0 focus:outline-none text-body-200 text-sm font-light"
               />
-              <button className="px-6 h-12 bg-secondary text-white min-w-max rounded-r-lg">
-                Subscribe
+              <button
+                onClick={handleSubscribe}
+                className="px-6 h-12 bg-secondary text-white min-w-max rounded-r-lg"
+              >
+                {loading ? <Spin className="purple-button" /> : "Subscribe"}
               </button>
             </div>
             <p className="text-body-200 text-opacity-50 opacity-70 mt-5 text-base">

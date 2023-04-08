@@ -39,6 +39,20 @@ const Insurance = ({
       <div className="mt-10 h-96 bg-[#FBFBFB] p-10">
         <h2 className="text-2xl font-lota">Insurance</h2>
       </div>
+      <div className="flex pt-2">
+        <Checkbox
+          className="checkbox"
+          checked={data.accept_insurance}
+          onChange={(e) => onChange?.("accept_insurance", e.target.checked)}
+        >
+          Accept Insurance
+        </Checkbox>
+      </div>
+      {isInvalid && !data?.accept_insurance ? (
+        <div className="my-1 text-red-500">
+          please accept insurance terms and conditions
+        </div>
+      ) : null}
       <div className="my-5">
         <h4 className="text-primary font-medium text-base">Bank</h4>
         <Select
@@ -70,20 +84,7 @@ const Insurance = ({
           </div>
         ) : null}
       </div>
-      <div className="flex pt-2">
-        <Checkbox
-          className="checkbox"
-          checked={data.accept_insurance}
-          onChange={(e) => onChange?.("accept_insurance", e.target.checked)}
-        >
-          Accept Insurance
-        </Checkbox>
-      </div>
-      {isInvalid && !data?.accept_insurance ? (
-        <div className="my-1 text-red-500">
-          please accept insurance terms and conditions
-        </div>
-      ) : null}
+
       <div className="mt-6 flex justify-end gap-5">
         <button
           onClick={onCancel}

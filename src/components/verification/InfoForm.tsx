@@ -1,5 +1,5 @@
-import { Form, Input, Select } from "antd";
-import React from "react";
+import { Checkbox, Form, Input, Select } from "antd";
+import React, { useState } from "react";
 import Button from "../UI/Button";
 
 interface IProps {
@@ -19,6 +19,7 @@ const InfoForm = ({
   handleNext,
   handlePrev,
 }: IProps) => {
+  const [agree, setAgree] = useState<boolean | undefined>(undefined);
   const label =
     kycForm.documentType === "nid"
       ? "National/Voter Id Card Number"
@@ -28,7 +29,7 @@ const InfoForm = ({
   return (
     <div className="kyc-info">
       <Form labelCol={{ span: 24 }} className="my-8">
-        {kycForm.verificationType === "PASSPORT-FACE-MATCH-VERIFICATION" ? (
+        {kycForm.verificationType === "PASSPORT-FULL-DETAILS" ? (
           <>
             <Form.Item label={label}>
               <Input
@@ -96,7 +97,7 @@ const InfoForm = ({
             </Form.Item>
           </>
         ) : null}
-        {kycForm.verificationType === "VIN-FACE-MATCH-VERIFICATION" ? (
+        {kycForm.verificationType === "VIN-FULL-DETAILS-VERIFICATION" ? (
           <>
             <Form.Item label={label}>
               <Input
@@ -159,7 +160,21 @@ const InfoForm = ({
           </>
         ) : null}
       </Form>
-
+      <div
+        className={`border rounded-[5px] mt-10 bg-[#FCFCFD] font-lota flex p-6 ${
+          agree === false ? "border-red-500" : ""
+        }`}
+      >
+        <Checkbox
+          className="checkbox"
+          checked={agree}
+          onChange={(e) => setAgree(e.target.checked)}
+        >
+          I, Name, acknowledge that the information provided are true and
+          accurate. Thus, it can be used by SHUUT for the purpose of verifying
+          my identity and kept in storage for other security purposes.
+        </Checkbox>
+      </div>
       <div className="mt-12 flex justify-end gap-5">
         <button
           onClick={handlePrev}
@@ -169,10 +184,10 @@ const InfoForm = ({
         </button>
         <Button
           loading={loading}
-          onClick={handleNext}
+          onClick={agree ? handleNext : () => setAgree(false)}
           className="w-[193px] hover:bg-primary font-sofia-pro bg-secondary rounded-md text-white h-12 items-center text-lg font-semibold"
         >
-          Next
+          Submit
         </Button>
       </div>
     </div>

@@ -255,7 +255,7 @@ const GeneralInfo = ({
       {/* </Form.Item> */}
       <Form.Item label="Description">
         <Input.TextArea
-          placeholder="Enter"
+          placeholder="Description"
           value={data.description}
           onChange={(e) => onChange?.("description", e.target.value)}
           style={{ minHeight: "96px" }}
@@ -279,8 +279,8 @@ const GeneralInfo = ({
         <Col span={screen.md ? 12 : 24}>
           <Form.Item label="Item Value">
             <Input
-              placeholder="Enter"
-              value={data.price}
+              placeholder="Item value"
+              value={data.price ? data.price : ""}
               onChange={(e) => onChange?.("price", e.target.value)}
             />
             {isInvalid && !data.price ? (
@@ -297,8 +297,8 @@ const GeneralInfo = ({
           <Form.Item label="Day">
             <Input
               name="daily_price"
-              placeholder="Enter"
-              value={pricing.daily_price}
+              placeholder="Daily price"
+              value={pricing.daily_price ? pricing.daily_price : ""}
               onChange={onChangePricing}
               onBlur={onBlurDailyPrice}
             />
@@ -308,11 +308,11 @@ const GeneralInfo = ({
           </Form.Item>
         </Col>
         <Col span={screen.md ? 8 : 24}>
-          <Form.Item label="Weeks">
+          <Form.Item label="Week">
             <Input
               name="weekly_price"
-              placeholder="Enter"
-              value={pricing.weekly_price}
+              placeholder="Weekly price"
+              value={pricing.weekly_price ? pricing.weekly_price : ""}
               onChange={onChangePricing}
             />
             {isInvalid && !data.weekly_price ? (
@@ -323,11 +323,11 @@ const GeneralInfo = ({
           </Form.Item>
         </Col>
         <Col span={screen.md ? 8 : 24}>
-          <Form.Item label="Months">
+          <Form.Item label="Month">
             <Input
               name="monthly_price"
-              placeholder="Enter"
-              value={pricing.monthly_price}
+              placeholder="Monthly price"
+              value={pricing.monthly_price ? pricing.monthly_price : ""}
               onChange={onChangePricing}
             />
             {isInvalid && !data.monthly_price ? (
@@ -340,7 +340,7 @@ const GeneralInfo = ({
         <Col span={screen.md ? 12 : 24}>
           <Form.Item label="Quantity">
             <Input
-              placeholder="Enter"
+              placeholder="Quantity"
               value={data.quantity}
               onChange={(e) => onChange?.("quantity", e.target.value)}
             />
@@ -352,7 +352,7 @@ const GeneralInfo = ({
         <Col span={screen.md ? 12 : 24}>
           <Form.Item label="Minimum Rental Days">
             <Input
-              placeholder="Enter"
+              placeholder="Minimum Rental Days"
               value={data.min_rental_days}
               onChange={(e) => onChange?.("min_rental_days", e.target.value)}
             />
@@ -368,8 +368,12 @@ const GeneralInfo = ({
       <div className="w-full flex justify-center items-center my-5">
         <div className="p-4 rounded-xl shadow">
           <DatePicker
-            onDayClick={handleDayClick}
-            selected={selectedRanges as unknown as DateRange}
+            onDayClick={data.is_always_available ? undefined : handleDayClick}
+            selected={
+              data.is_always_available
+                ? ([] as any)
+                : (selectedRanges as unknown as DateRange)
+            }
           />
         </div>
       </div>

@@ -148,9 +148,11 @@ const VerificationType = ({
               <p className="p-8">
                 You will have the option to use the camera on your phone when
                 needed. By clicking the button below, you’re aggreing to the{" "}
-                <span className="text-secondary"> privacy policy of</span>{" "}
-                SHUUT, your biometric information, will be stored for more than
-                3 years.
+                <a href="#" className="text-secondary hover:text-secondary">
+                  privacy policy
+                </a>{" "}
+                of SHUUT, your biometric information, will be stored for more
+                than 3 years.
               </p>
             </div>
           </div>

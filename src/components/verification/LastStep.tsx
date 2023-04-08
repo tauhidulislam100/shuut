@@ -13,12 +13,12 @@ const LastStep = () => {
         <Radio.Group className="w-full">
           <div className="flex justify-between w-full border border-body-light rounded-[5px] p-5 mt-5">
             <h3 className="font-sofia-pro text-sm text-[#263238]">
-              SHUUT verifies your documents
+              SHUUT reviews document and rental details
             </h3>
           </div>
           <div className="flex justify-between w-full border border-body-light rounded-[5px] p-5 mt-5">
             <h3 className="font-sofia-pro text-sm text-[#263238]">
-              Once verified your request is paased on to the lender
+              Once verified, your request is passed on to the lender.
             </h3>
           </div>
           <div className="flex justify-between w-full border border-body-light rounded-[5px] p-5 mt-5">
